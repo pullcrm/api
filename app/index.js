@@ -2,11 +2,13 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import api from './routes'
 import 'dotenv/config'
+import logger from 'morgan'
 // import { errorsHandler } from 'middlewares/errors.middleware'
 
 const prefix = process.env.PREFIX || '/api'
 const app = express()
 
+app.use(logger('dev'));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
