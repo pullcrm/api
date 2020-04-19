@@ -3,7 +3,8 @@ import express from 'express'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
-// import { errorsHandler } from 'middlewares/errors.middleware'
+import {mysql} from './config/connections'
+import { errorsHandler } from './middlewares/errors'
 
 const prefix = process.env.PREFIX || '/api'
 const app = express()
@@ -21,7 +22,9 @@ app.use((req, res, next) => {
   next()
 })
 
+mysql.sync({ force: true }).then(() => {console.debug('Database sync executed correctly')})
+
 app.use(prefix, api)
-// app.use(errorsHandler)
+app.use(errorsHandler)
 
 export default app

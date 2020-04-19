@@ -2,6 +2,10 @@ import UserModel from './user.model'
 
 export default {
   findAll: async (params) => {
-    return await UserModel.findAll()
+    return UserModel.findAll()
+  },
+
+  create: async (data) => {
+    return UserModel.create(data)
   }
 }
