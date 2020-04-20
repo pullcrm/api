@@ -1,17 +1,21 @@
-import 'dotenv/config'
-import ApiException from '../exceptions/api'
 import jwt from 'jsonwebtoken';
+import 'dotenv/config'
+
+import ApiException from '../exceptions/api'
 
 const auth = (params = {is: []}) => (req, res, next) => {
   try {
-    if (req.method === 'OPTIONS') return next();
-    const token = req.headers['x-token-jwt'];
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
 
     if (!token) {
       throw new ApiException(403, 'Unauthorized')
     }
 
-    jwt.verify(token, process.env.SECRET_KEY, function(err, user) {
+    jwt.verify(token, process.env.SECRET_FOR_JWT, function(err, user) {
       if (err && err.name === 'TokenExpiredError') {
         throw new ApiException(401, 'Expired token.')
       }

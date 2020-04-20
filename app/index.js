@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next()
 })
 
-mysql.sync({ force: true }).then(() => {console.debug('Database sync executed correctly')})
+mysql.sync().then(() => {console.debug('Database sync executed correctly')})
 
 app.use(prefix, api)
 app.use(errorsHandler)
