@@ -42,7 +42,12 @@ const UserSchema = (connection, type) => {
       avatar: {
         type: type.STRING,
         allowNull: true
-      }
+      },
+      refreshToken: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: ''
+      },
     }, {
       hooks: {
         beforeCreate: (user) => {

@@ -6,6 +6,10 @@ export default {
     return UserModel.findOne({email})
   },
 
+  login: ({email, password}) => {
+
+  },
+
   findById: (id) => {
     return UserModel.findOne({id})
   }
