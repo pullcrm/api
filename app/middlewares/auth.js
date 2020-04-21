@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config'
 
 import ApiException from '../exceptions/api'
+import getToken from '../utils/getToken'
 
 const auth = (params = {is: []}) => (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ const auth = (params = {is: []}) => (req, res, next) => {
       return next();
     }
 
-    const token = req.headers.authorization.split(' ')[1];
+    const token = getToken(req.headers.authorization)
 
     if (!token) {
       throw new ApiException(403, 'Unauthorized')

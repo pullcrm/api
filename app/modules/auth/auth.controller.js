@@ -1,13 +1,16 @@
 import bCrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
+import 'dotenv/config'
 import AuthService from './auth.service'
 import ApiException from "../../exceptions/api";
 import createTokens from '../../utils/createTokens'
+import getToken from "../../utils/getToken";
 
 export default {
   login: async (req, res, next) => {
     try {
       const user = await AuthService.findByEmail(req.body.email)
-      console.log(req.body.email)
+
       if(!user) {
         throw new ApiException(401, 'Invalid password or username')
       }
@@ -30,31 +33,39 @@ export default {
     }
   },
 
-  // refreshToken: (req, res, next) => {
-  //   const token = req.headers['x-token-jwt'];
-  //   if (!token) return res.status(403).send({auth: false, error: 'Unauthorized'});
-  //   const refreshToken = req.body.refreshToken;
-  //
-  //   jwt.verify(refreshToken, config.secretRefresh, function (err, decoded) {
-  //     if (err && err.name === 'TokenExpiredError')
-  //       return res.status(401).send({auth: false, error: 'Expired refresh token'});
-  //     if (err)
-  //       return res.status(500).send({auth: false, error: 'Failed to authenticate refresh token.'});
-  //
-  //     const userId = decoded.userId;
-  //     User.findOne({_id: userId}, {password: 0}).exec(function (err, user) {
-  //       if (err) return res.status(404).send({message: 'User not found.'});
-  //       //todo Need to handle different devices
-  //       // if (user.refreshToken === refreshToken) {
-  //       const {accessToken, refreshToken, expiresIn} = createTokens(user);
-  //       user.refreshToken = refreshToken;
-  //       user.save();
-  //       res.status(200).send({accessToken, refreshToken, expiresIn});
-  //       next();
-  //       // } else res.status(403).send({ auth: false, error: 'Failed to authenticate refresh token.' });
-  //     })
-  //   });
-  // },
+  refreshToken: (req, res, next) => {
+    const token = getToken(req.headers.authorization)
+
+    if (!token) {
+      throw new ApiException(403, 'Unauthorized')
+    }
+
+    //TODO refreshToken should be httpOnly
+    const refreshToken = req.body.refreshToken;
+
+    jwt.verify(refreshToken, process.env.SECRET_REFRESH_FOR_JWT, async (err, payload) => {
+      if (err && err.name === 'TokenExpiredError') {
+        throw new ApiException(401, 'Expired refresh token')
+      }
+
+      if (err) {
+        throw new ApiException(500, 'Failed to authenticate refresh token')
+      }
+
+      const userId = payload.userId;
+
+      const user = await AuthService.findById(userId)
+
+      //TODO Need to handle different devices
+      // if (user.refreshToken === refreshToken) {
+      const {accessToken, refreshToken, expiresIn} = createTokens(user);
+      user.refreshToken = refreshToken;
+      user.save();
+      res.status(200).send({accessToken, refreshToken, expiresIn});
+      next();
+      // } else res.status(403).send({ auth: false, error: 'Failed to authenticate refresh token.' });
+    });
+  },
 
   logout: (req, res) => {
     res.json({logout: true});
