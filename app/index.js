@@ -7,7 +7,7 @@ import {mysql} from './config/connections'
 import { errorsHandler } from './middlewares/errors'
 import './models'
 
-const prefix = process.env.PREFIX || '/api'
+const prefix = '/api'
 const app = express()
 
 app.use(logger('dev'));
@@ -24,6 +24,7 @@ app.use((req, res, next) => {
 })
 
 mysql.sync().then(() => {console.debug('Database sync executed correctly')})
+
 
 app.use(prefix, api)
 app.use(errorsHandler)
