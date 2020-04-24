@@ -1,6 +1,7 @@
 import {Sequelize} from 'sequelize'
-import {mysql} from '../../config/connections'
 import bcrypt from 'bcrypt'
+import {mysql} from '../../config/connections'
+import CompanyModel from "../companies/company.model";
 
 const UserSchema = (connection, type) => {
   return connection.define('users', {
@@ -47,7 +48,7 @@ const UserSchema = (connection, type) => {
         type: type.STRING,
         allowNull: true,
         defaultValue: ''
-      },
+      }
     }, {
       hooks: {
         beforeCreate: (user) => {
@@ -60,5 +61,7 @@ const UserSchema = (connection, type) => {
   )
 }
 
-export default UserSchema(mysql, Sequelize)
+const UserModel = UserSchema(mysql, Sequelize)
+
+export default UserModel
 

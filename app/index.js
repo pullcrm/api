@@ -5,6 +5,7 @@ import 'dotenv/config'
 import logger from 'morgan'
 import {mysql} from './config/connections'
 import { errorsHandler } from './middlewares/errors'
+import './models'
 
 const prefix = process.env.PREFIX || '/api'
 const app = express()

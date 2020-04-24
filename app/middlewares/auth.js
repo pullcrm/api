@@ -25,6 +25,8 @@ const auth = (params = {is: []}) => (req, res, next) => {
         throw new ApiException(500, 'Failed to authenticate token.')
       }
 
+      console.log(user.company)
+
       req.role = user.role;
       req.userId = user.id;
       req.companyId = user.company;
@@ -36,4 +38,4 @@ const auth = (params = {is: []}) => (req, res, next) => {
   }
 };
 
-module.exports = auth;
+export default auth;
