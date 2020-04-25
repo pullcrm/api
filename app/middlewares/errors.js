@@ -15,6 +15,7 @@ export const errorsHandler = (err, res) => {
   // }
   console.log(err)
   res.status(status).send({
-    message
+    message,
+    status
   })
 }

@@ -1,4 +1,4 @@
-import AppointmentService from './appointment.service'
+import CompanyService from './company.service'
 import validate from "../../utils/validate";
 import joi from "joi";
 
@@ -17,8 +17,8 @@ export default {
         companyId: joi.string().required()
       }));
 
-      const appointments = await AppointmentService.findAll(formattedData)
-      res.send(appointments)
+      const companies = await CompanyService.findAll(formattedData)
+      res.send(companies)
     } catch(error) {
       next(error)
     }
@@ -27,14 +27,17 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: req.body.password
+        name: req.body.name,
+        companyId: req.companyId
       }
 
-      const user = await AppointmentService.create(formattedData)
-      res.send(user)
+      validate(formattedData, joi.object().keys({
+        name: joi.string().required(),
+        companyId: joi.string().required()
+      }));
+
+      const company = await CompanyService.create(formattedData)
+      res.send(company)
     } catch(error) {
       next(error)
     }
