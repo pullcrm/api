@@ -1,9 +1,6 @@
-import AppointmentService from './appointments.service'
+import AppointmentService from './appointment.service'
 import validate from "../../utils/validate";
 import joi from "joi";
-
-import UserModel from "../users/user.model";
-import CompanyModel from "../companies/company.model";
 
 export default {
   index: async (req, res, next) => {
@@ -14,12 +11,11 @@ export default {
         companyId: req.companyId
       }
 
-    console.log(UserModel, CompanyModel)
-      // validate(formattedData, joi.object().keys({
-      //   offset: joi.number(),
-      //   limit: joi.number(),
-      //   companyId: joi.string().max(256).required()
-      // }));
+      validate(formattedData, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+        companyId: joi.string().max(256).required()
+      }));
 
       const appointments = await AppointmentService.findAll(formattedData)
       res.send(appointments)

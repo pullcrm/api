@@ -1,6 +1,5 @@
 import {Sequelize} from 'sequelize'
 import {mysql} from '../../config/connections'
-import ProcedureModel from '../procedures/procedure.model'
 
 // companyId
 // serviceIds: [1, 2]
@@ -43,7 +42,5 @@ const AppointmentSchema = (connection, type) => {
 }
 
 const AppointmentModel = AppointmentSchema(mysql, Sequelize)
-
-// AppointmentModel.hasMany(ProcedureModel)
 
 export default AppointmentModel

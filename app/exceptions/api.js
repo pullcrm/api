@@ -1,6 +1,6 @@
 export default class ApiException extends Error {
   constructor (status, message) {
-    super(message)
+    super()
     this.message = message
     this.status = status
   }

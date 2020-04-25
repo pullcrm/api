@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import AppointmentController from './appointments.controller'
+import AppointmentController from './appointment.controller'
 import auth from '../../middlewares/auth'
 
 const appointmentRouter = Router()

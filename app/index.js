@@ -15,7 +15,13 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
+  const allowedOrigins = ['http://localhost:8080']
+  const origin = req.headers.origin;
+
+  if(allowedOrigins.indexOf(origin) > -1) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-Forwarded-For, Content-Type, Accept, Autorization, Country, user-id')
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
   res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
@@ -23,10 +29,12 @@ app.use((req, res, next) => {
   next()
 })
 
-mysql.sync().then(() => {console.debug('Database sync executed correctly')})
-
+mysql.sync({force: true}).then(() => {console.debug('Database sync executed correctly')})
 
 app.use(prefix, api)
-app.use(errorsHandler)
+
+app.use((err, req, res, next) => {
+  errorsHandler(err, res);
+});
 
 export default app

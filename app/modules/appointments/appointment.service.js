@@ -1,4 +1,4 @@
-import AppointmentModel from './appointments.model'
+import AppointmentModel from './appointment.model'
 
 export default {
   findAll: async (params) => {

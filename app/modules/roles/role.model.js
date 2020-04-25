@@ -1,20 +1,20 @@
 import {mysql} from "../../config/connections";
 import {Sequelize} from "sequelize";
 
-const CompanySchema = (connection, type) => {
-  return connection.define('companies', {
+const RoleSchema = (connection, type) => {
+  return connection.define('roles', {
     id: {
       type: type.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
     name: {
-      type: type.STRING,
+      type: type.ENUM('ADMIN', 'MANAGER', 'EMPLOYER', 'CLIENT'),
       allowNull: false
     }
   })
 }
 
-const CompanyModel = CompanySchema(mysql, Sequelize)
+const RoleModel = RoleSchema(mysql, Sequelize)
 
-export default CompanyModel
+export default RoleModel
