@@ -8,13 +8,11 @@ export default {
       const formattedData = {
         offset: req.query.offset,
         limit: req.query.limit,
-        companies: req.companyId
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
-        companyId: joi.number().required()
       }));
 
       const companies = await CompanyService.findAll(formattedData)

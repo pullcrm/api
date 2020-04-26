@@ -8,13 +8,11 @@ export default {
       const formattedData = {
         offset: req.query.offset,
         limit: req.query.limit,
-        companyId: req.companyId
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
-        companyId: joi.string().required()
       }));
 
       const appointments = await AppointmentService.findAll(formattedData)
