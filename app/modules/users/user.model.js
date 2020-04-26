@@ -1,7 +1,6 @@
 import {Sequelize} from 'sequelize'
 import bcrypt from 'bcrypt'
 import {mysql} from '../../config/connections'
-import CompanyModel from "../companies/company.model";
 
 const UserSchema = (connection, type) => {
   return connection.define('users', {
@@ -50,6 +49,14 @@ const UserSchema = (connection, type) => {
         defaultValue: ''
       }
     }, {
+      defaultScope: {
+        attributes: { exclude: ['password', 'refreshToken'] }
+      },
+      scopes: {
+        withPasswordAndRefreshToken: {
+          attributes: {}
+        },
+      },
       hooks: {
         beforeCreate: (user) => {
           {

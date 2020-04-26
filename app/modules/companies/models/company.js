@@ -1,4 +1,4 @@
-import {mysql} from "../../config/connections";
+import {mysql} from "../../../config/connections";
 import {Sequelize} from "sequelize";
 
 const CompanySchema = (connection, type) => {
@@ -16,5 +16,4 @@ const CompanySchema = (connection, type) => {
 }
 
 const CompanyModel = CompanySchema(mysql, Sequelize)
-
 export default CompanyModel

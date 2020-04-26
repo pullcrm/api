@@ -4,7 +4,7 @@ import 'dotenv/config'
 import joi from 'joi'
 import AuthService from './auth.service'
 import ApiException from "../../exceptions/api"
-import createTokens from '../../utils/createTokens'
+import {createAccessToken, createRefreshToken} from '../../utils/createTokens'
 import validate from "../../utils/validate"
 
 export default {
@@ -20,7 +20,7 @@ export default {
         password: joi.string().max(256).required()
       }));
 
-      const user = await AuthService.findByEmail(formattedData.email)
+      const user = await AuthService.findBy({email: formattedData.email})
 
       if(!user) {
         throw new ApiException(401, 'Invalid password or username')
@@ -32,7 +32,8 @@ export default {
         throw new ApiException(401, 'Invalid password or username')
       }
 
-      const {accessToken, refreshToken, expiresIn} = createTokens(user);
+      const {accessToken, expiresIn} = createAccessToken(user.get({ plain: true }));
+      const refreshToken = createRefreshToken(user.get({ plain: true }))
 
       user.refreshToken = refreshToken;
 
@@ -57,17 +58,16 @@ export default {
 
       const payload = jwt.verify(formattedData.refreshToken, process.env.SECRET_REFRESH_FOR_JWT)
       const userId = payload.userId;
-      const user = await AuthService.findById(userId)
-
-      //TODO Need to handle different devices
+      const user = await AuthService.findBy({id: userId})
+      console.log(user.refreshToken)
+      //TODO may need to handle different devices in future
       if (user.refreshToken !== formattedData.refreshToken) {
         throw new ApiException(403, 'Failed to authenticate refresh token')
       }
 
-      const {accessToken, refreshToken, expiresIn} = createTokens(user);
-      user.refreshToken = refreshToken;
-      await user.save();
-      res.status(200).send({accessToken, refreshToken, expiresIn});
+      const {accessToken, expiresIn} = createAccessToken(user.get({ plain: true }));
+
+      res.status(200).send({accessToken, expiresIn});
 
     } catch (error) {
       next(error)

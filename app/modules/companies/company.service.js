@@ -1,11 +1,11 @@
-import CompanyModel from './company.model'
+import Company from './models/company'
 
 export default {
   findAll: async (params) => {
-    return CompanyModel.findAll()
+    return Company.findAll()
   },
 
   create: async (data) => {
-    return CompanyModel.create(data)
+    return Company.create(data)
   }
 }

@@ -3,7 +3,6 @@ import express from 'express'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
-import {mysql} from './config/connections'
 import { errorsHandler } from './middlewares/errors'
 import './models'
 
@@ -28,8 +27,6 @@ app.use((req, res, next) => {
 
   next()
 })
-
-mysql.sync().then(() => {console.debug('Database sync executed correctly')})
 
 app.use(prefix, api)
 

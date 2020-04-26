@@ -10,13 +10,19 @@ const auth = (params = {is: []}) => (req, res, next) => {
       return next();
     }
 
-    const token = getToken(req.headers.authorization)
+    const authorization = req.headers.authorization
 
-    if (!token) {
-      throw new ApiException(403, 'Unauthorized')
+    if (!authorization) {
+      throw new ApiException(403, 'Authorization header isn\'t provided')
     }
 
-    jwt.verify(token, process.env.SECRET_FOR_JWT, function(err, user) {
+    const token = getToken(authorization)
+
+    if (!token) {
+      throw new ApiException(403, 'Bad access token')
+    }
+
+    jwt.verify(token, process.env.SECRET_FOR_JWT, (err, payload) => {
       if (err && err.name === 'TokenExpiredError') {
         throw new ApiException(401, 'Expired token.')
       }
@@ -25,11 +31,8 @@ const auth = (params = {is: []}) => (req, res, next) => {
         throw new ApiException(500, 'Failed to authenticate token.')
       }
 
-      console.log(user.company)
-
-      req.role = user.role;
-      req.userId = user.id;
-      req.companyId = user.company;
+      req.userId = payload.userId;
+      req.companies = payload.companies;
     });
 
     next();
