@@ -118,10 +118,16 @@
 					"name": "Create",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Baerer {{token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"New Company\"\n}",
+							"raw": "{\n\t\"company\": {\n\t\t\"name\": \"New Company\",\n\t\t\"city\": \"Chernivtsi\",\n\t\t\"type\": \"Salon\"\n\t},\n\t\n\t\"employers\": [\n\t\t{\n\t\t\t\"email\": \"uramen21@gmail.com\"\n\t\t},\n\t\t\n\t\t{\n\t\t\t\"email\": \"uramen22@gmail.com\"\n\t\t}\n\t],\n\n\t\"procedures\": [\n\t\t{\n\t\t\t\"name\": \"Пілінг\",\n\t\t\t\"price\": 400,\n\t\t\t\"duration\": 2700000\n\t\t}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
