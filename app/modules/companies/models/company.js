@@ -11,7 +11,15 @@ const CompanySchema = (connection, type) => {
     name: {
       type: type.STRING,
       allowNull: false
-    }
+    },
+    logo: {
+      type: type.STRING,
+      allowNull: true
+    },
+    type: {
+      type: type.STRING,
+      allowNull: false
+    },
   })
 }
 

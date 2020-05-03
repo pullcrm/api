@@ -8,26 +8,18 @@ const ProcedureSchema = (connection, type) => {
       primaryKey: true,
       autoIncrement: true
     },
-    date: {
-      type: type.DATEONLY,
+    name: {
+      type: type.STRING,
       allowNull: false
     },
-    timeStart: {
-      type: type.TIME,
-      allowNull: false
-    },
-    timeEnd: {
-      type: type.TIME,
-      allowNull: false
-    },
-    total: {
+    price: {
       type: type.INTEGER,
       allowNull: false,
     },
-    status: {
-      type: type.ENUM('COMPLETED', 'IN_PROGRESS'),
-      allowNull: false,
-    }
+    duration: {
+      type: type.TIME,
+      allowNull: false
+    },
   })
 }
 

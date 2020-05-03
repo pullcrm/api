@@ -1,6 +1,6 @@
-import CompanyService from './company.service'
-import validate from "../../utils/validate";
 import joi from "joi";
+import validate from "../../utils/validate";
+import CompanyService from './company.service'
 
 export default {
   index: async (req, res, next) => {
@@ -25,11 +25,35 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        name: req.body.name,
+        company: {
+          ...req.body.company,
+          userId: req.userId
+        },
+        employers: req.body.employers || [],
+        procedures: req.body.procedures || [],
       }
 
       validate(formattedData, joi.object().keys({
-        name: joi.string().required(),
+        company: joi.object().keys({
+          name: joi.string().required(),
+          city: joi.string().required(),
+          type: joi.string().required(),
+          userId: joi.number().required()
+        }).required(),
+
+        employers: joi.array().items(
+          joi.object().keys({
+            email: joi.string().required()
+          }).optional()
+        ).optional(),
+
+        procedures: joi.array().items(
+          joi.object().keys({
+            name: joi.string().required(),
+            price: joi.number().required(),
+            duration: joi.date().timestamp()
+          }).optional()
+        ).optional(),
       }));
 
       const company = await CompanyService.create(formattedData)
@@ -37,5 +61,7 @@ export default {
     } catch(error) {
       next(error)
     }
-  }
+  },
 }
+
+

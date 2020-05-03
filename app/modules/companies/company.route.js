@@ -5,6 +5,6 @@ import auth from '../../middlewares/auth'
 const userRouter = Router()
 
 userRouter.get('/', auth(), CompanyController.index)
-userRouter.post('/', CompanyController.create)
+userRouter.post('/', auth(), CompanyController.create)
 
 export default userRouter

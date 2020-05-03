@@ -11,7 +11,7 @@ const UserSchema = (connection, type) => {
       },
       firstName: {
         type: type.STRING(50),
-        allowNull: false,
+        allowNull: true,
 
         validate: {
           len: {
@@ -22,7 +22,7 @@ const UserSchema = (connection, type) => {
       },
       lastName: {
         type: type.STRING(100),
-        allowNull: false,
+        allowNull: true,
 
         validate: {
           len: {
@@ -38,6 +38,7 @@ const UserSchema = (connection, type) => {
       },
       password: {
         type: type.STRING,
+        allowNull: true,
       },
       avatar: {
         type: type.STRING,
@@ -46,7 +47,6 @@ const UserSchema = (connection, type) => {
       refreshToken: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
       }
     }, {
       defaultScope: {
@@ -60,7 +60,9 @@ const UserSchema = (connection, type) => {
       hooks: {
         beforeCreate: (user) => {
           {
-            user.password = bcrypt.hashSync(user.password, 10);
+            if(user.password) {
+              user.password = bcrypt.hashSync(user.password, 10);
+            }
           }
         }
       }
