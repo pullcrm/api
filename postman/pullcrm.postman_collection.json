@@ -127,7 +127,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"company\": {\n\t\t\"name\": \"New Company\",\n\t\t\"city\": \"Chernivtsi\",\n\t\t\"type\": \"Salon\"\n\t},\n\t\n\t\"employers\": [\n\t\t{\n\t\t\t\"email\": \"uramen21@gmail.com\"\n\t\t},\n\t\t\n\t\t{\n\t\t\t\"email\": \"uramen22@gmail.com\"\n\t\t}\n\t],\n\n\t\"procedures\": [\n\t\t{\n\t\t\t\"name\": \"Пілінг\",\n\t\t\t\"price\": 400,\n\t\t\t\"duration\": 2700000\n\t\t}\n\t]\n}",
+							"raw": "{\n\t\"company\": {\n\t\t\"name\": \"New Company\",\n\t\t\"cityId\": 1,\n\t\t\"categoryId\": 1\n\t},\n\t\n\t\"employers\": [\n\t\t{\n\t\t\t\"email\": \"uramen21@gmail.com\"\n\t\t},\n\t\t\n\t\t{\n\t\t\t\"email\": \"uramen22@gmail.com\"\n\t\t}\n\t],\n\n\t\"procedures\": [\n\t\t{\n\t\t\t\"name\": \"Пілінг\",\n\t\t\t\"price\": 400,\n\t\t\t\"duration\": 2700000\n\t\t}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -313,7 +313,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"MANAGER1\"\n}",
+							"raw": "{\n\t\"name\": \"INVITED\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -328,6 +328,132 @@
 							"path": [
 								"api",
 								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Cities",
+			"item": [
+				{
+					"name": "Index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/cities",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Київ\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/cities",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"cities"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/categories",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"SPA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/categories",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"categories"
 							]
 						}
 					},
