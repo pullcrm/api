@@ -4,7 +4,7 @@ import {Sequelize} from "sequelize";
 const CompanySchema = (connection, type) => {
   return connection.define('companies', {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },
@@ -18,7 +18,7 @@ const CompanySchema = (connection, type) => {
     },
     type: {
       type: type.STRING,
-      allowNull: false
+      allowNull: true
     },
   })
 }

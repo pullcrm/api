@@ -4,7 +4,7 @@ import {Sequelize} from "sequelize";
 const ApproachSchema = (connection, type) => {
   return connection.define('approaches', {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     }

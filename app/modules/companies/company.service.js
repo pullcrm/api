@@ -1,6 +1,5 @@
 import {mysql} from '../../config/connections'
 import CompanyModel from './models/company'
-import AddressModel from "./models/address";
 import ProcedureModel from "../procedures/procedure.model";
 import UserModel from "../users/user.model";
 import ApproachModel from "./models/approach";
@@ -8,7 +7,7 @@ import RoleModel from "../roles/role.model";
 
 export default {
   findAll: async (params) => {
-    return CompanyModel.findAll()
+    return CompanyModel.findAll({where: {userId: params.userId}})
   },
 
   create: async ({company, procedures, employers}) => {
@@ -16,17 +15,10 @@ export default {
       const companyInstance = await CompanyModel.create(
         {
           ...company,
-          address: {country: 'Україна', city: company.city},
           procedures,
         },
         {
-          include: [
-            {
-              model: AddressModel
-            }, {
-              model: ProcedureModel
-            }
-          ], transaction
+          include: [{model: ProcedureModel}], transaction
         }
       )
 

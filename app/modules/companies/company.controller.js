@@ -6,13 +6,11 @@ export default {
   index: async (req, res, next) => {
     try {
       const formattedData = {
-        offset: req.query.offset,
-        limit: req.query.limit,
+        userId: req.userId
       }
 
       validate(formattedData, joi.object().keys({
-        offset: joi.number(),
-        limit: joi.number(),
+        userId: joi.number()
       }));
 
       const companies = await CompanyService.findAll(formattedData)
@@ -36,8 +34,8 @@ export default {
       validate(formattedData, joi.object().keys({
         company: joi.object().keys({
           name: joi.string().required(),
-          city: joi.string().required(),
-          type: joi.string().required(),
+          cityId: joi.number().required(),
+          categoryId: joi.number().required(),
           userId: joi.number().required()
         }).required(),
 

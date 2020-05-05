@@ -7,7 +7,7 @@ export const errorsHandler = (err, res) => {
   let status = err.status || 500
 
   if(err.name === 'SequelizeUniqueConstraintError') {
-    message = Array.isArray(err.errors) && err.errors.map(E => E.message).join(';/n')
+    message = Array.isArray(err.errors) && err.errors.map(E => E.message).join(';\n')
     status = 400
   }
   // if (!(err instanceof ApiException)) {

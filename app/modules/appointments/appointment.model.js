@@ -14,7 +14,7 @@ import {mysql} from '../../config/connections'
 const AppointmentSchema = (connection, type) => {
   return connection.define('appointments', {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },

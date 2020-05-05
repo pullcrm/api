@@ -5,7 +5,7 @@ import {mysql} from '../../config/connections'
 const UserSchema = (connection, type) => {
   return connection.define('users', {
       id: {
-        type: type.INTEGER,
+        type: type.BIGINT,
         primaryKey: true,
         autoIncrement: true
       },

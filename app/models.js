@@ -5,7 +5,8 @@ import ApproachModel from "./modules/companies/models/approach";
 import RoleModel from './modules/roles/role.model'
 import AppointmentModel from "./modules/appointments/appointment.model";
 import ProcedureModel from "./modules/procedures/procedure.model";
-import AddressModel from "./modules/companies/models/address";
+import CityModel from "./modules/cities/city.model";
+import CategoryModel from "./modules/categories/category.model";
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'employers',
@@ -26,7 +27,8 @@ ApproachModel.belongsTo(UserModel)
 ApproachModel.belongsTo(CompanyModel)
 UserModel.hasMany(ApproachModel)
 CompanyModel.hasMany(ApproachModel)
-CompanyModel.hasOne(AddressModel)
+CompanyModel.belongsTo(CityModel)
+CompanyModel.belongsTo(CategoryModel)
 
 RoleModel.hasMany(ApproachModel)
 ApproachModel.belongsTo(RoleModel)
@@ -47,4 +49,22 @@ AppointmentModel.belongsTo(CompanyModel)
 AppointmentModel.belongsTo(UserModel, {as: 'client'})
 AppointmentModel.belongsTo(UserModel, {as: 'employer'})
 
-mysql.sync({}).then(() => {console.debug('Database sync executed correctly')})
+mysql.sync({force: true}).then(async () => {
+  console.debug('Database sync executed correctly')
+
+  const rolesCount = await RoleModel.count()
+  const categoriesCount = await CategoryModel.count()
+  const citiesCount = await CityModel.count()
+
+  if(rolesCount === 0) {
+    await RoleModel.bulkCreate([{name: 'ADMIN'}, {name: 'INVITED'}])
+  }
+
+  if(categoriesCount === 0) {
+    await CategoryModel.bulkCreate([{name: 'Перукарня'}, {name: 'Пральня'}])
+  }
+
+  if(citiesCount === 0) {
+    await CityModel.bulkCreate([{name: 'Чернівці'}, {name: 'Київ'}])
+  }
+})

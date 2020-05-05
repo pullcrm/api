@@ -4,7 +4,7 @@ import {Sequelize} from "sequelize";
 const ProcedureSchema = (connection, type) => {
   return connection.define('procedures', {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },
