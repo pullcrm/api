@@ -2,9 +2,9 @@ import {Router} from 'express'
 import CityController from './city.controller'
 import auth from '../../middlewares/auth'
 
-const cityRouter = Router()
+const router = Router()
 
-cityRouter.get('/', auth(), CityController.index) // ALL
-cityRouter.post('/', auth(), CityController.create) // SUPER ADMIN
+router.get('/', auth(), CityController.index) // ALL
+router.post('/', auth(), CityController.create) // SUPER ADMIN
 
-export default cityRouter
+export default router

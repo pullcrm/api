@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import joi from 'joi'
 import AuthService from './auth.service'
+import ApproachService from '../approaches/approach.service'
+import RoleService from '../roles/role.service'
 import ApiException from "../../exceptions/api"
 import {createAccessToken, createRefreshToken} from '../../utils/createTokens'
 import validate from "../../utils/validate"
@@ -69,7 +71,14 @@ export default {
         throw new ApiException(403, 'Failed to authenticate refresh token')
       }
 
-      //TODO add condition about roles/companies
+      const role = await RoleService.findBy({name: formattedData.role})
+
+      const hasApproach = await ApproachService.hasRow({companyId: formattedData.companyId, roleId: role.id, userId})
+
+      if(!hasApproach) {
+        throw new ApiException(403, 'You don\'t have permissions for that operation' )
+      }
+
       const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, formattedData.role)
 
       res.status(200).send({accessToken, expiresIn})

@@ -2,7 +2,7 @@ import {mysql} from '../../config/connections'
 import CompanyModel from './models/company'
 import ProcedureModel from "../procedures/procedure.model"
 import UserModel from "../users/user.model"
-import ApproachModel from "./models/approach"
+import ApproachModel from "../approaches/approach.model"
 import RoleModel from "../roles/role.model"
 
 export default {

@@ -2,9 +2,9 @@ import {Router} from 'express'
 import CategoryController from './category.controller'
 import auth from '../../middlewares/auth'
 
-const categoryRouter = Router()
+const router = Router()
 
-categoryRouter.get('/', auth(), CategoryController.index) // ALL
-categoryRouter.post('/', auth(), CategoryController.create) // SUPER ADMIN
+router.get('/', auth(), CategoryController.index) // ALL
+router.post('/', auth(), CategoryController.create) // SUPER ADMIN
 
-export default categoryRouter
+export default router

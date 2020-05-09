@@ -4,7 +4,7 @@ import 'dotenv/config'
 import ApiException from '../exceptions/api'
 import getToken from '../utils/getToken'
 
-const auth = (/*params = {is: []}*/) => (req, res, next) => {
+const auth = () => (req, res, next) => {
   try {
     if (req.method === 'OPTIONS') {
       return next()
@@ -34,6 +34,7 @@ const auth = (/*params = {is: []}*/) => (req, res, next) => {
       req.userId = payload.userId
       req.companyId = payload.companyId
       req.role = payload.role
+
     })
 
     next()

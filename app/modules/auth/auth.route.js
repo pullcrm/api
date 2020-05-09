@@ -1,10 +1,10 @@
 import {Router} from 'express'
 import AuthController from './auth.controller'
 
-const authRouter = Router()
+const router = Router()
 
-authRouter.post('/login', AuthController.login)
-authRouter.post('/logout', AuthController.logout)
-authRouter.put('/token', AuthController.refreshToken)
+router.post('/login', AuthController.login)
+router.post('/logout', AuthController.logout)
+router.put('/token', AuthController.refreshToken)
 
-export default authRouter
+export default router

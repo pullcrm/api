@@ -2,9 +2,9 @@ import {Router} from 'express'
 import AppointmentController from './appointment.controller'
 import auth from '../../middlewares/auth'
 
-const appointmentRouter = Router()
+const router = Router()
 
-appointmentRouter.get('/', AppointmentController.index)
-appointmentRouter.post('/', auth(), AppointmentController.create)
+router.get('/', AppointmentController.index)
+router.post('/', auth(), AppointmentController.create)
 
-export default appointmentRouter
+export default router

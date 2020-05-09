@@ -6,6 +6,7 @@ import roleRouter from './modules/roles/role.route'
 import companyRouter from './modules/companies/company.route'
 import cityRouter from './modules/cities/city.route'
 import categoryRouter from './modules/categories/category.route'
+import approachRouter from './modules/approaches/approach.route'
 
 const api = Router()
 
@@ -16,5 +17,6 @@ api.use('/appointments', appointmentRouter)
 api.use('/companies', companyRouter)
 api.use('/cities', cityRouter)
 api.use('/categories', categoryRouter)
+api.use('/approaches', approachRouter)
 
 export default api

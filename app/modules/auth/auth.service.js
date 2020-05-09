@@ -1,6 +1,6 @@
 import UserModel from '../users/user.model'
 import RoleModel from "../roles/role.model"
-import ApproachModel from "../companies/models/approach"
+import ApproachModel from "../approaches/approach.model"
 
 export default {
   findBy: params => {

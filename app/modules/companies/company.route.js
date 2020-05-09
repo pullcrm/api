@@ -2,9 +2,9 @@ import {Router} from 'express'
 import CompanyController from './company.controller'
 import auth from '../../middlewares/auth'
 
-const userRouter = Router()
+const router = Router()
 
-userRouter.get('/', auth(), CompanyController.index)
-userRouter.post('/', auth(), CompanyController.create)
+router.get('/', auth(), CompanyController.index)
+router.post('/', auth(), CompanyController.create)
 
-export default userRouter
+export default router
