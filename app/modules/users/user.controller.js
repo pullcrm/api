@@ -2,6 +2,8 @@ import UserService from './user.service'
 import validate from "../../utils/validate";
 import joi from "joi";
 
+import ApiException from "../../exceptions/api"
+
 export default {
   index: async (req, res, next) => {
     try {
@@ -39,6 +41,11 @@ export default {
       }));
 
       const user = await UserService.findOne({id: formattedData.userId})
+
+      if (!user) {
+        throw new ApiException(401, 'User not found')
+      }
+
       res.send(user)
     } catch(error) {
       next(error)
