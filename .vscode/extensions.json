@@ -1,0 +1,10 @@
+{
+  // @see https://code.visualstudio.com/docs/editor/extension-gallery#_workspace-recommended-extensions
+  "recommendations": [
+    // Code format:
+    "EditorConfig.editorconfig",
+
+    // Linting:
+    "dbaeumer.vscode-eslint"
+  ]
+}
