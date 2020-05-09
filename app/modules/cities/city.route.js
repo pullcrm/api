@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import {Router} from 'express'
 import CityController from './city.controller'
 import auth from '../../middlewares/auth'
 

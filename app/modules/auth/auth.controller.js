@@ -18,7 +18,7 @@ export default {
       validate(formattedData, joi.object().keys({
         email: joi.string().email().max(256).required(),
         password: joi.string().max(256).required()
-      }));
+      }))
 
       const user = await AuthService.findBy({email: formattedData.email})
 
@@ -26,16 +26,16 @@ export default {
         throw new ApiException(401, 'Invalid password or username')
       }
 
-      const passwordIsValid = bCrypt.compareSync(formattedData.password, user.password);
+      const passwordIsValid = bCrypt.compareSync(formattedData.password, user.password)
 
       if (!passwordIsValid) {
         throw new ApiException(401, 'Invalid password or username')
       }
 
-      const {accessToken, expiresIn} = createAccessToken(user.id);
-      const refreshToken = createRefreshToken(user.get({ plain: true }))
+      const {accessToken, expiresIn} = createAccessToken(user.id)
+      const refreshToken = createRefreshToken(user.get({plain: true}))
 
-      user.refreshToken = refreshToken;
+      user.refreshToken = refreshToken
 
       await user.save()
 
@@ -58,10 +58,10 @@ export default {
         refreshToken: joi.string().required(),
         companyId: joi.number().optional(),
         role: joi.string().optional(),
-      }));
+      }))
 
       const payload = jwt.verify(formattedData.refreshToken, process.env.SECRET_REFRESH_FOR_JWT)
-      const userId = payload.userId;
+      const userId = payload.userId
       const user = await AuthService.findBy({id: userId})
 
       //TODO may need to handle different devices in future
@@ -70,9 +70,9 @@ export default {
       }
 
       //TODO add condition about roles/companies
-      const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, formattedData.role);
+      const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, formattedData.role)
 
-      res.status(200).send({accessToken, expiresIn});
+      res.status(200).send({accessToken, expiresIn})
 
     } catch (error) {
       next(error)
@@ -81,6 +81,6 @@ export default {
 
   logout: (req, res) => {
     //TODO need deactivate tokens that not expired
-    res.json({logout: true});
+    res.json({logout: true})
   }
 }

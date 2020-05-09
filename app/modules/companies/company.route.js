@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import {Router} from 'express'
 import CompanyController from './company.controller'
 import auth from '../../middlewares/auth'
 

@@ -1,5 +1,5 @@
-import {mysql} from "../../../config/connections";
-import {Sequelize} from "sequelize";
+import {mysql} from "../../../config/connections"
+import {Sequelize} from "sequelize"
 
 const ApproachSchema = (connection, type) => {
   return connection.define('approaches', {

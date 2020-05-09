@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import {Router} from 'express'
 import AppointmentController from './appointment.controller'
 import auth from '../../middlewares/auth'
 

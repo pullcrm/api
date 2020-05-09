@@ -1,11 +1,11 @@
 import ProcedureModel from './procedure.model'
 
 export default {
-  findAll: async (params) => {
+  findAll: async () => {
     return ProcedureModel.findAll()
   },
 
-  createMany: async (data) => {
+  createMany: async data => {
     return ProcedureModel.bulkCreate(data)
   }
 }

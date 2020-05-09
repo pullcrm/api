@@ -1,11 +1,11 @@
 import RoleModel from './role.model'
 
 export default {
-  findAll: async (params) => {
+  findAll: async () => {
     return RoleModel.findAll()
   },
 
-  create: async (data) => {
+  create: async data => {
     return RoleModel.create(data)
   }
 }

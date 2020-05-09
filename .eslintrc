@@ -1,0 +1,24 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "rules": {
+    "no-duplicate-imports": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "arrow-parens": ["error", "as-needed"],
+    "semi": ["error", "never"],
+    "no-multiple-empty-lines": ["error", {"max":  1, "maxBOF":  1}],
+    "object-curly-spacing": ["error", "never"],
+    "array-bracket-spacing": ["error", "never"],
+    "indent": ["error", 2]
+  },
+  "globals": {
+    "process": true
+  },
+  "parser": "babel-eslint"
+}

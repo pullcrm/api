@@ -1,9 +1,9 @@
 import UserModel from '../users/user.model'
-import RoleModel from "../roles/role.model";
-import ApproachModel from "../companies/models/approach";
+import RoleModel from "../roles/role.model"
+import ApproachModel from "../companies/models/approach"
 
 export default {
-  findBy: (params) => {
+  findBy: params => {
     return UserModel.scope('withPasswordAndRefreshToken')
       .findOne({
         where: params,

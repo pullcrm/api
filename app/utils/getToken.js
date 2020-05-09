@@ -1,3 +1,3 @@
 export default authorization => {
-  return authorization.split(' ')[1];
+  return authorization.split(' ')[1]
 }

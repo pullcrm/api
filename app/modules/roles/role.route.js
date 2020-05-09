@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import {Router} from 'express'
 import RoleController from './role.controller'
 import auth from '../../middlewares/auth'
 

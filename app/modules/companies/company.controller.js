@@ -1,5 +1,5 @@
-import joi from "joi";
-import validate from "../../utils/validate";
+import joi from "joi"
+import validate from "../../utils/validate"
 import CompanyService from './company.service'
 
 export default {
@@ -11,7 +11,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         userId: joi.number()
-      }));
+      }))
 
       const companies = await CompanyService.findAll(formattedData)
       res.send(companies)
@@ -52,7 +52,7 @@ export default {
             duration: joi.date().timestamp()
           }).optional()
         ).optional(),
-      }));
+      }))
 
       const company = await CompanyService.create(formattedData)
       res.send(company)
@@ -61,5 +61,4 @@ export default {
     }
   },
 }
-
 

@@ -1,6 +1,6 @@
-import ApiException from '../exceptions/api'
-import { INTERNAL_SERVER_ERROR } from 'http-status'
-import { ERROR_HAPPEN } from '../constants/messages'
+// import ApiException from '../exceptions/api'
+// import {INTERNAL_SERVER_ERROR} from 'http-status'
+// import {ERROR_HAPPEN} from '../constants/messages'
 
 export const errorsHandler = (err, res) => {
   let message = err.message

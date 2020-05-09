@@ -1,13 +1,13 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 
 import ApiException from '../exceptions/api'
 import getToken from '../utils/getToken'
 
-const auth = (params = {is: []}) => (req, res, next) => {
+const auth = (/*params = {is: []}*/) => (req, res, next) => {
   try {
     if (req.method === 'OPTIONS') {
-      return next();
+      return next()
     }
 
     const authorization = req.headers.authorization
@@ -34,12 +34,12 @@ const auth = (params = {is: []}) => (req, res, next) => {
       req.userId = payload.userId
       req.companyId = payload.companyId
       req.role = payload.role
-    });
+    })
 
-    next();
+    next()
   } catch(error) {
     next(error)
   }
-};
+}
 
-export default auth;
+export default auth

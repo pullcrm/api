@@ -1,15 +1,15 @@
 import UserModel from './user.model'
-import ApiException from "../../exceptions/api";
-import {mysql} from "../../config/connections";
-import CompanyModel from "../companies/models/company";
+import ApiException from "../../exceptions/api"
+import {mysql} from "../../config/connections"
+import CompanyModel from "../companies/models/company"
 
 export default {
-  findAll: async (params) => {
+  findAll: async () => {
     return UserModel.findAll()
   },
 
-  findOne: async (where) => {
-    const user = UserModel.findOne({where})
+  findOne: async where => {
+    const user = await UserModel.findOne({where})
 
     if(!user) {
       throw new ApiException(404, 'User wasn\'t found')
@@ -18,7 +18,7 @@ export default {
     return user
   },
 
-  create: async (data) => {
+  create: async data => {
     return UserModel.create(data)
   },
 

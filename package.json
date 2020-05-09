@@ -6,7 +6,9 @@
   "author": "uramen <uramen12@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node server.js",
+    "eslint": "eslint ./",
+    "eslint:fix": "eslint ./ --fix"
   },
   "dependencies": {
     "bcrypt": "^4.0.1",
@@ -25,6 +27,8 @@
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
     "@babel/preset-env": "^7.9.5",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.3",
     "sequelize-cli": "^5.5.1"

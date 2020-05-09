@@ -1,5 +1,5 @@
-import joi from "joi";
-import ApiException from "../exceptions/api";
+import joi from "joi"
+import ApiException from "../exceptions/api"
 
 export default (data, schema) => {
   const validator = joi.validate(data, schema)

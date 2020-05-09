@@ -1,12 +1,12 @@
-import {mysql} from "./config/connections";
+import {mysql} from "./config/connections"
 import UserModel from './modules/users/user.model'
 import CompanyModel from './modules/companies/models/company'
-import ApproachModel from "./modules/companies/models/approach";
+import ApproachModel from "./modules/companies/models/approach"
 import RoleModel from './modules/roles/role.model'
-import AppointmentModel from "./modules/appointments/appointment.model";
-import ProcedureModel from "./modules/procedures/procedure.model";
-import CityModel from "./modules/cities/city.model";
-import CategoryModel from "./modules/categories/category.model";
+import AppointmentModel from "./modules/appointments/appointment.model"
+import ProcedureModel from "./modules/procedures/procedure.model"
+import CityModel from "./modules/cities/city.model"
+import CategoryModel from "./modules/categories/category.model"
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'employers',

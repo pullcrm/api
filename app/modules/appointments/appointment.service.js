@@ -1,11 +1,11 @@
 import AppointmentModel from './appointment.model'
 
 export default {
-  findAll: async (params) => {
+  findAll: async () => {
     return AppointmentModel.findAll()
   },
 
-  create: async (data) => {
+  create: async data => {
     return AppointmentModel.create(data)
   }
 }

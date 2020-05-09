@@ -1,11 +1,11 @@
 import CategoryModel from './category.model'
 
 export default {
-  findAll: async (params) => {
+  findAll: async () => {
     return CategoryModel.findAll()
   },
 
-  create: async (data) => {
+  create: async data => {
     return CategoryModel.create(data)
   }
 }
