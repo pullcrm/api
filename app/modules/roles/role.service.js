@@ -1,5 +1,5 @@
 import RoleModel from './role.model'
-import ApiException from "../../exceptions/api";
+import ApiException from "../../exceptions/api"
 
 export default {
   findAll: async () => {

@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 app.use(prefix, api)
 
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   errorsHandler(err, res)
 })
 
