@@ -32,7 +32,7 @@ export default {
         throw new ApiException(401, 'Invalid password or username')
       }
 
-      const {accessToken, expiresIn} = createAccessToken(user.get({ plain: true }));
+      const {accessToken, expiresIn} = createAccessToken(user.id);
       const refreshToken = createRefreshToken(user.get({ plain: true }))
 
       user.refreshToken = refreshToken;
@@ -49,23 +49,28 @@ export default {
     try {
       const formattedData = {
         //TODO refreshToken should be httpOnly
-        refreshToken: req.body.refreshToken
+        refreshToken: req.body.refreshToken,
+        companyId: req.body.companyId,
+        role: req.body.role
       }
 
       validate(formattedData, joi.object().keys({
         refreshToken: joi.string().required(),
+        companyId: joi.number().optional(),
+        role: joi.string().optional(),
       }));
 
       const payload = jwt.verify(formattedData.refreshToken, process.env.SECRET_REFRESH_FOR_JWT)
       const userId = payload.userId;
       const user = await AuthService.findBy({id: userId})
-      console.log(user.refreshToken)
+
       //TODO may need to handle different devices in future
       if (user.refreshToken !== formattedData.refreshToken) {
         throw new ApiException(403, 'Failed to authenticate refresh token')
       }
 
-      const {accessToken, expiresIn} = createAccessToken(user.get({ plain: true }));
+      //TODO add condition about roles/companies
+      const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, formattedData.role);
 
       res.status(200).send({accessToken, expiresIn});
 

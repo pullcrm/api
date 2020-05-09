@@ -4,19 +4,13 @@ import 'dotenv/config'
 const accessTokenExpiring = 700000;
 const refreshTokenExpiring = 1400000000;
 
-const createAccessToken = (user) => {
-  const companies = user.approaches.map(A => ({id: A.companyId, role: A.role.name}))
+const createAccessToken = (userId, companyId = 0, role = '-') => {
+  const secret = process.env.SECRET_FOR_JWT
+  console.log({userId, companyId, role})
+  const accessToken = jwt.sign({userId, companyId, role}, secret, {expiresIn: accessTokenExpiring});
+  const expiresIn = parseInt(new Date().getTime() / 1000, 10) + accessTokenExpiring
 
-  const accessToken = jwt.sign(
-    {
-      userId: user.id,
-      companies
-    },
-    process.env.SECRET_FOR_JWT,
-    { expiresIn: accessTokenExpiring }
-  );
-
-  return { accessToken, expiresIn: parseInt(new Date().getTime() / 1000, 10) + accessTokenExpiring }
+  return {accessToken, expiresIn}
 }
 
 const createRefreshToken = (user) => {

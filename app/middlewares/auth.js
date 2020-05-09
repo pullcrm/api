@@ -31,8 +31,9 @@ const auth = (params = {is: []}) => (req, res, next) => {
         throw new ApiException(500, 'Failed to authenticate token.')
       }
 
-      req.userId = payload.userId;
-      req.companies = payload.companies;
+      req.userId = payload.userId
+      req.companyId = payload.companyId
+      req.role = payload.role
     });
 
     next();

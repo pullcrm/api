@@ -49,7 +49,7 @@ AppointmentModel.belongsTo(CompanyModel)
 AppointmentModel.belongsTo(UserModel, {as: 'client'})
 AppointmentModel.belongsTo(UserModel, {as: 'employer'})
 
-mysql.sync({force: true}).then(async () => {
+mysql.sync().then(async () => {
   console.debug('Database sync executed correctly')
 
   const rolesCount = await RoleModel.count()
