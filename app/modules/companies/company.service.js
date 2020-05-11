@@ -4,6 +4,8 @@ import ProcedureModel from "../procedures/procedure.model"
 import UserModel from "../users/user.model"
 import ApproachModel from "../approaches/approach.model"
 import RoleModel from "../roles/role.model"
+import CompleteRegistrationModel from "../auth/models/completeRegistration";
+import cryptoRandomString from "crypto-random-string";
 
 export default {
   findAll: async params => {
@@ -23,6 +25,12 @@ export default {
       )
 
       const users = await UserModel.bulkCreate(employers.map(E => ({...E, companyId: companyInstance.id})), {returning: true, transaction})
+
+      await CompleteRegistrationModel.bulkCreate(users.map(U => ({
+        token: cryptoRandomString({length: 10, type: 'base64'}),
+        userId: U.id
+      })), {transaction})
+
       const roles = await RoleModel.findAll({where: {name: ['INVITED', 'ADMIN']}, raw: true})
       const adminRole = roles.find(R => R.name === 'ADMIN')
       const invitedRole = roles.find(R => R.name === 'INVITED')

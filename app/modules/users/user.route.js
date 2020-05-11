@@ -7,5 +7,6 @@ const router = Router()
 router.get('/', auth(), UserController.index)
 router.post('/', UserController.create)
 router.get('/profile', auth(), UserController.profile)
+router.put('/:id/registration', UserController.completeRegistration)
 
 export default router

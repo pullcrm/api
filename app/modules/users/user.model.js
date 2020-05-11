@@ -2,6 +2,8 @@ import {Sequelize} from 'sequelize'
 import bcrypt from 'bcrypt'
 import {mysql} from '../../config/connections'
 
+const encryptPassword = password =>  bcrypt.hashSync(password, 10)
+
 const UserSchema = (connection, type) => {
   return connection.define('users', {
     id: {
@@ -59,10 +61,14 @@ const UserSchema = (connection, type) => {
     },
     hooks: {
       beforeCreate: user => {
-        {
-          if(user.password) {
-            user.password = bcrypt.hashSync(user.password, 10)
-          }
+        if(user.password) {
+          user.password = encryptPassword(user.password)
+        }
+      },
+
+      beforeBulkUpdate: options => {
+        if(options.attributes.password) {
+          options.attributes.password = encryptPassword(options.attributes.password)
         }
       }
     }

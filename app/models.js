@@ -7,6 +7,7 @@ import AppointmentModel from "./modules/appointments/appointment.model"
 import ProcedureModel from "./modules/procedures/procedure.model"
 import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
+import CompleteRegistrationModel from "./modules/auth/models/completeRegistration";
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'employers',
@@ -22,7 +23,7 @@ CompanyModel.belongsTo(UserModel, {
 //   as: 'employers',
 //   through: {model: ApproachModel, unique: false},
 // })
-
+UserModel.hasOne(CompleteRegistrationModel, {as: 'completeRegistration', foreignKey: 'userId'})
 ApproachModel.belongsTo(UserModel)
 ApproachModel.belongsTo(CompanyModel)
 UserModel.hasMany(ApproachModel)

@@ -42,5 +42,30 @@ export default {
     } catch(error) {
       next(error)
     }
+  },
+
+  completeRegistration: async (req, res, next) => {
+    try {
+      const formattedData = {
+        token: req.body.token,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        password: req.body.password,
+      }
+
+      const userId = req.params.id
+
+      validate({...formattedData, userId}, joi.object().keys({
+        userId: joi.number().required(),
+        token: joi.string().required(),
+        firstName: joi.string().required(),
+        lastName: joi.string().required(),
+        password: joi.string().required(),
+      }))
+
+      res.send(await UserService.completeRegistration(formattedData, userId))
+    } catch(error) {
+      next(error)
+    }
   }
 }

@@ -25,13 +25,13 @@ export default {
       const user = await AuthService.findBy({email: formattedData.email})
 
       if(!user) {
-        throw new ApiException(401, 'Invalid password or username')
+        throw new ApiException(401, 'Invalid password or email')
       }
 
       const passwordIsValid = bCrypt.compareSync(formattedData.password, user.password)
 
       if (!passwordIsValid) {
-        throw new ApiException(401, 'Invalid password or username')
+        throw new ApiException(401, 'Invalid password or email')
       }
 
       const {accessToken, expiresIn} = createAccessToken(user.id)

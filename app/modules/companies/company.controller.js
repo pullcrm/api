@@ -1,6 +1,10 @@
 import joi from "joi"
+import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
+import UserModel from "../users/user.model"
+import CompleteRegistrationModel from "../auth/models/completeRegistration"
+import Mailer from '../../providers/email'
 
 export default {
   index: async (req, res, next) => {
@@ -15,7 +19,7 @@ export default {
 
       const companies = await CompanyService.findAll(formattedData)
       res.send(companies)
-    } catch(error) {
+    } catch (error) {
       next(error)
     }
   },
@@ -55,8 +59,27 @@ export default {
       }))
 
       const company = await CompanyService.create(formattedData)
+
+      const usersWithTokens = await UserModel.findAll({
+        where: {id: company.employers.map(U => U.id)}, raw: true, nest: true, include: {
+          model: CompleteRegistrationModel,
+          as: 'completeRegistration',
+          required: true
+        }
+      })
+
+      await Promise.all(usersWithTokens.map(U => {
+        Mailer.send({
+          from: 'Pullcrm<b>',
+          to: U.email,
+          subject: 'You are invited to Pullcrm',
+          text: 'url',
+          html: `<div>Click on this link to continue registration ${process.env.CLIENT}/register?token=${U.completeRegistration.token}&userId=${U.id}\`</div>`
+        })
+      }))
+
       res.send(company)
-    } catch(error) {
+    } catch (error) {
       next(error)
     }
   },
