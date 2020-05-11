@@ -83,6 +83,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Complete Registration",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"t8EF4HiZa0\",\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"password\": \"1111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/64/registration",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64",
+								"registration"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -127,7 +156,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"company\": {\n\t\t\"name\": \"New Company\",\n\t\t\"cityId\": 1,\n\t\t\"categoryId\": 1\n\t},\n\t\n\t\"employers\": [\n\t\t{\n\t\t\t\"email\": \"uramen21@gmail.com\"\n\t\t},\n\t\t\n\t\t{\n\t\t\t\"email\": \"uramen22@gmail.com\"\n\t\t}\n\t],\n\n\t\"procedures\": [\n\t\t{\n\t\t\t\"name\": \"Пілінг\",\n\t\t\t\"price\": 400,\n\t\t\t\"duration\": 2700000\n\t\t}\n\t]\n}",
+							"raw": "{\n\t\"company\": {\n\t\t\"name\": \"New Company\",\n\t\t\"cityId\": 1,\n\t\t\"categoryId\": 1\n\t},\n\t\n\t\"employers\": [\n\t\t{\n\t\t\t\"email\": \"uramen12@gmail.com\"\n\t\t}\n\t],\n\n\t\"procedures\": [\n\t\t{\n\t\t\t\"name\": \"Пілінг\",\n\t\t\t\"price\": 400,\n\t\t\t\"duration\": 2700000\n\t\t}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -160,7 +189,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"uramen11@gmail.com\",\n\t\"password\": \"1111\"\n}",
+							"raw": "{\n\t\"email\": \"uramen12@gmail.com\",\n\t\"password\": \"1111\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -193,7 +222,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU4NzQ5ODg5OSwiZXhwIjoyOTg3NDk4ODk5fQ.35urP34ba4F1iUesX0dX1rBhLzeaxT5nRKdmC8IOeMI\"\n}",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU4ODcxMDIxNywiZXhwIjoyOTg4NzEwMjE3fQ.dySK2pjmBRvUk9dppifW6Qf5gW8ujdO0mCYP_26ha4o\",\n\t\"companyId\": 1,\n\t\"role\": \"INVITED\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -295,6 +324,69 @@
 							"path": [
 								"api",
 								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"INVITED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/roles",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Approaches",
+			"item": [
+				{
+					"name": "Index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/approaches",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"approaches"
 							]
 						}
 					},
