@@ -7,7 +7,7 @@ import AppointmentModel from "./modules/appointments/appointment.model"
 import ProcedureModel from "./modules/procedures/procedure.model"
 import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
-import CompleteRegistrationModel from "./modules/auth/models/completeRegistration";
+import CompleteRegistrationModel from "./modules/auth/models/completeRegistration"
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'employers',

@@ -4,8 +4,8 @@ import ProcedureModel from "../procedures/procedure.model"
 import UserModel from "../users/user.model"
 import ApproachModel from "../approaches/approach.model"
 import RoleModel from "../roles/role.model"
-import CompleteRegistrationModel from "../auth/models/completeRegistration";
-import cryptoRandomString from "crypto-random-string";
+import CompleteRegistrationModel from "../auth/models/completeRegistration"
+import cryptoRandomString from "crypto-random-string"
 
 export default {
   findAll: async params => {

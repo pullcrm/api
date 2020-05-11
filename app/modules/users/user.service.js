@@ -2,7 +2,7 @@ import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
 import {mysql} from "../../config/connections"
 import CompanyModel from "../companies/models/company"
-import CompleteRegistrationModel from "../auth/models/completeRegistration";
+import CompleteRegistrationModel from "../auth/models/completeRegistration"
 
 export default {
   findAll: async () => {
