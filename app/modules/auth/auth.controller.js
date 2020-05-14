@@ -34,7 +34,12 @@ export default {
         throw new ApiException(401, 'Invalid password or email')
       }
 
-      const {accessToken, expiresIn} = createAccessToken(user.id)
+      //TODO last company is't a good, should be last usage company
+      const approaches = user.get('approaches', {plain: true})
+      const lastApproach = approaches[approaches.length - 1]
+      console.log(user.id, lastApproach.companyId, lastApproach.role.name)
+
+      const {accessToken, expiresIn} = createAccessToken(user.id, lastApproach.companyId, lastApproach.role.name)
       const refreshToken = createRefreshToken(user.get({plain: true}))
 
       user.refreshToken = refreshToken

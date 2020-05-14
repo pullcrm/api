@@ -5,7 +5,17 @@ import joi from "joi"
 export default {
   index: async (req, res, next) => {
     try {
-      const users = await UserService.findAll({})
+      const formattedData = {
+        offset: req.query.offset,
+        limit: req.query.limit,
+      }
+
+      validate(formattedData, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+      }))
+
+      const users = await UserService.findAll(formattedData)
       res.send(users)
     } catch(error) {
       next(error)

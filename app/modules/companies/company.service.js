@@ -6,6 +6,7 @@ import ApproachModel from "../approaches/approach.model"
 import RoleModel from "../roles/role.model"
 import CompleteRegistrationModel from "../auth/models/completeRegistration"
 import cryptoRandomString from "crypto-random-string"
+import ApiException from "../../exceptions/api";
 
 export default {
   findAll: async params => {
@@ -44,4 +45,9 @@ export default {
 
     return result
   },
+
+  findEmployers: async ({companyId, limit, offset}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+    return company.getEmployers({limit, offset})
+  }
 }

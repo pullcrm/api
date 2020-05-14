@@ -35,5 +35,5 @@ export default {
     } catch(error) {
       next(error)
     }
-  }
+  },
 }
