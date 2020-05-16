@@ -5,6 +5,8 @@ import auth from '../../middlewares/auth'
 const router = Router()
 
 router.get('/', auth(), ProcedureController.index)
-// router.post('/', auth(), ProcedureController.create)
+router.post('/', auth(), ProcedureController.create)
+router.put('/:id', auth(), ProcedureController.update)
+router.delete('/:id', auth(), ProcedureController.destroy)
 
 export default router

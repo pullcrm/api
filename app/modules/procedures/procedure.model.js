@@ -20,11 +20,15 @@ const ProcedureSchema = (connection, type) => {
       type: type.TIME,
       allowNull: false
     },
+  }, {
+    hooks: {
+      afterUpdate: options => {
+        delete options.dataValues.companyId
+      }
+    }
   })
 }
 
 const ProcedureModel = ProcedureSchema(mysql, Sequelize)
-
-// ProcedureModel.hasMany()
 
 export default ProcedureModel
