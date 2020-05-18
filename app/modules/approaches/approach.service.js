@@ -2,6 +2,8 @@ import ApproachModel from './approach.model'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
+import CategoryModel from "../categories/category.model";
+import CityModel from "../cities/city.model";
 
 export default {
   findAll: async ({companyId}) => {
@@ -18,8 +20,14 @@ export default {
   },
 
   findMyApproaches: async userId => {
-    console.log(userId)
-    const approaches = await ApproachModel.findAll({where: {userId}, include: [{model: CompanyModel}, {model: RoleModel}, {model: UserModel}]})
+    const approaches = await ApproachModel.findAll({
+      where: {userId},
+      attributes: {exclude: ['companyId', 'userId', 'roleId']},
+      include: [{
+        model: CompanyModel,
+        attributes: {exclude: ['categoryId', 'userId', 'cityId']},
+        include: [{model: CategoryModel}, {model: CityModel}]
+      }, {model: RoleModel}, {model: UserModel}]})
     return approaches
   },
 }
