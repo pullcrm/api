@@ -36,4 +36,21 @@ export default {
       next(error)
     }
   },
+
+  findMyApproaches: async (req, res, next) => {
+    try {
+      const formattedData = {
+        userId: req.userId
+      }
+
+      validate(formattedData, joi.object().keys({
+        userId: joi.number()
+      }))
+
+      const roles = await ApproachService.findMyApproaches(formattedData.userId)
+      res.send(roles)
+    } catch(error) {
+      next(error)
+    }
+  },
 }

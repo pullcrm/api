@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 
-const accessTokenExpiring = 100
+const accessTokenExpiring = 700000
 const refreshTokenExpiring = 1400000000
 
 const createAccessToken = (userId, companyId = 0, role = '-') => {
