@@ -6,7 +6,6 @@ import ApproachModel from "../approaches/approach.model"
 import RoleModel from "../roles/role.model"
 import CompleteRegistrationModel from "../auth/models/completeRegistration"
 import cryptoRandomString from "crypto-random-string"
-import ApiException from "../../exceptions/api";
 
 export default {
   findAll: async params => {

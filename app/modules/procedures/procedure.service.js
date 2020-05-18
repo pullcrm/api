@@ -3,7 +3,7 @@ import ApiException from "../../exceptions/api";
 
 export default {
   findAll: async ({companyId, limit, offset}) => {
-    return ProcedureModel.findAll({where: {id: companyId}, limit, offset}, {raw: true})
+    return ProcedureModel.findAll({where: {companyId}, limit, offset, attributes: {exclude: ['companyId']}}, {raw: true})
   },
 
   create: async data => {

@@ -19,10 +19,10 @@ const auth = () => (req, res, next) => {
     const token = getToken(authorization)
 
     if (!token) {
-      throw new ApiException(403, 'Bad access token')
+      throw new ApiException(403, 'Bad access token.')
     }
 
-    jwt.verify(token, process.env.SECRET_FOR_JWT, (err, payload) => {
+    jwt.verify(token, process.env.SECRET_FOR_JWT, async (err, payload) => {
       if (err && err.name === 'TokenExpiredError') {
         throw new ApiException(401, 'Expired token.')
       }

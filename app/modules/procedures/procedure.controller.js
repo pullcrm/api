@@ -61,9 +61,9 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        name: joi.string().required(),
-        price: joi.number().required(),
-        duration: joi.number().required(),
+        name: joi.string(),
+        price: joi.number(),
+        duration: joi.number(),
         procedureId: joi.number().required(),
         companyId: joi.number().required()
       }))

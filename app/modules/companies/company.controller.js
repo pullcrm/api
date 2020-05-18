@@ -3,6 +3,7 @@ import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import UserModel from "../users/user.model"
+import UserService from '../users/user.service'
 import CompleteRegistrationModel from "../auth/models/completeRegistration"
 import Mailer from '../../providers/email'
 
@@ -99,6 +100,32 @@ export default {
       }))
 
       const users = await CompanyService.findEmployers(formattedData)
+      res.send(users)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  updateEmployer: async (req, res, next) => {
+    try {
+      const formattedData = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        avatar: req.body.avatar,
+      }
+
+      const params = {
+        companyId: req.companyId,
+        userId: req.params.id
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+        companyId: joi.number(),
+      }))
+
+      const users = await UserService.updateByCompany(formattedData)
       res.send(users)
     } catch (error) {
       next(error)

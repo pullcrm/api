@@ -17,7 +17,7 @@ const ProcedureSchema = (connection, type) => {
       allowNull: false,
     },
     duration: {
-      type: type.TIME,
+      type: type.BIGINT,
       allowNull: false
     },
   }, {

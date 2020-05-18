@@ -35,11 +35,10 @@ export default {
       }
 
       //TODO last company is't a good, should be last usage company
-      const approaches = user.get('approaches', {plain: true})
-      const lastApproach = approaches[approaches.length - 1]
-      console.log(user.id, lastApproach.companyId, lastApproach.role.name)
+      // const approaches = user.get('approaches', {plain: true})
+      // const lastApproach = approaches[approaches.length - 1]
 
-      const {accessToken, expiresIn} = createAccessToken(user.id, lastApproach.companyId, lastApproach.role.name)
+      const {accessToken, expiresIn} = createAccessToken(user.id)
       const refreshToken = createRefreshToken(user.get({plain: true}))
 
       user.refreshToken = refreshToken

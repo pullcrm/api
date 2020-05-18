@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 
-const accessTokenExpiring = 700000
+const accessTokenExpiring = 100
 const refreshTokenExpiring = 1400000000
 
 const createAccessToken = (userId, companyId = 0, role = '-') => {
@@ -9,6 +9,7 @@ const createAccessToken = (userId, companyId = 0, role = '-') => {
   const accessToken = jwt.sign({userId, companyId, role}, secret, {expiresIn: accessTokenExpiring})
   const expiresIn = parseInt(new Date().getTime() / 1000, 10) + accessTokenExpiring
 
+  console.log('expiresIn', expiresIn)
   return {accessToken, expiresIn}
 }
 
