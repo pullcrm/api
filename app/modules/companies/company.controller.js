@@ -106,6 +106,30 @@ export default {
     }
   },
 
+  addEmployer: async (req, res, next) => {
+    try {
+      const formattedData = {
+        email: req.body.email,
+      }
+
+      const params = {
+        companyId: req.companyId,
+        userId: req.params.id
+      }
+
+      // validate({...formattedData, ...params}, joi.object().keys({
+      //   companyId: joi.number().required(),
+      //   userId: joi.number().required(),
+      //   email: joi.string(),
+      // }))
+
+      const users = await UserService.createByEmail(formattedData, params)
+      res.send(users)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   updateEmployer: async (req, res, next) => {
     try {
       const formattedData = {
@@ -120,12 +144,14 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        offset: joi.number(),
-        limit: joi.number(),
-        companyId: joi.number(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        firstName: joi.string(),
+        lastName: joi.string(),
+        avatar: joi.string(),
       }))
 
-      const users = await UserService.updateByCompany(formattedData)
+      const users = await UserService.update(formattedData, params)
       res.send(users)
     } catch (error) {
       next(error)

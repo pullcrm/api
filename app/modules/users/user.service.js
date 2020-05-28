@@ -3,6 +3,7 @@ import ApiException from "../../exceptions/api"
 import {mysql} from "../../config/connections"
 import CompanyModel from "../companies/models/company"
 import CompleteRegistrationModel from "../auth/models/completeRegistration"
+import SMS from '../../providers/smsc'
 
 export default {
   findAll: async () => {
@@ -40,12 +41,23 @@ export default {
     return result
   },
 
-  createByEmail: async (employers, companyId) => {
-    const result = await mysql.transaction(async transaction => {
-      const userInstance = await CompanyModel.bulkCreate(employers.map(E => ({...E, companyId})), {returning: true, transaction})
-      return userInstance
-    })
+  update: async (data, {userId}) => {
+    const user = await UserModel.findOne({where: {id: userId}})
 
-    return result
+    if(!user) {
+      throw new ApiException(404, 'User wasn\'t found')
+    }
+
+    return user.update(data, {returning: true})
+  },
+
+  createByEmail: async (employers, {companyId}) => {
+    // SMS.send('0958323358',`Код PullCRM: ${3423}`)
+    // const result = await mysql.transaction(async transaction => {
+    //   const userInstance = await CompanyModel.bulkCreate(employers.map(E => ({...E, companyId})), {returning: true, transaction})
+    //   return userInstance
+    // })
+    //
+    // return result
   }
 }
