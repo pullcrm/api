@@ -22,16 +22,25 @@ export default {
     }
   },
 
-  create: async (req, res, next) => {
+  registration: async (req, res, next) => {
     try {
       const formattedData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        email: req.body.email,
-        password: req.body.password
+        phone: req.body.phone,
+        password: req.body.password,
+        code: req.body.code
       }
 
-      const user = await UserService.create(formattedData)
+      validate(formattedData, joi.object().keys({
+        firstName: joi.string().required(),
+        lastName: joi.string().required(),
+        phone: joi.string().required(),
+        password: joi.string().required(),
+        code: joi.number().required()
+      }))
+
+      const user = await UserService.registration(formattedData)
       res.send(user)
     } catch(error) {
       next(error)
@@ -54,26 +63,34 @@ export default {
     }
   },
 
-  completeRegistration: async (req, res, next) => {
+  search: async (req, res, next) => {
     try {
       const formattedData = {
-        token: req.body.token,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        password: req.body.password,
+        phone: req.query.phone,
       }
 
-      const userId = req.params.id
-
-      validate({...formattedData, userId}, joi.object().keys({
-        userId: joi.number().required(),
-        token: joi.string().required(),
-        firstName: joi.string().required(),
-        lastName: joi.string().required(),
-        password: joi.string().required(),
+      validate(formattedData, joi.object().keys({
+        phone: joi.string()
       }))
 
-      res.send(await UserService.completeRegistration(formattedData, userId))
+      res.send(await UserService.findOneByPhone(formattedData))
+
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  sendConfirmationCode: async (req, res, next) => {
+    try {
+      const formattedData = {
+        phone: req.body.phone,
+      }
+
+      validate(formattedData, joi.object().keys({
+        phone: joi.string().required(),
+      }))
+
+      res.send(await UserService.sendConfirmationCode(formattedData))
     } catch(error) {
       next(error)
     }

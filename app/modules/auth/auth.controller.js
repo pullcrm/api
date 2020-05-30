@@ -13,16 +13,16 @@ export default {
   login: async (req, res, next) => {
     try {
       const formattedData = {
-        email: req.body.email,
+        phone: req.body.phone,
         password: req.body.password
       }
 
       validate(formattedData, joi.object().keys({
-        email: joi.string().email().max(256).required(),
+        phone: joi.string().max(10).required(),
         password: joi.string().max(256).required()
       }))
 
-      const user = await AuthService.findBy({email: formattedData.email})
+      const user = await AuthService.findBy({phone: formattedData.phone})
 
       if(!user) {
         throw new ApiException(401, 'Invalid password or email')
@@ -62,8 +62,8 @@ export default {
 
       validate(formattedData, joi.object().keys({
         refreshToken: joi.string().required(),
-        companyId: joi.number().optional(),
-        role: joi.string().optional(),
+        companyId: joi.number().required(),
+        role: joi.string().required(),
       }))
 
       const payload = jwt.verify(formattedData.refreshToken, process.env.SECRET_REFRESH_FOR_JWT)
@@ -79,11 +79,11 @@ export default {
 
       const hasApproach = await ApproachService.hasRow({companyId: formattedData.companyId, roleId: role.id, userId})
 
-      if(!hasApproach) {
-        throw new ApiException(403, 'You don\'t have permissions for that operation' )
+      if (!hasApproach) {
+        throw new ApiException(403, 'You don\'t have permissions for that operation')
       }
 
-      const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, formattedData.role)
+      const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, role.name)
 
       res.status(200).send({accessToken, expiresIn})
 

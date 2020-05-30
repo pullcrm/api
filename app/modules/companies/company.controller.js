@@ -4,7 +4,7 @@ import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import UserModel from "../users/user.model"
 import UserService from '../users/user.service'
-import CompleteRegistrationModel from "../auth/models/completeRegistration"
+import CompleteRegistrationModel from "../auth/models/confirmation"
 import Mailer from '../../providers/email'
 
 export default {
@@ -28,56 +28,52 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        company: {
-          ...req.body.company,
-          userId: req.userId
-        },
-        employers: req.body.employers || [],
-        procedures: req.body.procedures || [],
+        name: req.body.name,
+        cityId: req.body.cityId,
+        categoryId: req.body.categoryId,
+        userId: req.userId
       }
 
       validate(formattedData, joi.object().keys({
-        company: joi.object().keys({
-          name: joi.string().required(),
-          cityId: joi.number().required(),
-          categoryId: joi.number().required(),
-          userId: joi.number().required()
-        }).required(),
+        name: joi.string().required(),
+        cityId: joi.number().required(),
+        categoryId: joi.number().required(),
+        userId: joi.number().required()
 
-        employers: joi.array().items(
-          joi.object().keys({
-            email: joi.string().required()
-          }).optional()
-        ).optional(),
-
-        procedures: joi.array().items(
-          joi.object().keys({
-            name: joi.string().required(),
-            price: joi.number().required(),
-            duration: joi.date().timestamp()
-          }).optional()
-        ).optional(),
+        // employers: joi.array().items(
+        //   joi.object().keys({
+        //     email: joi.string().required()
+        //   }).optional()
+        // ).optional(),
+        //
+        // procedures: joi.array().items(
+        //   joi.object().keys({
+        //     name: joi.string().required(),
+        //     price: joi.number().required(),
+        //     duration: joi.date().timestamp()
+        //   }).optional()
+        // ).optional(),
       }))
 
       const company = await CompanyService.create(formattedData)
 
-      const usersWithTokens = await UserModel.findAll({
-        where: {id: company.employers.map(U => U.id)}, raw: true, nest: true, include: {
-          model: CompleteRegistrationModel,
-          as: 'completeRegistration',
-          required: true
-        }
-      })
-
-      await Promise.all(usersWithTokens.map(U => {
-        Mailer.send({
-          from: 'Pullcrm<b>',
-          to: U.email,
-          subject: 'You are invited to Pullcrm',
-          text: 'url',
-          html: `<div>Click on this link to continue registration ${process.env.CLIENT}/register?token=${U.completeRegistration.token}&userId=${U.id}\`</div>`
-        })
-      }))
+      // const usersWithTokens = await UserModel.findAll({
+      //   where: {id: company.employers.map(U => U.id)}, raw: true, nest: true, include: {
+      //     model: CompleteRegistrationModel,
+      //     as: 'completeRegistration',
+      //     required: true
+      //   }
+      // })
+      //
+      // await Promise.all(usersWithTokens.map(U => {
+      //   Mailer.send({
+      //     from: 'Pullcrm<b>',
+      //     to: U.email,
+      //     subject: 'You are invited to Pullcrm',
+      //     text: 'url',
+      //     html: `<div>Click on this link to continue registration ${process.env.CLIENT}/register?token=${U.completeRegistration.token}&userId=${U.id}\`</div>`
+      //   })
+      // }))
 
       res.send(company)
     } catch (error) {
@@ -109,7 +105,9 @@ export default {
   addEmployer: async (req, res, next) => {
     try {
       const formattedData = {
-        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phone: req.body.phone,
       }
 
       const params = {
@@ -117,11 +115,13 @@ export default {
         userId: req.params.id
       }
 
-      // validate({...formattedData, ...params}, joi.object().keys({
-      //   companyId: joi.number().required(),
-      //   userId: joi.number().required(),
-      //   email: joi.string(),
-      // }))
+      validate({...formattedData, ...params}, joi.object().keys({
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        firstName: joi.string(),
+        lastName: joi.string(),
+        phone: joi.string()
+      }))
 
       const users = await UserService.createByEmail(formattedData, params)
       res.send(users)

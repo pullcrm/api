@@ -1,13 +1,18 @@
+import cryptoRandomString from 'crypto-random-string'
 import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
 import {mysql} from "../../config/connections"
 import CompanyModel from "../companies/models/company"
-import CompleteRegistrationModel from "../auth/models/completeRegistration"
+import ConfirmationModel from "../auth/models/confirmation"
 import SMS from '../../providers/smsc'
 
 export default {
   findAll: async () => {
     return UserModel.findAll()
+  },
+
+  findOneByPhone: async ({phone}) => {
+    return UserModel.findOne({where: {phone}, raw: true})
   },
 
   findOne: async where => {
@@ -24,16 +29,33 @@ export default {
     return UserModel.create(data)
   },
 
-  completeRegistration: async (data, userId) => {
-    const result = await mysql.transaction(async transaction => {
-      const registration = await CompleteRegistrationModel.findOne({where: {userId, token: data.token}, transaction})
+  sendConfirmationCode: async ({phone}) => {
+    const user = await UserModel.findOne({phone}, {raw: true})
 
-      if(!registration) {
-        throw new ApiException(403, 'Url for complete registration was expired')
+    if(user) {
+      throw new ApiException(404, 'There is such phone')
+    }
+
+    const confirmation = await ConfirmationModel.create({
+      code: cryptoRandomString({length: 4, type: 'numeric'}),
+      phone
+    })
+
+    await SMS.send(phone,`Код PullCRM: ${confirmation.code}`)
+
+    return {message: 'OK'}
+  },
+
+  registration: async data => {
+    const result = await mysql.transaction(async transaction => {
+      const confirmation = await ConfirmationModel.findOne({where: {phone: data.phone, code: data.code}, transaction})
+
+      if(!confirmation) {
+        throw new ApiException(403, 'Code for completing the registration is not correct')
       }
 
-      const user = await UserModel.update(data, {where: {id: userId}, returning: true, transaction})
-      await registration.destroy({transaction})
+      const user = await UserModel.create(data, {returning: true, transaction})
+      await confirmation.destroy({transaction})
 
       return user
     })
@@ -50,14 +72,4 @@ export default {
 
     return user.update(data, {returning: true})
   },
-
-  createByEmail: async (employers, {companyId}) => {
-    // SMS.send('0958323358',`Код PullCRM: ${3423}`)
-    // const result = await mysql.transaction(async transaction => {
-    //   const userInstance = await CompanyModel.bulkCreate(employers.map(E => ({...E, companyId})), {returning: true, transaction})
-    //   return userInstance
-    // })
-    //
-    // return result
-  }
 }

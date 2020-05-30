@@ -58,13 +58,44 @@
 					"response": []
 				},
 				{
-					"name": "Create",
+					"name": "Search by phone",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/users/search?phone=0958323358",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "phone",
+									"value": "0958323358"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registration",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"email\": \"uramen11@gmail.com\",\n\t\"password\": \"1111\"\n}",
+							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\",\n\t\"code\": 7255\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -85,13 +116,13 @@
 					"response": []
 				},
 				{
-					"name": "Complete Registration",
+					"name": "Send Confirmation SMS",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"token\": \"t8EF4HiZa0\",\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"password\": \"1111\"\n}",
+							"raw": "{\n\t\"phone\": \"0958323358\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -99,15 +130,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/users/64/registration",
+							"raw": "{{host}}/api/users/confirmation",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"users",
-								"64",
-								"registration"
+								"confirmation"
 							]
 						}
 					},
@@ -156,7 +186,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"company\": {\n\t\t\"name\": \"New Company\",\n\t\t\"cityId\": 1,\n\t\t\"categoryId\": 1\n\t},\n\t\n\t\"employers\": [\n\t\t{\n\t\t\t\"email\": \"uramen12@gmail.com\"\n\t\t}\n\t],\n\n\t\"procedures\": [\n\t\t{\n\t\t\t\"name\": \"Пілінг\",\n\t\t\t\"price\": 400,\n\t\t\t\"duration\": 2700000\n\t\t}\n\t]\n}",
+							"raw": "{\n\t\"name\": \"New Company1\",\n\t\"cityId\": 1,\n\t\"categoryId\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -225,7 +255,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\"\n}",
+							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -247,6 +277,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Add Employer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n\t\t\"email\": \"uramen12@gmail.com\"\n\t}\n]\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/companies/my/employers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"employers"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -261,7 +326,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"uramen12@gmail.com\",\n\t\"password\": \"1111\"\n}",
+							"raw": "{\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -282,7 +347,7 @@
 					"response": []
 				},
 				{
-					"name": "RefreshToken",
+					"name": "Refresh token",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -294,7 +359,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU4ODcxMDIxNywiZXhwIjoyOTg4NzEwMjE3fQ.dySK2pjmBRvUk9dppifW6Qf5gW8ujdO0mCYP_26ha4o\",\n\t\"companyId\": 1,\n\t\"role\": \"INVITED\"\n}",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5MDg2MDYzOCwiZXhwIjoyOTkwODYwNjM4fQ.Tdb5cwqKOVO-c70BPIeEUDq3pc_wChC5AHCVffjv8cc\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -349,6 +414,9 @@
 			"item": [
 				{
 					"name": "Index",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -358,6 +426,43 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/appointments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{host}}/api/appointments",
 							"host": [

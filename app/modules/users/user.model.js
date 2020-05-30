@@ -33,9 +33,22 @@ const UserSchema = (connection, type) => {
         }
       }
     },
+
+    phone: {
+      type: type.STRING(10),
+      allowNull: false,
+      unique: true,
+
+      validate: {
+        len: {
+          args: [0, 10],
+          msg: 'Phone number should be in a range between 0 and 10.'
+        }
+      }
+    },
     email: {
       type: type.STRING(100),
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
     password: {

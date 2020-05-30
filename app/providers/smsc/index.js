@@ -10,16 +10,17 @@ class SMS {
     })
   }
 
-  send(number, text) {
-    smsc.send_sms({
-      list: {
-        [number]: text,
-      }
-    }, function (data, raw, err, code) {
-      if (err) return console.log(err, 'code: ' + code);
-      console.log(data); // object
-      console.log(raw); // string in JSON format
-    });
+  async send(number, text) {
+    return new Promise((resolve, reject) => {
+      smsc.send_sms({
+        list: {
+          [number]: text,
+        }
+      },  (data, raw, err) => {
+        if (err) {reject(err)}
+        resolve(data)
+      })
+    })
   }
 }
 

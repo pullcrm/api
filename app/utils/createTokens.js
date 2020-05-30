@@ -9,7 +9,6 @@ const createAccessToken = (userId, companyId = 0, role = '-') => {
   const accessToken = jwt.sign({userId, companyId, role}, secret, {expiresIn: accessTokenExpiring})
   const expiresIn = parseInt(new Date().getTime() / 1000, 10) + accessTokenExpiring
 
-  console.log('expiresIn', expiresIn)
   return {accessToken, expiresIn}
 }
 
