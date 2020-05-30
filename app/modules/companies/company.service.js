@@ -15,8 +15,15 @@ export default {
   },
 
   create: async data => {
-    const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: CategoryModel}]})
-    return company
+    const result = await mysql.transaction(async transaction => {
+      const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: CategoryModel}], transaction})
+      const adminRole = await RoleModel.findOne({where: {name: 'ADMIN'}, raw: true, transaction})
+      await ApproachModel.create({userId: company.userId, companyId: company.id, roleId: adminRole.id}, {transaction})
+
+      return company
+    })
+
+    return result
   },
 
   // create: async ({company, procedures, employers}) => {
