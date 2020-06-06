@@ -108,28 +108,29 @@ export default {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         phone: req.body.phone,
+        code: req.body.code,
       }
 
       const params = {
         companyId: req.companyId,
-        userId: req.params.id
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
-        userId: joi.number().required(),
-        firstName: joi.string(),
-        lastName: joi.string(),
-        phone: joi.string()
+        code: joi.number().required(),
+        firstName: joi.string().required(),
+        lastName: joi.string().required(),
+        phone: joi.string().required(),
       }))
 
-      const users = await UserService.createByEmail(formattedData, params)
-      res.send(users)
+      const user = await CompanyService.addEmployer(formattedData, params)
+      res.send(user)
     } catch (error) {
       next(error)
     }
   },
 
+  //TODO only admin can update his employers
   updateEmployer: async (req, res, next) => {
     try {
       const formattedData = {

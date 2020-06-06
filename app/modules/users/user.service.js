@@ -5,6 +5,7 @@ import {mysql} from "../../config/connections"
 import CompanyModel from "../companies/models/company"
 import ConfirmationModel from "../auth/models/confirmation"
 import SMS from '../../providers/smsc'
+import ApproachModel from "../approaches/approach.model";
 
 export default {
   findAll: async () => {
@@ -30,7 +31,7 @@ export default {
   },
 
   sendConfirmationCode: async ({phone}) => {
-    const user = await UserModel.findOne({phone}, {raw: true})
+    const user = await UserModel.findOne({where: {phone}}, {raw: true})
 
     if(user) {
       throw new ApiException(404, 'There is such phone')
