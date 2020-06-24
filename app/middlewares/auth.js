@@ -23,10 +23,11 @@ const auth = () => (req, res, next) => {
     }
 
     jwt.verify(token, process.env.SECRET_FOR_JWT, async (err, payload) => {
+      console.log('PAYLOAD', payload)
       if (err && err.name === 'TokenExpiredError') {
         throw new ApiException(401, 'Expired token.')
       }
-
+      console.log(err)
       if (err) {
         throw new ApiException(500, 'Failed to authenticate token.')
       }
