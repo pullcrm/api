@@ -56,7 +56,7 @@ mysql.sync().then(async () => {
   const citiesCount = await CityModel.count()
 
   if(rolesCount === 0) {
-    await RoleModel.bulkCreate([{name: 'ADMIN'}, {name: 'INVITED'}])
+    await RoleModel.bulkCreate([{name: 'ADMIN'}, {name: 'INVITED'}, {name: 'EMPLOYEE'}])
   }
 
   if(categoriesCount === 0) {

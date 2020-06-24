@@ -34,7 +34,7 @@ export default {
       }
 
       const user = await UserModel.create(data, {returning: true, transaction})
-      const employerRole = await RoleModel.findOne({where: {name: 'EMPLOYER'}, raw: true, transaction})
+      const employerRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
       await ApproachModel.create({userId: user.id, companyId: params.companyId, roleId: employerRole.id}, {transaction})
       await confirmation.destroy({transaction})
 
