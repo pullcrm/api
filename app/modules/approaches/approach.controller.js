@@ -53,4 +53,25 @@ export default {
       next(error)
     }
   },
+
+  findMyCurrentApproaches: async (req, res, next) => {
+    try {
+      const formattedData = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate(formattedData, joi.object().keys({
+        userId: joi.number(),
+        companyId: joi.number()
+      }))
+
+      const Approaches = await ApproachService.findMyApproaches(formattedData.userId)
+      const current = Approaches.find(({id}) => id === formattedData.companyId)
+
+      res.send(current)
+    } catch(error) {
+      next(error)
+    }
+  },
 }
