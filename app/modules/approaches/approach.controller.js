@@ -66,8 +66,8 @@ export default {
         companyId: joi.number()
       }))
 
-      const Approaches = await ApproachService.findMyApproaches(formattedData.userId)
-      const current = Approaches.find(({id}) => id === formattedData.companyId)
+      const approaches = await ApproachService.findMyApproaches(formattedData.userId)
+      const current = approaches.find(({company}) => company.id === formattedData.companyId)
 
       res.send(current)
     } catch(error) {
