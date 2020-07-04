@@ -6,6 +6,9 @@
 # testing
 /coverage
 
+# files
+/uploads
+
 .idea/*
 
 # misc
