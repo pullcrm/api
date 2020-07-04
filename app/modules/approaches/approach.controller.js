@@ -18,25 +18,5 @@ export default {
     } catch(error) {
       next(error)
     }
-  },
-
-  findMyCurrentApproach: async (req, res, next) => {
-    try {
-      const formattedData = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate(formattedData, joi.object().keys({
-        userId: joi.number(),
-        companyId: joi.number()
-      }))
-
-      const approach = await ApproachService.findMyCurrentApproach(formattedData)
-
-      res.send(approach)
-    } catch(error) {
-      next(error)
-    }
-  },
+  }
 }
