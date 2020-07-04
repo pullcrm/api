@@ -2,10 +2,7 @@ import joi from "joi"
 import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
-import UserModel from "../users/user.model"
 import UserService from '../users/user.service'
-import CompleteRegistrationModel from "../auth/models/confirmation"
-import Mailer from '../../providers/email'
 
 export default {
   index: async (req, res, next) => {
@@ -39,41 +36,9 @@ export default {
         cityId: joi.number().required(),
         categoryId: joi.number().required(),
         userId: joi.number().required()
-
-        // employers: joi.array().items(
-        //   joi.object().keys({
-        //     email: joi.string().required()
-        //   }).optional()
-        // ).optional(),
-        //
-        // procedures: joi.array().items(
-        //   joi.object().keys({
-        //     name: joi.string().required(),
-        //     price: joi.number().required(),
-        //     duration: joi.date().timestamp()
-        //   }).optional()
-        // ).optional(),
       }))
 
       const company = await CompanyService.create(formattedData)
-
-      // const usersWithTokens = await UserModel.findAll({
-      //   where: {id: company.employers.map(U => U.id)}, raw: true, nest: true, include: {
-      //     model: CompleteRegistrationModel,
-      //     as: 'completeRegistration',
-      //     required: true
-      //   }
-      // })
-      //
-      // await Promise.all(usersWithTokens.map(U => {
-      //   Mailer.send({
-      //     from: 'Pullcrm<b>',
-      //     to: U.email,
-      //     subject: 'You are invited to Pullcrm',
-      //     text: 'url',
-      //     html: `<div>Click on this link to continue registration ${process.env.CLIENT}/register?token=${U.completeRegistration.token}&userId=${U.id}\`</div>`
-      //   })
-      // }))
 
       res.send(company)
     } catch (error) {

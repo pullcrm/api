@@ -3,40 +3,6 @@ import validate from "../../utils/validate"
 import joi from "joi"
 
 export default {
-  index: async (req, res, next) => {
-    try {
-      const formattedData = {
-        companyId: req.companyId
-      }
-
-      validate(formattedData, joi.object().keys({
-        companyId: joi.number()
-      }))
-
-      const roles = await ApproachService.findAll(formattedData)
-      res.send(roles)
-    } catch(error) {
-      next(error)
-    }
-  },
-
-  create: async (req, res, next) => {
-    try {
-      const formattedData = {
-        name: req.body.name,
-      }
-
-      validate(formattedData, joi.object().keys({
-        name: joi.string().max(256).required()
-      }))
-
-      const role = await ApproachService.create(formattedData)
-      res.send(role)
-    } catch(error) {
-      next(error)
-    }
-  },
-
   findMyApproaches: async (req, res, next) => {
     try {
       const formattedData = {
@@ -47,14 +13,14 @@ export default {
         userId: joi.number()
       }))
 
-      const roles = await ApproachService.findMyApproaches(formattedData.userId)
-      res.send(roles)
+      const approaches = await ApproachService.findMyApproaches(formattedData.userId)
+      res.send(approaches)
     } catch(error) {
       next(error)
     }
   },
 
-  findMyCurrentApproaches: async (req, res, next) => {
+  findMyCurrentApproach: async (req, res, next) => {
     try {
       const formattedData = {
         userId: req.userId,
@@ -66,10 +32,9 @@ export default {
         companyId: joi.number()
       }))
 
-      const approaches = await ApproachService.findMyApproaches(formattedData.userId)
-      const current = approaches.find(({company}) => company.id === formattedData.companyId)
+      const approach = await ApproachService.findMyCurrentApproach(formattedData)
 
-      res.send(current)
+      res.send(approach)
     } catch(error) {
       next(error)
     }

@@ -30,4 +30,17 @@ export default {
       }, {model: RoleModel}, {model: UserModel}]})
     return approaches
   },
+
+  findMyCurrentApproach: async ({userId, companyId}) => {
+    const approach = await ApproachModel.findOne({
+      where: {userId, companyId},
+      attributes: {exclude: ['companyId', 'userId', 'roleId']},
+      include: [{
+        model: CompanyModel,
+        attributes: {exclude: ['categoryId', 'userId', 'cityId']},
+        include: [{model: CategoryModel}, {model: CityModel}]
+      }, {model: RoleModel}, {model: UserModel}]})
+
+    return approach
+  },
 }
