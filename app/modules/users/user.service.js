@@ -2,10 +2,8 @@ import cryptoRandomString from 'crypto-random-string'
 import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
 import {mysql} from "../../config/connections"
-import CompanyModel from "../companies/models/company"
 import ConfirmationModel from "../auth/models/confirmation"
 import SMS from '../../providers/smsc'
-import ApproachModel from "../approaches/approach.model";
 
 export default {
   findAll: async () => {
@@ -25,11 +23,6 @@ export default {
 
     return user
   },
-
-  create: async data => {
-    return UserModel.create(data)
-  },
-
   sendConfirmationCode: async ({phone}) => {
     const user = await UserModel.findOne({where: {phone}}, {raw: true})
 
@@ -47,7 +40,7 @@ export default {
     return {message: 'OK'}
   },
 
-  registration: async data => {
+  create: async data => {
     const result = await mysql.transaction(async transaction => {
       const confirmation = await ConfirmationModel.findOne({where: {phone: data.phone, code: data.code}, transaction})
 

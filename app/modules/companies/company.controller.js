@@ -73,6 +73,7 @@ export default {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         phone: req.body.phone,
+        avatarId: req.body.avatarId,
         code: req.body.code,
       }
 
@@ -86,6 +87,7 @@ export default {
         firstName: joi.string().required(),
         lastName: joi.string().required(),
         phone: joi.string().required(),
+        avatarId: joi.number().optional()
       }))
 
       const user = await CompanyService.addEmployer(formattedData, params)
@@ -101,7 +103,7 @@ export default {
       const formattedData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        avatar: req.body.avatar,
+        avatarId: req.body.avatarId,
       }
 
       const params = {
@@ -114,7 +116,7 @@ export default {
         userId: joi.number().required(),
         firstName: joi.string(),
         lastName: joi.string(),
-        avatar: joi.string(),
+        avatarId: joi.number(),
       }))
 
       const users = await UserService.update(formattedData, params)

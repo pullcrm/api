@@ -5,7 +5,7 @@ import auth from '../../middlewares/auth'
 const router = Router()
 
 router.get('/', auth(), UserController.index)
-router.post('/', UserController.registration)
+router.post('/', UserController.create)
 router.get('/profile', auth(), UserController.profile)
 router.post('/confirmation', UserController.sendConfirmationCode)
 router.get('/search', auth(), UserController.search)

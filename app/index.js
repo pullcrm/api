@@ -1,5 +1,7 @@
 import bodyParser from 'body-parser'
 import express from 'express'
+import multer from 'multer'
+import mkdirp from 'mkdirp'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
@@ -8,6 +10,19 @@ import './models'
 
 const prefix = '/api'
 const app = express()
+
+const storageConfig = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = 'uploads/' + Date.now()
+
+    mkdirp(dir, err => cb(err, dir))
+  },
+
+  filename: (req, file, cb) => cb(null, file.originalname)
+})
+console.log(__dirname)
+app.use(express.static('uploads'))
+app.use(multer({storage: storageConfig}).single('file'))
 
 app.use(logger('dev'))
 app.use(bodyParser.json())

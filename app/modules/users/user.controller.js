@@ -22,14 +22,15 @@ export default {
     }
   },
 
-  registration: async (req, res, next) => {
+  create: async (req, res, next) => {
     try {
       const formattedData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         phone: req.body.phone,
         password: req.body.password,
-        code: req.body.code
+        code: req.body.code,
+        avatarId: req.body.avatarId
       }
 
       validate(formattedData, joi.object().keys({
@@ -37,10 +38,11 @@ export default {
         lastName: joi.string().required(),
         phone: joi.string().required(),
         password: joi.string().required(),
-        code: joi.number().required()
+        code: joi.number().required(),
+        avatarId: joi.number().optional()
       }))
 
-      const user = await UserService.registration(formattedData)
+      const user = await UserService.create(formattedData)
       res.send(user)
     } catch(error) {
       next(error)

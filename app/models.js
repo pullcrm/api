@@ -7,6 +7,7 @@ import AppointmentModel from "./modules/appointments/appointment.model"
 import ProcedureModel from "./modules/procedures/procedure.model"
 import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
+import FileModel from './modules/files/file.model'
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'employers',
@@ -18,13 +19,12 @@ CompanyModel.belongsTo(UserModel, {
   foreignKey: 'userId'
 })
 
-// UserModel.belongsToMany(CompanyModel, {
-//   as: 'employers',
-//   through: {model: ApproachModel, unique: false},
-// })
 ApproachModel.belongsTo(UserModel)
 ApproachModel.belongsTo(CompanyModel)
+
 UserModel.hasMany(ApproachModel)
+UserModel.belongsTo(FileModel, {as: 'avatar'})
+
 CompanyModel.hasMany(ApproachModel)
 CompanyModel.belongsTo(CityModel)
 CompanyModel.belongsTo(CategoryModel)
@@ -43,10 +43,16 @@ ProcedureModel.belongsToMany(AppointmentModel,{
 })
 
 CompanyModel.hasMany(ProcedureModel)
+CompanyModel.belongsTo(FileModel, {as: 'avatar'})
 
 AppointmentModel.belongsTo(CompanyModel)
 AppointmentModel.belongsTo(UserModel, {as: 'client'})
 AppointmentModel.belongsTo(UserModel, {as: 'employer'})
+
+FileModel.belongsToMany(UserModel, {
+  through: 'file_users',
+  timestamps: false
+})
 
 mysql.sync().then(async () => {
   console.debug('Database sync executed correctly')

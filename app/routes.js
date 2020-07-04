@@ -8,6 +8,7 @@ import cityRouter from './modules/cities/city.route'
 import categoryRouter from './modules/categories/category.route'
 import approachRouter from './modules/approaches/approach.route'
 import procedureRouter from './modules/procedures/procedure.route'
+import fileRouter from './modules/files/file.route'
 
 const api = Router()
 
@@ -20,5 +21,6 @@ api.use('/cities', cityRouter)
 api.use('/categories', categoryRouter)
 api.use('/approaches', approachRouter)
 api.use('/procedures', procedureRouter)
+api.use('/files', fileRouter)
 
 export default api

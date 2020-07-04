@@ -55,10 +55,6 @@ const UserSchema = (connection, type) => {
       type: type.STRING,
       allowNull: true,
     },
-    avatar: {
-      type: type.STRING,
-      allowNull: true
-    },
     refreshToken: {
       type: type.STRING,
       allowNull: true,
