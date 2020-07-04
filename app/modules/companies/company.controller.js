@@ -57,7 +57,7 @@ export default {
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
-        companyId: joi.number(),
+        companyId: joi.number().required(),
       }))
 
       const users = await CompanyService.findEmployers(formattedData)

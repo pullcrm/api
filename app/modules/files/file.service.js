@@ -1,9 +1,14 @@
 import {mysql} from '../../config/connections'
 import FileModel from './file.model'
+import UserModel from '../users/user.model'
 
 export default {
-  findMyFiles: async ({companyId, userId}) => {
-    return FileModel.findAll({where: {companyId}})
+  findMyFiles: async ({userId}) => {
+    return FileModel.findAll({
+      include: [
+        {model: UserModel, where: {id: userId}, attributes: [], required: true}
+      ]
+    })
   },
 
   upload: async (data, {userId, companyId}) => {
