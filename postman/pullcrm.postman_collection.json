@@ -95,7 +95,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\",\n\t\"code\": 9859\n}",
+							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\",\n\t\"code\": 9780\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -255,7 +255,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\"\n}",
+							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\",\n\t\"avatarId\": 2\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -359,7 +359,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5Mzg2NDc2MiwiZXhwIjoyOTkzODY0NzYyfQ.PqNpMtrbVxhjn-SwhCMVNrsJmRM85wFQd7cKUo4NPL0\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5Mzg4MjMyMiwiZXhwIjoyOTkzODgyMzIyfQ.Y9UWVxDcBU4jxox3Sd_Age5gEhLdk9i2yisOLgQbtsE\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -856,6 +856,93 @@
 								"api",
 								"procedures",
 								"62"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Files",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/inum/Downloads/Group 16.png"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/files",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My files",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/inum/Downloads/Group 16.png"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/files",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"files"
 							]
 						}
 					},
