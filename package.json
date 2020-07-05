@@ -6,7 +6,10 @@
   "author": "uramen <uramen12@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js",
+    "dev": "nodemon --exec babel-node app",
+    "build": "babel app -d dist",
+    "serve": "node dist/index.js",
+    "start": "npm run build && npm run serve",
     "eslint": "eslint ./",
     "eslint:fix": "eslint ./ --fix"
   },
