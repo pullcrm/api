@@ -31,12 +31,12 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
 app.use((req, res, next) => {
-  // const allowedOrigins = ['http://localhost:8080', 'http://127.0.0.1:8000', 'http://pullcrm.com']
-  // const origin = req.headers.origin
+  const allowedOrigins = ['http://localhost:8080', 'http://127.0.0.1:8000', 'http://pullcrm.com']
+  const origin = req.headers.origin
 
-  // if(allowedOrigins.indexOf(origin) > -1) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080')
-  // }
+  if(allowedOrigins.indexOf(origin) > -1) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080')
+  }
 
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-Forwarded-For, Content-Type, Accept, Authorization, Authorization2, Country, user-id')
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
