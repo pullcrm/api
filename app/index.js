@@ -1,3 +1,4 @@
+import http from 'http'
 import bodyParser from 'body-parser'
 import express from 'express'
 import multer from 'multer'
@@ -8,6 +9,7 @@ import logger from 'morgan'
 import {errorsHandler} from './middlewares/errors'
 import './models'
 
+const port = process.env.PORT || '3000'
 const prefix = '/api'
 const app = express()
 
@@ -29,14 +31,14 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:8080']
+  const allowedOrigins = ['http://localhost:8080', 'http://127.0.0.1:8000', 'http://pullcrm.com']
   const origin = req.headers.origin
 
   if(allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin)
   }
 
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-Forwarded-For, Content-Type, Accept, Authorization, Country, user-id')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-Forwarded-For, Content-Type, Accept, Authorization, Authorization2, Country, user-id')
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
   res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
 
@@ -50,4 +52,8 @@ app.use((err, _req, res, _next) => {
   errorsHandler(err, res)
 })
 
-export default app
+const server = http
+  .createServer(app)
+  .listen(port)
+
+export default server
