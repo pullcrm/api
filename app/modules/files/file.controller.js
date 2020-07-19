@@ -29,7 +29,7 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        file: {...req.file, path: req.file.path.replace('uploads/', '')}
+        file: {...req.file, path: req.file.path.replace('uploads', '')}
       }
 
       const params = {

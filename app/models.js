@@ -43,7 +43,7 @@ ProcedureModel.belongsToMany(AppointmentModel,{
 })
 
 CompanyModel.hasMany(ProcedureModel)
-CompanyModel.belongsTo(FileModel, {as: 'avatar'})
+CompanyModel.belongsTo(FileModel, {as: 'logo'})
 
 AppointmentModel.belongsTo(CompanyModel)
 AppointmentModel.belongsTo(UserModel, {as: 'client'})

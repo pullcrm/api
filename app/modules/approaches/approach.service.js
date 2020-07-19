@@ -4,6 +4,7 @@ import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
 import CategoryModel from "../categories/category.model";
 import CityModel from "../cities/city.model";
+import FileModel from '../files/file.model';
 
 export default {
   findAll: async ({companyId}) => {
@@ -26,8 +27,19 @@ export default {
       include: [{
         model: CompanyModel,
         attributes: {exclude: ['categoryId', 'userId', 'cityId']},
-        include: [{model: CategoryModel}, {model: CityModel}]
-      }, {model: RoleModel}, {model: UserModel}]})
+        include: [
+          {model: CategoryModel},
+          {model: CityModel},
+          {model: FileModel, as: 'logo'}
+        ]
+      },
+      {model: RoleModel},
+      {model: UserModel, include: {
+        model: FileModel,
+        as: 'avatar'
+      }}]})
     return approaches
   }
 }
+
+// [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}

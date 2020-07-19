@@ -19,7 +19,10 @@ const FileSchema = (connection, type) => {
     path: {
       type: type.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      get() {
+        return process.env.HOST + this.getDataValue('path')
+      }
     }
   })
 }

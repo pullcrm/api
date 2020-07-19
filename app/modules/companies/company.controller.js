@@ -28,6 +28,7 @@ export default {
         name: req.body.name,
         cityId: req.body.cityId,
         categoryId: req.body.categoryId,
+        logoId: req.body.logoId,
         userId: req.userId
       }
 
@@ -35,6 +36,7 @@ export default {
         name: joi.string().required(),
         cityId: joi.number().required(),
         categoryId: joi.number().required(),
+        logoId: joi.number().optional(),
         userId: joi.number().required()
       }))
 

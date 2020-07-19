@@ -3,8 +3,6 @@ import UserController from './user.controller'
 import auth from '../../middlewares/auth'
 
 const router = Router()
-
-router.get('/', auth(), UserController.index)
 router.post('/', UserController.create)
 router.get('/profile', auth(), UserController.profile)
 router.post('/confirmation', UserController.sendConfirmationCode)

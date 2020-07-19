@@ -4,18 +4,15 @@ import ApiException from "../../exceptions/api"
 import {mysql} from "../../config/connections"
 import ConfirmationModel from "../auth/models/confirmation"
 import SMS from '../../providers/smsc'
+import FileModel from '../files/file.model'
 
 export default {
-  findAll: async () => {
-    return UserModel.findAll()
-  },
-
   findOneByPhone: async ({phone}) => {
-    return UserModel.findOne({where: {phone}, raw: true})
+    return UserModel.findOne({where: {phone}, include: {model: FileModel, as: 'avatar'}, attributes: {exclude: ['avatarId']}})
   },
 
   findOne: async where => {
-    const user = await UserModel.findOne({where})
+    const user = await UserModel.findOne({where, include: {model: FileModel, as: 'avatar'}, attributes: {exclude: ['avatarId']}})
 
     if(!user) {
       throw new ApiException(404, 'User wasn\'t found')
