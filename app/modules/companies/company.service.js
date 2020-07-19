@@ -7,6 +7,7 @@ import CityModel from "../cities/city.model"
 import CategoryModel from "../categories/category.model"
 import ApiException from "../../exceptions/api"
 import ConfirmationModel from '../auth/models/confirmation'
+import FileModel from '../files/file.model'
 
 export default {
   findAll: async params => {
@@ -46,6 +47,11 @@ export default {
 
   findEmployers: async ({companyId, limit, offset}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
-    return company.getEmployers({limit, offset})
+
+    if(!company) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    return company.getEmployers({limit, offset, include: [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}})
   }
 }

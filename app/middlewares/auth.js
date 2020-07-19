@@ -10,7 +10,7 @@ const auth = () => (req, res, next) => {
       return next()
     }
 
-    const authorization = req.headers.authorization2
+    const authorization = req.headers.authorization
 
     if (!authorization) {
       throw new ApiException(403, 'Authorization header isn\'t provided')
