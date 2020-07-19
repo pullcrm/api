@@ -2,9 +2,9 @@ import ApproachModel from './approach.model'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
-import CategoryModel from "../categories/category.model";
-import CityModel from "../cities/city.model";
-import FileModel from '../files/file.model';
+import CategoryModel from "../categories/category.model"
+import CityModel from "../cities/city.model"
+import FileModel from '../files/file.model'
 
 export default {
   findAll: async ({companyId}) => {
@@ -41,5 +41,3 @@ export default {
     return approaches
   }
 }
-
-// [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}
