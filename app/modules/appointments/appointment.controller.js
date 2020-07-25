@@ -61,5 +61,51 @@ export default {
     } catch(error) {
       next(error)
     }
-  }
+  },
+
+  update: async (req, res, next) => {
+    try {
+      const formattedData = {
+        name: req.body.name,
+        price: req.body.price,
+        duration: req.body.duration,
+      }
+
+      const params = {
+        procedureId: req.params.id,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        name: joi.string(),
+        price: joi.number(),
+        duration: joi.number(),
+        procedureId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      // const roles = await ProceduresService.update(formattedData, params)
+      // res.send(roles)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  destroy: async (req, res, next) => {
+    try {
+      const params = {
+        appointmentId: req.params.id,
+        companyId: req.companyId
+      }
+
+      validate(params, joi.object().keys({
+        appointmentId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      res.send(await AppointmentService.destroy(params))
+    } catch (error) {
+      next(error)
+    }
+  },
 }

@@ -20,6 +20,7 @@ export default {
 
     return user
   },
+  
   sendConfirmationCode: async ({phone}) => {
     const user = await UserModel.findOne({where: {phone}}, {raw: true})
 
