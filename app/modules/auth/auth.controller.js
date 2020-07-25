@@ -72,6 +72,7 @@ export default {
 
       //TODO may need to handle different devices in future
       if (user.refreshToken !== formattedData.refreshToken) {
+        console.log('74', user.refreshToken, formattedData.refreshToken)
         throw new ApiException(403, 'Failed to authenticate refresh token')
       }
 
@@ -80,6 +81,7 @@ export default {
       const hasApproach = await ApproachService.hasRow({companyId: formattedData.companyId, roleId: role.id, userId})
 
       if (!hasApproach) {
+        console.log('84', hasApproach, formattedData.companyId, role.id, userId)
         throw new ApiException(403, 'You don\'t have permissions for that operation')
       }
 
@@ -88,6 +90,7 @@ export default {
       res.status(200).send({accessToken, expiresIn})
 
     } catch (error) {
+      console.log('ERROR:', error)
       next(error)
     }
   },
