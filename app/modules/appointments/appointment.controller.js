@@ -67,26 +67,36 @@ export default {
   update: async (req, res, next) => {
     try {
       const formattedData = {
-        name: req.body.name,
-        price: req.body.price,
-        duration: req.body.duration,
+        employeeId: req.body.employeeId,
+        clientId: req.body.clientId,
+        fullname: req.body.fullname,
+        phone: req.body.phone,
+        companyId: req.companyId,
+        procedures: req.body.procedures,
+        date: req.body.date,
+        total: req.body.total,
+        description: req.body.description
       }
 
       const params = {
-        procedureId: req.params.id,
-        companyId: req.companyId
+        appointmentId: req.params.id,
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        name: joi.string(),
-        price: joi.number(),
-        duration: joi.number(),
-        procedureId: joi.number().required(),
-        companyId: joi.number().required()
+        employeeId: joi.number(),
+        clientId: joi.number(),
+        fullname: joi.string(),
+        phone: joi.string(),
+        companyId: joi.number(),
+        procedures: joi.array(),
+        date: joi.date().timestamp(),
+        total: joi.number(),
+        description: joi.string(),
+        appointmentId: joi.number(),
       }))
 
-      // const roles = await ProceduresService.update(formattedData, params)
-      // res.send(roles)
+      const appointment = await AppointmentService.update(formattedData, params)
+      res.send(appointment)
     } catch (error) {
       next(error)
     }
