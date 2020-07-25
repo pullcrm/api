@@ -6,6 +6,8 @@ export default {
   index: async (req, res, next) => {
     try {
       const formattedData = {
+        companyId: req.companyId,
+        userId: req.userId,
         offset: req.query.offset,
         limit: req.query.limit,
       }
@@ -25,14 +27,33 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: req.body.password
+        employeeId: req.body.employeeId,
+        fullname: req.body.fullname,
+        phone: req.body.phone,
+        companyId: req.companyId,
+        procedures: req.body.procedures,
+        date: req.body.date,
+        total: req.body.total,
+        description: req.body.description
       }
 
-      const user = await AppointmentService.create(formattedData)
-      res.send(user)
+      const params = {
+        userId: req.userId
+      }
+
+      validate(formattedData, joi.object().keys({
+        employeeId: joi.number(),
+        fullname: joi.string(),
+        phone: joi.string(),
+        companyId: joi.number(),
+        procedures: joi.array(),
+        date: joi.date().timestamp(),
+        total: joi.number(),
+        description: joi.string()
+      }))
+
+      const appointment = await AppointmentService.create(formattedData, params)
+      res.send(appointment)
     } catch(error) {
       next(error)
     }

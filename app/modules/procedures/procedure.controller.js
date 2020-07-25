@@ -17,8 +17,8 @@ export default {
         companyId: joi.number()
       }))
 
-      const roles = await ProceduresService.findAll(formattedData)
-      res.send(roles)
+      const procedures = await ProceduresService.findAll(formattedData)
+      res.send(procedures)
     } catch (error) {
       next(error)
     }

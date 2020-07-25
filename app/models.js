@@ -10,7 +10,7 @@ import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
 
 CompanyModel.belongsToMany(UserModel, {
-  as: 'employers',
+  as: 'staff',
   through: {model: ApproachModel, unique: false},
 })
 
@@ -34,6 +34,7 @@ ApproachModel.belongsTo(RoleModel)
 
 AppointmentModel.belongsToMany(ProcedureModel,{
   through: 'appointment_procedures',
+  as: 'procedures',
   timestamps: false
 })
 
@@ -42,12 +43,22 @@ ProcedureModel.belongsToMany(AppointmentModel,{
   timestamps: false
 })
 
+UserModel.belongsToMany(ProcedureModel,{
+  through: 'user_procedures',
+  timestamps: false
+})
+
+ProcedureModel.belongsToMany(UserModel,{
+  through: 'user_procedures',
+  timestamps: false
+})
+
 CompanyModel.hasMany(ProcedureModel)
 CompanyModel.belongsTo(FileModel, {as: 'logo'})
 
 AppointmentModel.belongsTo(CompanyModel)
 AppointmentModel.belongsTo(UserModel, {as: 'client'})
-AppointmentModel.belongsTo(UserModel, {as: 'employer'})
+AppointmentModel.belongsTo(UserModel, {as: 'employee'})
 
 FileModel.belongsToMany(UserModel, {
   through: 'file_users',

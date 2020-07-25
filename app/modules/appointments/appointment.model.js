@@ -19,23 +19,19 @@ const AppointmentSchema = (connection, type) => {
       autoIncrement: true
     },
     date: {
-      type: type.DATEONLY,
+      type: type.INTEGER,
       allowNull: false
     },
-    timeStart: {
-      type: type.TIME,
-      allowNull: false
+    phone: {
+      type: type.STRING,
+      allowNull: false,
     },
-    timeEnd: {
-      type: type.TIME,
-      allowNull: false
+    fullname: {
+      type: type.STRING,
+      allowNull: false,
     },
     total: {
       type: type.INTEGER,
-      allowNull: false,
-    },
-    status: {
-      type: type.ENUM('COMPLETED', 'IN_PROGRESS'),
       allowNull: false,
     }
   })

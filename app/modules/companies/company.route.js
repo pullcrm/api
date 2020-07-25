@@ -6,8 +6,8 @@ const router = Router()
 
 router.get('/', auth(), CompanyController.index)
 router.post('/', auth(), CompanyController.create)
-router.get('/my/employers', auth(), CompanyController.findEmployers)
-router.put('/my/employers/:id', auth(), CompanyController.updateEmployer)
-router.post('/my/employers', auth(), CompanyController.addEmployer)
+router.get('/my/staff', auth(), CompanyController.findStaff)
+router.put('/my/staff/:id', auth(), CompanyController.updateEmployee)
+router.post('/my/staff', auth(), CompanyController.addEmployee)
 
 export default router

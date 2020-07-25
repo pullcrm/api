@@ -48,7 +48,7 @@ export default {
     }
   },
 
-  findEmployers: async (req, res, next) => {
+  findStaff: async (req, res, next) => {
     try {
       const formattedData = {
         offset: +req.query.offset || 0,
@@ -62,14 +62,14 @@ export default {
         companyId: joi.number().required(),
       }))
 
-      const users = await CompanyService.findEmployers(formattedData)
+      const users = await CompanyService.findStaff(formattedData)
       res.send(users)
     } catch (error) {
       next(error)
     }
   },
 
-  addEmployer: async (req, res, next) => {
+  addEmployee: async (req, res, next) => {
     try {
       const formattedData = {
         firstName: req.body.firstName,
@@ -92,7 +92,7 @@ export default {
         avatarId: joi.number().optional()
       }))
 
-      const user = await CompanyService.addEmployer(formattedData, params)
+      const user = await CompanyService.addEmployee(formattedData, params)
       res.send(user)
     } catch (error) {
       next(error)
@@ -100,7 +100,7 @@ export default {
   },
 
   //TODO only admin can update his employers
-  updateEmployer: async (req, res, next) => {
+  updateEmployee: async (req, res, next) => {
     try {
       const formattedData = {
         firstName: req.body.firstName,

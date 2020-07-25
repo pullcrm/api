@@ -95,7 +95,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\",\n\t\"code\": 9780\n}",
+							"raw": "{\n\t\"firstName\": \"Yurii\",\n\t\"lastName\": \"Huivan\",\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\",\n\t\"code\": \"0319\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -207,7 +207,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Employers",
+					"name": "Get Staff",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -218,7 +218,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/companies/my/employers?offset=0&limit=2",
+							"raw": "{{host}}/api/companies/my/staff?offset=0&limit=2",
 							"host": [
 								"{{host}}"
 							],
@@ -226,7 +226,7 @@
 								"api",
 								"companies",
 								"my",
-								"employers"
+								"staff"
 							],
 							"query": [
 								{
@@ -243,7 +243,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Employer",
+					"name": "Update Employee",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -263,7 +263,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/employers/1",
+							"raw": "{{host}}/api/companies/my/staff/1",
 							"host": [
 								"{{host}}"
 							],
@@ -271,7 +271,7 @@
 								"api",
 								"companies",
 								"my",
-								"employers",
+								"staff",
 								"1"
 							]
 						}
@@ -279,7 +279,7 @@
 					"response": []
 				},
 				{
-					"name": "Add Employer",
+					"name": "Add Employee",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -299,7 +299,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/employers",
+							"raw": "{{host}}/api/companies/my/staff",
 							"host": [
 								"{{host}}"
 							],
@@ -307,7 +307,7 @@
 								"api",
 								"companies",
 								"my",
-								"employers"
+								"staff"
 							]
 						}
 					},
@@ -359,7 +359,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5Mzg4MjMyMiwiZXhwIjoyOTkzODgyMzIyfQ.Y9UWVxDcBU4jxox3Sd_Age5gEhLdk9i2yisOLgQbtsE\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5NTY2MzQ5MywiZXhwIjoxNTk1NjYzNTAzfQ.JKj-NDz29QalApyQJ5UOWwesSAkHC-UfR59jZoMDu3E\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,7 +456,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"fullname\": \"Yurii Huivan\",\n    \"phone\": \"0958323358\",\n    \"companyId\": 1,\n    \"procedures\": [2, 3],\n    \"date\": 1577891410,\n    \"total\": 520,\n    \"description\": \"Коментарій\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -564,31 +564,6 @@
 							"path": [
 								"api",
 								"approaches"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "My Approach",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/approaches/current",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"approaches",
-								"current"
 							]
 						}
 					},
@@ -738,7 +713,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/procedures?offset=0&limit=1",
+							"raw": "{{host}}/api/procedures?offset=0&limit=0",
 							"host": [
 								"{{host}}"
 							],
@@ -753,7 +728,7 @@
 								},
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "0"
 								}
 							]
 						}
@@ -773,7 +748,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Пілінг\",\n\t\"price\": 400,\n\t\"duration\": 2700000\n}",
+							"raw": "{\n\t\"name\": \"Пілінг2\",\n\t\"price\": 400,\n\t\"duration\": 2700000\n}",
 							"options": {
 								"raw": {
 									"language": "json"

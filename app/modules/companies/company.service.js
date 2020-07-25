@@ -26,7 +26,7 @@ export default {
     return result
   },
 
-  addEmployer: async (data, params) => {
+  addEmployee: async (data, params) => {
     const result = await mysql.transaction(async transaction => {
       const confirmation = await ConfirmationModel.findOne({where: {phone: data.phone, code: data.code}, transaction})
 
@@ -35,8 +35,8 @@ export default {
       }
 
       const user = await UserModel.create(data, {returning: true, transaction})
-      const employerRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
-      await ApproachModel.create({userId: user.id, companyId: params.companyId, roleId: employerRole.id}, {transaction})
+      const employeeRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
+      await ApproachModel.create({userId: user.id, companyId: params.companyId, roleId: employeeRole.id}, {transaction})
       await confirmation.destroy({transaction})
 
       return user
@@ -45,13 +45,13 @@ export default {
     return result
   },
 
-  findEmployers: async ({companyId, limit, offset}) => {
+  findStaff: async ({companyId, limit, offset}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
 
     if(!company) {
       throw new ApiException(403, 'You don\'t own this company!')
     }
 
-    return company.getEmployers({limit, offset, include: [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}})
+    return company.getStaff({limit, offset, include: [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}})
   }
 }
