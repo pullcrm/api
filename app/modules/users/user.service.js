@@ -27,13 +27,15 @@ export default {
       throw new ApiException(404, 'There is such phone')
     }
 
-    const confirmation = await ConfirmationModel.create({
-      code: cryptoRandomString({length: 4, type: 'numeric'}),
+    const randomToken = cryptoRandomString({length: 4, type: 'numeric'}) 
+
+    await SMS.send(phone,`Код PullCRM: ${randomToken}`)
+
+    await ConfirmationModel.create({
+      code: randomToken,
       phone
     })
-
-    await SMS.send(phone,`Код PullCRM: ${confirmation.code}`)
-
+    
     return {message: 'OK'}
   },
 
