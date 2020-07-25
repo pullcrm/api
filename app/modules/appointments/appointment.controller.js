@@ -44,6 +44,7 @@ export default {
         userId: req.userId
       }
 
+      //TODO need to validate clientId, procedures for owner
       validate(formattedData, joi.object().keys({
         employeeId: joi.number(),
         clientId: joi.number(),

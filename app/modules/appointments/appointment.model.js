@@ -20,12 +20,16 @@ const AppointmentSchema = (connection, type) => {
     },
     date: {
       type: type.INTEGER,
-      allowNull: false
+      allowNull: false,
+      // isStep15Minutes(value) {
+      //   if (new Date(+value * 1000).getMinutes() % 15 !== 0) {
+      //     throw new Error('Step should be 15m')
+      //   }
+      // }
     },
     phone: {
       type: type.STRING,
     },
-    
     fullname: {
       type: type.STRING,
     },
