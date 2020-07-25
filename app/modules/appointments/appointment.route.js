@@ -4,7 +4,7 @@ import auth from '../../middlewares/auth'
 
 const router = Router()
 
-router.get('/', AppointmentController.index)
+router.get('/',  auth(), AppointmentController.index)
 router.post('/', auth(), AppointmentController.create)
 
 export default router

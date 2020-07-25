@@ -13,8 +13,10 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        offset: joi.number(),
-        limit: joi.number(),
+        offset: joi.number().optional(),
+        limit: joi.number().optional(),
+        userId: joi.number().required(),
+        companyId: joi.number().required()
       }))
 
       const appointments = await AppointmentService.findAll(formattedData)
