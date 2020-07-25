@@ -13,7 +13,7 @@ const createAccessToken = (userId, companyId = 0, role = '-') => {
 }
 
 const createRefreshToken = user => {
-  return jwt.sign({userId: user.id}, process.env.SECRET_REFRESH_FOR_JWT, {expiresIn: 10})
+  return jwt.sign({userId: user.id}, process.env.SECRET_REFRESH_FOR_JWT, {expiresIn: refreshTokenExpiring})
 }
 
 export {createAccessToken, createRefreshToken}

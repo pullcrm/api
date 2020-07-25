@@ -70,6 +70,9 @@ export default {
       const userId = payload.userId
       const user = await AuthService.findBy({id: userId})
 
+      console.log('USER_REFRESH_TOKEN', user.refreshToken)
+      console.log('REFRESH_TOKEN:', formattedData.refreshToken)
+
       //TODO may need to handle different devices in future
       if (user.refreshToken !== formattedData.refreshToken) {
         console.log('74', user)
