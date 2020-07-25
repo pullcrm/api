@@ -24,11 +24,10 @@ const AppointmentSchema = (connection, type) => {
     },
     phone: {
       type: type.STRING,
-      allowNull: false,
     },
+    
     fullname: {
       type: type.STRING,
-      allowNull: false,
     },
     total: {
       type: type.INTEGER,

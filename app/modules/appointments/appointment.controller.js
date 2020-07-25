@@ -13,8 +13,8 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        offset: joi.number().optional(),
-        limit: joi.number().optional(),
+        offset: joi.number(),
+        limit: joi.number(),
         userId: joi.number().required(),
         companyId: joi.number().required()
       }))
@@ -30,6 +30,7 @@ export default {
     try {
       const formattedData = {
         employeeId: req.body.employeeId,
+        clientId: req.body.clientId,
         fullname: req.body.fullname,
         phone: req.body.phone,
         companyId: req.companyId,
@@ -45,6 +46,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         employeeId: joi.number(),
+        clientId: joi.number(),
         fullname: joi.string(),
         phone: joi.string(),
         companyId: joi.number(),
