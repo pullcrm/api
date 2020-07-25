@@ -72,7 +72,8 @@ export default {
 
       //TODO may need to handle different devices in future
       if (user.refreshToken !== formattedData.refreshToken) {
-        console.log('74', user.refreshToken, formattedData.refreshToken)
+        console.log('74', user)
+        console.log('USER', formattedData.refreshToken)
         throw new ApiException(403, 'Failed to authenticate refresh token')
       }
 
