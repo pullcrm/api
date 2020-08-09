@@ -91,7 +91,7 @@ export default {
         phone: joi.string(),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date()(),
+        date: joi.date(),
         total: joi.number(),
         description: joi.string(),
         appointmentId: joi.number(),
