@@ -37,6 +37,10 @@ const AppointmentSchema = (connection, type) => {
     total: {
       type: type.INTEGER,
       allowNull: false,
+    },
+    description: {
+      type: type.STRING,
+      allowNull: true,
     }
   })
 }
