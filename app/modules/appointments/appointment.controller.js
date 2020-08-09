@@ -10,11 +10,13 @@ export default {
         userId: req.userId,
         offset: req.query.offset,
         limit: req.query.limit,
+        date: req.query.date,
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
+        date: joi.string(),
         userId: joi.number().required(),
         companyId: joi.number().required()
       }))
@@ -52,7 +54,7 @@ export default {
         phone: joi.string(),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date().timestamp(),
+        date: joi.date(),
         total: joi.number(),
         description: joi.string()
       }))

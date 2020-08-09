@@ -3,11 +3,22 @@ import {mysql} from '../../config/connections'
 import ProcedureModel from '../procedures/procedure.model'
 import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
+import {addDayToDate, formatDate} from '../../utils/time'
+import {Op} from 'sequelize'
 
 export default {
-  findAll: async data => {
+  findAll: async ({date, companyId}) => {
+    const baseCondition = {companyId: companyId}
+
+    if(date) {
+      baseCondition.date = {
+        [Op.gt]: formatDate(date),
+        [Op.lt]: addDayToDate(date)
+      }
+    }
+
     return AppointmentModel.findAll({
-      where: {companyId: data.companyId},
+      where: baseCondition,
       attributes: {exclude: ['companyId', 'employeeId', 'clientId']},
       include: [
         {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},

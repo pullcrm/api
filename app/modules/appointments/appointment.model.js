@@ -19,7 +19,8 @@ const AppointmentSchema = (connection, type) => {
       autoIncrement: true
     },
     date: {
-      type: type.BIGINT,
+      type: 'TIMESTAMP',
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       allowNull: false,
       // isStep15Minutes(value) {
       //   if (new Date(+value * 1000).getMinutes() % 15 !== 0) {
