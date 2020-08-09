@@ -19,7 +19,7 @@ const AppointmentSchema = (connection, type) => {
       autoIncrement: true
     },
     date: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       allowNull: false,
       // isStep15Minutes(value) {
       //   if (new Date(+value * 1000).getMinutes() % 15 !== 0) {
