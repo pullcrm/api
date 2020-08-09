@@ -21,7 +21,7 @@ const FileSchema = (connection, type) => {
       allowNull: false,
       unique: true,
       get() {
-        return process.env.HOST + this.getDataValue('path')
+        return process.env.HOST + '/api' + this.getDataValue('path')
       }
     }
   })

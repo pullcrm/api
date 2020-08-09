@@ -23,7 +23,7 @@ const storageConfig = multer.diskStorage({
   filename: (req, file, cb) => cb(null, file.originalname)
 })
 
-app.use(express.static('uploads'))
+app.use('/api', express.static('uploads'))
 app.use(multer({storage: storageConfig}).single('file'))
 
 app.use(logger('dev'))
