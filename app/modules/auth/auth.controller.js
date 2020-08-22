@@ -1,13 +1,11 @@
-import bCrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import joi from 'joi'
-import AuthService from './auth.service'
+import AuthService from './services/auth'
 import ApproachService from '../approaches/approach.service'
 import RoleService from '../roles/role.service'
-import ApiException from "../../exceptions/api"
-import {createAccessToken, createRefreshToken} from '../../utils/createTokens'
+import {generateAccessToken, generateRefreshToken, verifyRefreshToken} from '../../utils/token'
 import validate from "../../utils/validate"
+import TokenService from './services/token'
 
 export default {
   login: async (req, res, next) => {
@@ -23,29 +21,17 @@ export default {
       }))
 
       const user = await AuthService.findBy({phone: formattedData.phone})
+      const userId = user.get('id')
 
-      if(!user) {
-        throw new ApiException(401, 'Invalid password or email')
-      }
+      AuthService.checkPasswords(formattedData.password, user.password)
 
-      const passwordIsValid = bCrypt.compareSync(formattedData.password, user.password)
+      const accessToken = generateAccessToken(userId)
+      const refreshToken = generateRefreshToken(userId)
 
-      if (!passwordIsValid) {
-        throw new ApiException(401, 'Invalid password or email')
-      }
+      await TokenService.create(refreshToken, userId)
+      await TokenService.leaveFiveTokens(userId)
 
-      //TODO last company is't a good, should be last usage company
-      // const approaches = user.get('approaches', {plain: true})
-      // const lastApproach = approaches[approaches.length - 1]
-
-      const {accessToken, expiresIn} = createAccessToken(user.id)
-      const refreshToken = createRefreshToken(user.get({plain: true}))
-
-      user.refreshToken = refreshToken
-
-      await user.save()
-
-      res.send({accessToken, refreshToken, expiresIn})
+      res.send({accessToken, refreshToken})
     } catch (error) {
       next(error)
     }
@@ -53,43 +39,29 @@ export default {
 
   refreshToken: async (req, res, next) => {
     try {
-      const formattedData = {
-        //TODO refreshToken should be httpOnly
-        refreshToken: req.body.refreshToken,
-        companyId: req.body.companyId,
-        role: req.body.role
-      }
+      const
+        refreshToken = req.body.refreshToken,
+        companyId = req.body.companyId,
+        roleName = req.body.role,
+        userId = req.userId
 
-      validate(formattedData, joi.object().keys({
+      validate({refreshToken, companyId, roleName, userId}, joi.object().keys({
         refreshToken: joi.string().required(),
         companyId: joi.number().required(),
-        role: joi.string().required(),
+        roleName: joi.string().required(),
+        userId: joi.number().required(),
       }))
 
-      const payload = jwt.verify(formattedData.refreshToken, process.env.SECRET_REFRESH_FOR_JWT)
-      const userId = payload.userId
-      const user = await AuthService.findBy({id: userId})
+      verifyRefreshToken(refreshToken)
 
-      console.log('USER_REFRESH_TOKEN', user.refreshToken)
-      console.log('REFRESH_TOKEN:', formattedData.refreshToken)
+      const role = await RoleService.findBy({name: roleName})
 
-      //TODO may need to handle different devices/browsers in future
-      if (user.refreshToken !== formattedData.refreshToken) {
-        throw new ApiException(403, 'Failed to authenticate refresh token')
-      }
+      await TokenService.checkRefreshToken(refreshToken, userId)
+      await ApproachService.checkApproach(companyId, role.id, userId)
 
-      const role = await RoleService.findBy({name: formattedData.role})
+      const accessToken = generateAccessToken(userId, companyId, roleName)
 
-      const hasApproach = await ApproachService.hasRow({companyId: formattedData.companyId, roleId: role.id, userId})
-
-      if (!hasApproach) {
-        throw new ApiException(403, 'You don\'t have permissions for that operation')
-      }
-
-      const {accessToken, expiresIn} = createAccessToken(user.id, formattedData.companyId, role.name)
-
-      res.status(200).send({accessToken, expiresIn})
-
+      res.status(200).send({accessToken})
     } catch (error) {
       next(error)
     }

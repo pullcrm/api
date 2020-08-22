@@ -8,6 +8,7 @@ import ProcedureModel from "./modules/procedures/procedure.model"
 import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
+import TokenModel from "./modules/auth/models/token"
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'staff',
@@ -23,6 +24,7 @@ ApproachModel.belongsTo(UserModel)
 ApproachModel.belongsTo(CompanyModel)
 
 UserModel.hasMany(ApproachModel)
+UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
 
 CompanyModel.hasMany(ApproachModel)

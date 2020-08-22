@@ -5,6 +5,7 @@ import UserModel from '../users/user.model'
 import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
+import ApiException from '../../exceptions/api'
 
 export default {
   findAll: async ({companyId}) => {
@@ -15,9 +16,12 @@ export default {
     return ApproachModel.create(data)
   },
 
-  hasRow: async data => {
-    const raw = await ApproachModel.findOne({where: data, raw: true})
-    return Boolean(raw)
+  checkApproach: async (companyId, roleId, userId) => {
+    const approach = await ApproachModel.findOne({where: {companyId, roleId, userId}})
+
+    if (!approach) {
+      throw new ApiException(403, 'You don\'t have permissions for that operation')
+    }
   },
 
   findMyApproaches: async userId => {
@@ -38,6 +42,7 @@ export default {
         model: FileModel,
         as: 'avatar'
       }}]})
+    
     return approaches
   }
 }

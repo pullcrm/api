@@ -10,6 +10,16 @@ import ConfirmationModel from '../auth/models/confirmation'
 import FileModel from '../files/file.model'
 
 export default {
+  findBy: async data => {
+    const company = await CompanyModel.findOne({where: data, raw: true})
+
+    if(!company) {
+      throw new ApiException(404, 'Company was not found')
+    }
+
+    return company
+  },
+
   findAll: async params => {
     return CompanyModel.findAll({where: {userId: params.userId}})
   },

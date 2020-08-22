@@ -54,14 +54,10 @@ const UserSchema = (connection, type) => {
     password: {
       type: type.STRING,
       allowNull: true,
-    },
-    refreshToken: {
-      type: type.STRING,
-      allowNull: true,
     }
   }, {
     defaultScope: {
-      attributes: {exclude: ['password', 'refreshToken']}
+      attributes: {exclude: ['password', 'refreshTokens']}
     },
     scopes: {
       withPasswordAndRefreshToken: {
