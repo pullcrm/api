@@ -23,8 +23,8 @@ export default {
   
   sendConfirmationCode: async ({phone}) => {
     const user = await UserModel.findOne({where: {phone}}, {raw: true})
-
-    if(user) {
+    
+    if(!user) {
       throw new ApiException(404, 'There is such phone')
     }
 
@@ -49,6 +49,29 @@ export default {
       }
 
       const user = await UserModel.create(data, {returning: true, transaction})
+      await confirmation.destroy({transaction})
+
+      return user
+    })
+
+    return result
+  },
+
+  resetPassword: async data => {
+    const result = await mysql.transaction(async transaction => {
+      const confirmation = await ConfirmationModel.findOne({where: {phone: data.phone, code: data.code}, transaction})
+
+      if(!confirmation) {
+        throw new ApiException(403, 'Code for reseting password is not correct')
+      }
+
+      const user = await UserModel.findOne({where: {phone: data.phone}, transaction})
+
+      if(!user) {
+        throw new ApiException(404, 'User was not found')
+      }
+
+      await user.update({password: data.newPassword}, {transaction})
       await confirmation.destroy({transaction})
 
       return user

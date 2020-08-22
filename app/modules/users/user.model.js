@@ -71,6 +71,12 @@ const UserSchema = (connection, type) => {
         }
       },
 
+      beforeUpdate: user => {
+        if(user.password) {
+          user.password = encryptPassword(user.password)
+        }
+      },
+
       beforeBulkUpdate: options => {
         if(options.attributes.password) {
           options.attributes.password = encryptPassword(options.attributes.password)

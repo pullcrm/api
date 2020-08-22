@@ -7,5 +7,6 @@ router.post('/', UserController.create)
 router.get('/profile', auth(), UserController.profile)
 router.post('/confirmation', UserController.sendConfirmationCode)
 router.get('/search', auth(), UserController.search)
+router.post('/restore', UserController.resetPassword)
 
 export default router

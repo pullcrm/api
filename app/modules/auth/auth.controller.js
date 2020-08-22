@@ -6,6 +6,10 @@ import RoleService from '../roles/role.service'
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken} from '../../utils/token'
 import validate from "../../utils/validate"
 import TokenService from './services/token'
+import UserService from '../users/user.service'
+import ApiException from '../../exceptions/api'
+import cryptoRandomString from 'crypto-random-string'
+import smsc from '../../providers/smsc'
 
 export default {
   login: async (req, res, next) => {

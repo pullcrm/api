@@ -142,6 +142,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"phone\": \"0958323358\",\n\t\"newPassword\": \"2222\",\n\t\"code\": 8995\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/restore",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"restore"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -326,7 +354,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"phone\": \"0958323358\",\n\t\"password\": \"1111\"\n}",
+							"raw": "{\n\t\"phone\": \"0958323358\",\n\t\"password\": \"2222\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -353,13 +381,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Baerer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3ROYW1lIjoiWXVyaWkiLCJsYXN0TmFtZSI6Ikh1aXZhbiIsImVtYWlsIjoidXJhbWVuMTJAZ21haWwuY29tIiwiaWF0IjoxNTg3NDk1NDk3LCJleHAiOjE1ODgxOTU0OTd9.Fbe6UNFitPse4e15UTi5bC96F9Tiw5fa3AQ-dmtTk7E",
+								"value": "Baerer {{token}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5NTY2MzQ5MywiZXhwIjoxNTk1NjYzNTAzfQ.JKj-NDz29QalApyQJ5UOWwesSAkHC-UfR59jZoMDu3E\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5NTcwNTk3MSwiZXhwIjoxNTk4Mjk3OTcxfQ.JxDnJIH8GR3pV9aabxBRU8ZPFrZsvjYeJtf_KBPMW-I\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -431,13 +459,19 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments",
+							"raw": "{{host}}/api/appointments?date=2020-07-25",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"appointments"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2020-07-25"
+								}
 							]
 						}
 					},
