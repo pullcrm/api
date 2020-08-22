@@ -387,7 +387,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5NTcwNTk3MSwiZXhwIjoxNTk4Mjk3OTcxfQ.JxDnJIH8GR3pV9aabxBRU8ZPFrZsvjYeJtf_KBPMW-I\",\n\t\"companyId\": 1,\n\t\"role\": \"ADMIN\"\n}\n",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5ODEwMTA5NCwiZXhwIjoxNjAwNjkzMDk0fQ.NkXkvntn4-DAQWohsMyfy4Zrq0Xy2bGrNLo8XlGMmLI\",\n\t\"companyId\": 1,\n\t\"userId\": 1,\n\t\"role\": \"ADMIN\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"

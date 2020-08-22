@@ -47,7 +47,7 @@ export default {
         refreshToken = req.body.refreshToken,
         companyId = req.body.companyId,
         roleName = req.body.role,
-        userId = req.userId
+        userId = req.body.userId
 
       validate({refreshToken, companyId, roleName, userId}, joi.object().keys({
         refreshToken: joi.string().required(),
