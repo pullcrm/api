@@ -122,7 +122,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"phone\": \"0958323358\"\n}",
+							"raw": "{\n\t\"phone\": \"0660646333\",\n\t\"type\": \"REGISTRATION\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
