@@ -32,6 +32,8 @@ export default {
         file: {...req.file, path: req.file.path.replace('uploads', '')}
       }
 
+      console.log(req.file)
+
       const params = {
         userId: req.userId,
         companyId: req.companyId
@@ -41,7 +43,8 @@ export default {
         file: joi.object().keys({
           filename: joi.string().required(),
           mimetype: joi.string().required(),
-          path: joi.string().required()
+          path: joi.string().required(),
+          size: joi.number().integer().max(500000).error(new Error('File shoud be less than 500k'))
         }).unknown().required(),
         userId: joi.number().required(),
         companyId: joi.number().optional()
