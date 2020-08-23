@@ -1,6 +1,7 @@
+import joi from "joi"
 import UserService from './user.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import {REGISTRATION, RESET_PASSWORD} from '../../constants/redis'
 
 export default {
   create: async (req, res, next) => {
@@ -19,7 +20,7 @@ export default {
         lastName: joi.string().required(),
         phone: joi.string().required(),
         password: joi.string().required(),
-        code: joi.number().required(),
+        code: joi.string().max(4).required(),
         avatarId: joi.number().optional()
       }))
 
@@ -67,13 +68,12 @@ export default {
     try {
       const formattedData = {
         phone: req.body.phone,
-        // FIXME
-        isRestore: req.body.isRestore || false
+        type: req.body.type
       }
 
       validate(formattedData, joi.object().keys({
         phone: joi.string().required(),
-        isRestore: joi.boolean()
+        type: joi.string().valid(REGISTRATION, RESET_PASSWORD)
       }))
 
       res.send(await UserService.sendConfirmationCode(formattedData))
@@ -93,7 +93,7 @@ export default {
       validate(formattedData, joi.object().keys({
         phone: joi.string().max(10).required(),
         newPassword: joi.string().max(256).required(),
-        code: joi.number().required(),
+        code: joi.string().max(4).required(),
       }))
 
       const user = await UserService.resetPassword(formattedData)

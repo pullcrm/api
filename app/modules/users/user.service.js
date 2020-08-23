@@ -1,10 +1,10 @@
 import cryptoRandomString from 'crypto-random-string'
 import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
-import {mysql} from "../../config/connections"
-import ConfirmationModel from "../auth/models/confirmation"
 import SMS from '../../providers/smsc'
+import {client as redis} from '../../providers/redis'
 import FileModel from '../files/file.model'
+import {RESET_PASSWORD, REGISTRATION} from '../../constants/redis'
 
 export default {
   findOneByPhone: async ({phone}) => {
@@ -21,66 +21,60 @@ export default {
     return user
   },
   
-  sendConfirmationCode: async ({phone, isRestore}) => {
-    // FIXME
-    if (isRestore) {
-      const user = await UserModel.findOne({where: {phone}}, {raw: true})
-      
-      if(!user) {
-        throw new ApiException(404, 'There is such phone')
-      }
-    }
+  sendConfirmationCode: async ({phone, type}) => {
+    const code = cryptoRandomString({length: 4, type: 'numeric'}) 
 
-    const randomToken = cryptoRandomString({length: 4, type: 'numeric'}) 
-
-    await SMS.send(phone,`Код PullCRM: ${randomToken}`)
-
-    await ConfirmationModel.create({
-      code: randomToken,
+    redis.hmset(`${type}-${phone}`, {
+      code,
+      type,
       phone
     })
+
+    redis.expire(`${type}-${phone}`, 1800)
+
+    await SMS.send(phone,`Код PullCRM: ${code}`)
     
     return {message: 'OK'}
   },
 
   create: async data => {
-    const result = await mysql.transaction(async transaction => {
-      const confirmation = await ConfirmationModel.findOne({where: {phone: data.phone, code: data.code}, transaction})
+    const registrationKey = `${REGISTRATION}-${data.phone}`
+    const confirmation = await redis.hgetall(registrationKey)
 
-      if(!confirmation) {
-        throw new ApiException(403, 'Code for completing the registration is not correct')
-      }
+    if(!confirmation) {
+      throw new ApiException(403, 'Code for completing the registration is not correct')
+    }
 
-      const user = await UserModel.create(data, {returning: true, transaction})
-      await confirmation.destroy({transaction})
+    if(confirmation.code !== data.code || confirmation.phone !== data.phone) {
+      throw new ApiException(403, 'Code or phone is not correct')
+    }
 
-      return user
-    })
+    redis.del(registrationKey)
 
-    return result
+    return UserModel.create(data, {returning: true})
   },
 
-  resetPassword: async data => {
-    const result = await mysql.transaction(async transaction => {
-      const confirmation = await ConfirmationModel.findOne({where: {phone: data.phone, code: data.code}, transaction})
+  resetPassword: async ({phone, newPassword, code}) => {
+    const resetPasswordKey = `${RESET_PASSWORD}-${phone}`
+    const confirmation = await redis.hgetall(resetPasswordKey)
 
-      if(!confirmation) {
-        throw new ApiException(403, 'Code for reseting password is not correct')
-      }
+    if(!confirmation) {
+      throw new ApiException(403, 'Code for reseting password is not correct')
+    }
 
-      const user = await UserModel.findOne({where: {phone: data.phone}, transaction})
+    if(confirmation.code !== code || confirmation.phone !== phone) {
+      throw new ApiException(403, 'Code or phone is not correct')
+    }
 
-      if(!user) {
-        throw new ApiException(404, 'User was not found')
-      }
+    const user = await UserModel.findOne({where: {phone}})
 
-      await user.update({password: data.newPassword}, {transaction})
-      await confirmation.destroy({transaction})
+    if(!user) {
+      throw new ApiException(404, 'User was not found')
+    }
 
-      return user
-    })
+    redis.del(resetPasswordKey)
 
-    return result
+    return user.update({password: newPassword})
   },
 
   update: async (data, {userId}) => {

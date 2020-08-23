@@ -3,6 +3,7 @@ import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import UserService from '../users/user.service'
+import { mysql } from "../../config/connections"
 
 export default {
   index: async (req, res, next) => {
@@ -85,15 +86,21 @@ export default {
 
       validate({...formattedData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
-        code: joi.number().required(),
+        code: joi.string().max(4).required(),
         firstName: joi.string().required(),
         lastName: joi.string().required(),
         phone: joi.string().required(),
         avatarId: joi.number().optional()
       }))
 
-      const user = await CompanyService.addEmployee(formattedData, params)
-      res.send(user)
+      const result = await mysql.transaction(async transaction => {
+        const user = await UserService.create(formattedData, params, transaction)
+        await CompanyService.addEmployee(user, params, transaction)
+
+        return user
+      })
+
+      res.send(result)
     } catch (error) {
       next(error)
     }
