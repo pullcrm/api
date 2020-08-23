@@ -67,10 +67,13 @@ export default {
     try {
       const formattedData = {
         phone: req.body.phone,
+        // FIXME
+        isRestore: req.body.isRestore || false
       }
 
       validate(formattedData, joi.object().keys({
         phone: joi.string().required(),
+        isRestore: joi.boolean()
       }))
 
       res.send(await UserService.sendConfirmationCode(formattedData))

@@ -21,11 +21,14 @@ export default {
     return user
   },
   
-  sendConfirmationCode: async ({phone}) => {
-    const user = await UserModel.findOne({where: {phone}}, {raw: true})
-    
-    if(!user) {
-      throw new ApiException(404, 'There is such phone')
+  sendConfirmationCode: async ({phone, isRestore}) => {
+    // FIXME
+    if (isRestore) {
+      const user = await UserModel.findOne({where: {phone}}, {raw: true})
+      
+      if(!user) {
+        throw new ApiException(404, 'There is such phone')
+      }
     }
 
     const randomToken = cryptoRandomString({length: 4, type: 'numeric'}) 
