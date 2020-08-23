@@ -56,7 +56,7 @@ export default {
         procedures: joi.array(),
         date: joi.date(),
         total: joi.number(),
-        description: joi.string()
+        description: joi.string().allow('')
       }))
 
       const appointment = await AppointmentService.create(formattedData, params)
