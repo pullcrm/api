@@ -93,7 +93,7 @@ export default {
         procedures: joi.array(),
         date: joi.date(),
         total: joi.number(),
-        description: joi.string(),
+        description: joi.string().allow(''),
         appointmentId: joi.number(),
       }))
 
