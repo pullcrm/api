@@ -28,6 +28,11 @@ const AppointmentSchema = (connection, type) => {
       //   }
       // }
     },
+    isQueue: {
+      type: type.BOOLEAN,
+      allowNull: false,
+      defaultValue: '0'
+    },
     phone: {
       type: type.STRING,
     },
