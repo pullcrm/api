@@ -79,10 +79,10 @@ mysql.sync().then(async () => {
   }
 
   if(categoriesCount === 0) {
-    await CategoryModel.bulkCreate([{name: 'Перукарня'}, {name: 'Пральня'}])
+    await CategoryModel.bulkCreate([{name: 'Barbershop'}, {name: 'Салон красоты'}])
   }
 
   if(citiesCount === 0) {
-    await CityModel.bulkCreate([{name: 'Чернівці'}, {name: 'Київ'}])
+    await CityModel.bulkCreate([{name: 'Черновцы'}, {name: 'Киев'}])
   }
 })
