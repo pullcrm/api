@@ -89,7 +89,8 @@ export default {
         procedures: req.body.procedures,
         date: req.body.date,
         total: req.body.total,
-        description: req.body.description
+        description: req.body.description,
+        isQueue: req.body.isQueue
       }
 
       const params = {
@@ -107,6 +108,7 @@ export default {
         total: joi.number(),
         description: joi.string().allow(''),
         appointmentId: joi.number(),
+        isQueue: joi.boolean().allow(null),
       }))
 
       const appointment = await AppointmentService.update(formattedData, params)
