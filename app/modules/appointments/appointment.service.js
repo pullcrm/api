@@ -7,10 +7,10 @@ import {addDayToDate, formatDate} from '../../utils/time'
 import {Op} from 'sequelize'
 
 export default {
-  findAll: async ({date, companyId}) => {
-    const baseCondition = {companyId: companyId}
+  findAll: async ({date, companyId, isQueue = false}) => {
+    const baseCondition = {companyId, isQueue}
 
-    if(date) {
+    if(date && isQueue === false) {
       baseCondition.date = {
         [Op.gt]: formatDate(date),
         [Op.lt]: addDayToDate(date)

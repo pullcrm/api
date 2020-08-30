@@ -21,8 +21,18 @@ export default {
         companyId: joi.number().required()
       }))
 
-      const appointments = await AppointmentService.findAll(formattedData)
-      res.send(appointments)
+      const [appointments, queue] = await Promise.all([
+        AppointmentService.findAll(formattedData),
+        AppointmentService.findAll({
+          ...formattedData,
+          isQueue: true
+        })
+      ])
+
+      res.send({
+        queue,
+        appointments
+      })
     } catch(error) {
       next(error)
     }
