@@ -48,6 +48,7 @@ export default {
         companyId: req.companyId,
         procedures: req.body.procedures,
         date: req.body.date,
+        startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
         isQueue: req.body.isQueue
@@ -66,9 +67,10 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
+        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/),
         total: joi.number(),
         description: joi.string().allow(''),
-        isQueue: joi.boolean().allow(null)
+        isQueue: joi.boolean().allow(null),
       }))
 
       const appointment = await AppointmentService.create(formattedData, params)
@@ -88,6 +90,7 @@ export default {
         companyId: req.companyId,
         procedures: req.body.procedures,
         date: req.body.date,
+        startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
         isQueue: req.body.isQueue
@@ -105,6 +108,7 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
+        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/),
         total: joi.number(),
         description: joi.string().allow(''),
         appointmentId: joi.number(),

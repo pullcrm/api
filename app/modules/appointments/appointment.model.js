@@ -19,8 +19,8 @@ const AppointmentSchema = (connection, type) => {
       autoIncrement: true
     },
     date: {
-      type: 'TIMESTAMP',
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      type: type.DATEONLY,
+      defaultValue: Sequelize.NOW,
       allowNull: false,
       // isStep15Minutes(value) {
       //   if (new Date(+value * 1000).getMinutes() % 15 !== 0) {
@@ -28,10 +28,14 @@ const AppointmentSchema = (connection, type) => {
       //   }
       // }
     },
+    startTime: {
+      type: type.TIME,
+      allowNull: false,
+    },
     isQueue: {
       type: type.BOOLEAN,
       allowNull: false,
-      defaultValue: '0'
+      defaultValue: 0
     },
     phone: {
       type: type.STRING,
