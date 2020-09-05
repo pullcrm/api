@@ -19,7 +19,7 @@ const AppointmentSchema = (connection, type) => {
       autoIncrement: true
     },
     date: {
-      type: type.DATEONLY,
+      type: type.DATE,
       defaultValue: Sequelize.NOW,
       allowNull: false,
       // isStep15Minutes(value) {

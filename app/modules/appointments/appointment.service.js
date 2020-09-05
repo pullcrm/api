@@ -12,7 +12,7 @@ export default {
 
     if(date && isQueue === false) {
       baseCondition.date = {
-        [Op.gt]: formatDate(date),
+        [Op.gt]: date,
         [Op.lt]: addDayToDate(date)
       }
     }
