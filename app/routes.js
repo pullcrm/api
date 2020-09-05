@@ -9,6 +9,7 @@ import categoryRouter from './modules/categories/category.route'
 import approachRouter from './modules/approaches/approach.route'
 import procedureRouter from './modules/procedures/procedure.route'
 import fileRouter from './modules/files/file.route'
+import notificationRouter from './modules/notification/notification.route'
 
 const api = Router()
 
@@ -22,5 +23,6 @@ api.use('/categories', categoryRouter)
 api.use('/approaches', approachRouter)
 api.use('/procedures', procedureRouter)
 api.use('/files', fileRouter)
+api.use('/notification', notificationRouter)
 
 export default api
