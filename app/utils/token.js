@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import ApiException from '../exceptions/api'
 
-const accessTokenExpiring = '1h'
+const accessTokenExpiring = '24h'
 const refreshTokenExpiring = '30d'
 const accessSecret = process.env.SECRET_FOR_JWT
 const refreshSecret = process.env.SECRET_REFRESH_FOR_JWT

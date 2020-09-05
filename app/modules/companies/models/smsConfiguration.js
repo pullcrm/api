@@ -1,19 +1,19 @@
 import {mysql} from "../../../config/connections"
 import {Sequelize} from "sequelize"
 
-const CompanySchema = (connection, type) => {
-  return connection.define('companies', {
+const SMSConfigurationSchema = (connection, type) => {
+  return connection.define('sms_configurations', {
     id: {
       type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
+    token: {
       type: type.STRING,
       allowNull: false
     }
   })
 }
 
-const CompanyModel = CompanySchema(mysql, Sequelize)
-export default CompanyModel
+const SMSConfigurationModel = SMSConfigurationSchema(mysql, Sequelize)
+export default SMSConfigurationModel

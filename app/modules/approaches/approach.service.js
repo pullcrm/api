@@ -6,6 +6,7 @@ import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
+import SMSConfigurationModel from '../companies/models/smsConfiguration'
 
 export default {
   findAll: async ({companyId}) => {
@@ -34,6 +35,7 @@ export default {
         include: [
           {model: CategoryModel},
           {model: CityModel},
+          {model: SMSConfigurationModel},
           {model: FileModel, as: 'logo'}
         ]
       },

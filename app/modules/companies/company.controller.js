@@ -49,6 +49,62 @@ export default {
     }
   },
 
+  addSMSConfiguration: async (req, res, next) => {
+    try {
+      const formattedData = {
+        token: req.body.token,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        token: joi.string().required(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+      }))
+
+      const company = await CompanyService.addSMSConfiguration(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  update: async (req, res, next) => {
+    try {
+      const formattedData = {
+        name: req.body.name,
+        cityId: req.body.cityId,
+        categoryId: req.body.categoryId,
+        logoId: req.body.logoId,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: +req.params.id
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        name: joi.string(),
+        cityId: joi.number(),
+        categoryId: joi.number(),
+        logoId: joi.number(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+      }))
+
+      const company = await CompanyService.update(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   findStaff: async (req, res, next) => {
     try {
       const formattedData = {

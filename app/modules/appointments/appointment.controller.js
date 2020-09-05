@@ -135,4 +135,27 @@ export default {
       next(error)
     }
   },
+
+  changeSMSIdentifier: async (req, res, next) => {
+    try {
+      const data = {
+        smsIdentifier: req.body.smsIdentifier,
+      }
+
+      const params = {
+        appointmentId: req.params.id,
+        companyId: req.companyId
+      }
+
+      validate({...data, ...params}, joi.object().keys({
+        smsIdentifier: joi.string(),
+        appointmentId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      res.send(await AppointmentService.changeSMSIdentifier(data, params))
+    } catch (error) {
+      next(error)
+    }
+  },
 }

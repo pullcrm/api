@@ -74,4 +74,18 @@ export default {
     await appointment.destroy({cascade: true})
     return {destroy: 'OK'}
   },
+
+  changeSMSIdentifier: async ({smsIdentifier}, {appointmentId, companyId}) => {
+    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
+
+    if(!appointment) {
+      throw new ApiException(404, 'Appointment wasn\'t found')
+    }
+
+    if(appointment.get('companyId') !== companyId) {
+      throw new ApiException(403, 'That is not your appointment')
+    }
+
+    return appointment.update({smsIdentifier})
+  },
 }

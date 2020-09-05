@@ -8,5 +8,6 @@ router.get('/',  auth(), AppointmentController.index)
 router.post('/', auth(), AppointmentController.create)
 router.put('/:id', auth(), AppointmentController.update)
 router.delete('/:id', auth(), AppointmentController.destroy)
+router.put('/:id/sms', auth(), AppointmentController.changeSMSIdentifier)
 
 export default router

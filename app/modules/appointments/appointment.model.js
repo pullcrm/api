@@ -46,6 +46,10 @@ const AppointmentSchema = (connection, type) => {
     description: {
       type: type.STRING,
       allowNull: true,
+    },
+    smsIdentifier: {
+      type: type.STRING,
+      allowNull: true,
     }
   })
 }

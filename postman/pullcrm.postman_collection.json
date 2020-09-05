@@ -235,6 +235,40 @@
 					"response": []
 				},
 				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"New Company4\",\n    \"logoId\": 1,\n    \"cityId\": 1,\n    \"categoryId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/companies/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Staff",
 					"request": {
 						"method": "GET",
@@ -336,6 +370,41 @@
 								"companies",
 								"my",
 								"staff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add SMS Configuration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/companies/my/sms",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"sms"
 							]
 						}
 					},
@@ -490,7 +559,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [2, 3],\n    \"date\": 1577891410,\n    \"total\": 520,\n    \"description\": \"Коментарій\"\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-09-05 17:56:01\",\n    \"total\": 520,\n    \"description\": \"Коментарій\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -573,6 +642,41 @@
 								"api",
 								"appointments",
 								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change SMS ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"smsIdentifier\": \"5444\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/appointments/3/sms",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"3",
+								"sms"
 							]
 						}
 					},

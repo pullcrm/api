@@ -6,6 +6,7 @@ import CityModel from "../cities/city.model"
 import CategoryModel from "../categories/category.model"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
+import SMSConfigurationModel from './models/smsConfiguration'
 
 export default {
   findBy: async data => {
@@ -34,6 +35,26 @@ export default {
     return result
   },
 
+  update: async (data, {companyId, userId}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+
+    if(!company) {
+      throw new ApiException(404, 'Company wasn\'t found')
+    }
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'That is not your company')
+    }
+
+    const result = await mysql.transaction(async transaction => {
+      await company.update(data, {plain: true, transaction})
+
+      return company
+    })
+
+    return result
+  },
+
   addEmployee: async (user, params, transaction) => {
     const employeeRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
     return ApproachModel.create({userId: user.id, companyId: params.companyId, roleId: employeeRole.id}, {transaction})
@@ -47,5 +68,18 @@ export default {
     }
 
     return company.getStaff({limit, offset, include: [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}})
-  }
+  },
+
+  addSMSConfiguration: async ({token}, {companyId, userId}) => {
+    const company = await CompanyModel.findOne({id: companyId})
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    return SMSConfigurationModel.create({
+      token,
+      companyId
+    })
+  },
 }

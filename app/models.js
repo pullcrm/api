@@ -9,6 +9,7 @@ import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
 import TokenModel from "./modules/auth/models/token"
+import SMSConfigurationModel from "./modules/companies/models/smsConfiguration"
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'staff',
@@ -28,6 +29,7 @@ UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
 
 CompanyModel.hasMany(ApproachModel)
+CompanyModel.hasMany(SMSConfigurationModel)
 CompanyModel.belongsTo(CityModel)
 CompanyModel.belongsTo(CategoryModel)
 

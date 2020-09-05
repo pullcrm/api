@@ -29,7 +29,7 @@ export default {
       })
 
     if(!user) {
-      throw new ApiException(401, 'Invalid password or email')
+      throw new ApiException(400, 'Invalid password or email')
     }
 
     return user
@@ -39,7 +39,7 @@ export default {
     const passwordIsValid = bCrypt.compareSync(firstPassword, secondPassword)
 
     if (!passwordIsValid) {
-      throw new ApiException(401, 'Invalid password or email')
+      throw new ApiException(400, 'Invalid password or email')
     }
   },
 }
