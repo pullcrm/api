@@ -52,7 +52,10 @@ export default {
 
     const result = await mysql.transaction(async transaction => {
       await appointment.update(data, {plain: true, transaction})
-      await appointment.setProcedures(data.procedures, {transaction})
+
+      if(data.procedures && Array.isArray(data.procedures)) {
+        await appointment.setProcedures(data.procedures, {transaction})
+      }
 
       return appointment
     })
