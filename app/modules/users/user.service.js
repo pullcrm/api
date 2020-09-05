@@ -1,7 +1,7 @@
 import cryptoRandomString from 'crypto-random-string'
 import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
-import SMS from '../../providers/smsc'
+import SMS from '../../services/smsc'
 import {client as redis} from '../../providers/redis'
 import FileModel from '../files/file.model'
 import {RESET_PASSWORD, REGISTRATION} from '../../constants/redis'
@@ -32,9 +32,10 @@ export default {
 
     redis.expire(`${type}-${phone}`, 1800)
 
-    await SMS.send(phone,`Код PullCRM: ${code}`)
-    
-    return {message: 'OK'}
+    return SMS.sendSms({
+      phones: phone,
+      mes: `Код PullCRM: ${code}`
+    })
   },
 
   create: async data => {
