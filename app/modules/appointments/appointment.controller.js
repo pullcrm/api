@@ -112,7 +112,7 @@ export default {
         total: joi.number(),
         description: joi.string().allow(''),
         appointmentId: joi.number(),
-        isQueue: joi.boolean().allow(null),
+        isQueue: joi.boolean(),
       }))
 
       const appointment = await AppointmentService.update(formattedData, params)
