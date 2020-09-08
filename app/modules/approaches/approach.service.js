@@ -17,8 +17,8 @@ export default {
     return ApproachModel.create(data)
   },
 
-  checkApproach: async (companyId, roleId, userId) => {
-    const approach = await ApproachModel.findOne({where: {companyId, roleId, userId}})
+  checkBy: async params => {
+    const approach = await ApproachModel.findOne({where: params})
 
     if (!approach) {
       throw new ApiException(403, 'You don\'t have permissions for that operation')
@@ -46,5 +46,15 @@ export default {
       }}]})
     
     return approaches
+  },
+
+  updateStatus: async (data, params) => {
+    const employee = await ApproachModel.findOne({where: {userId: params.employeeId, companyId: params.companyId}})
+
+    if(!employee) {
+      throw new ApiException(404, 'Employee wasn\'t found')
+    }
+
+    return employee.update(data)
   }
 }

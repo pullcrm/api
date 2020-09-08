@@ -9,8 +9,8 @@ import FileModel from '../files/file.model'
 import SMSConfigurationModel from './models/smsConfiguration'
 
 export default {
-  findBy: async data => {
-    const company = await CompanyModel.findOne({where: data, raw: true})
+  findBy: async params => {
+    const company = await CompanyModel.findOne({where: params, raw: true})
 
     if(!company) {
       throw new ApiException(404, 'Company was not found')

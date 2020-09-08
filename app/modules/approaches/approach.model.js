@@ -7,6 +7,11 @@ const ApproachSchema = (connection, type) => {
       type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
+    },
+
+    status: {
+      type: type.ENUM('ALL', 'DASHBOARD', 'HIDE'),
+      allowNull: false
     }
   })
 }

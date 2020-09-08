@@ -202,6 +202,31 @@
 					"response": []
 				},
 				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/companies/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create",
 					"request": {
 						"method": "POST",
@@ -334,6 +359,42 @@
 								"companies",
 								"my",
 								"staff",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Employee Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"status\": \"HIDE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/companies/my/employees/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"employees",
 								"1"
 							]
 						}
@@ -559,7 +620,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-09-05 17:56:01\",\n    \"total\": 520,\n    \"description\": \"Коментарій\"\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"total\": 520,\n    \"description\": \"\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -626,7 +687,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [2, 3],\n    \"date\": 1577891410,\n    \"total\": 520,\n    \"description\": \"Коментарій\"\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"date\": \"2020-09-05\",\n    \"startTime\": \"17:56:22\",\n    \"description\": \"Коментарій\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -634,14 +695,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments/3",
+							"raw": "{{host}}/api/appointments/1",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"appointments",
-								"3"
+								"1"
 							]
 						}
 					},

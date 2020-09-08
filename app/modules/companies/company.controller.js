@@ -3,7 +3,9 @@ import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import UserService from '../users/user.service'
-import { mysql } from "../../config/connections"
+import ApproachService from '../approaches/approach.service'
+import {mysql} from "../../config/connections"
+import {ALL, HIDE, DASHBOARD} from '../../constants/employees'
 
 export default {
   index: async (req, res, next) => {
@@ -18,6 +20,26 @@ export default {
 
       const companies = await CompanyService.findAll(formattedData)
       res.send(companies)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  show: async (req, res, next) => {
+    try {
+      const formattedData = {
+        userId: req.userId,
+        companyId: req.params.id
+      }
+
+      validate(formattedData, joi.object().keys({
+        userId: joi.number(),
+        companyId: joi.number()
+      }))
+
+      await ApproachService.checkBy(formattedData)
+      const company = await CompanyService.findBy({id: formattedData.companyId, userId: formattedData.userId})
+      res.send(company)
     } catch (error) {
       next(error)
     }
@@ -190,5 +212,30 @@ export default {
       next(error)
     }
   },
+
+  updateEmployeeStatus: async (req, res, next) => {
+    try {
+      const formattedData = {
+        status: req.body.status,
+      }
+
+      const params = {
+        companyId: req.companyId,
+        employeeId: req.params.id
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        companyId: joi.number().required(),
+        employeeId: joi.number().required(),
+        status: joi.string().valid(ALL, HIDE, DASHBOARD).required()
+      }))
+
+      const employee = await ApproachService.updateStatus(formattedData, params)
+      res.send(employee)
+    } catch (error) {
+      next(error)
+    }
+  },
+  
 }
 

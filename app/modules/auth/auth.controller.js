@@ -57,7 +57,7 @@ export default {
       const role = await RoleService.findBy({name: roleName})
 
       await TokenService.checkRefreshToken(refreshToken, userId)
-      await ApproachService.checkApproach(companyId, role.id, userId)
+      await ApproachService.checkBy({companyId, roleId: role.id, userId})
 
       const accessToken = generateAccessToken(userId, companyId, roleName)
 
