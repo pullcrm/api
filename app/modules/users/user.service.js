@@ -2,6 +2,7 @@ import cryptoRandomString from 'crypto-random-string'
 import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
 import SMS from '../../services/smsc'
+import TokenService from '../auth/services/token'
 import {client as redis} from '../../providers/redis'
 import FileModel from '../files/file.model'
 import {RESET_PASSWORD, REGISTRATION} from '../../constants/redis'
@@ -74,6 +75,7 @@ export default {
     }
 
     redis.del(resetPasswordKey)
+    await TokenService.deactivateRefreshTokens(user.id)
 
     return user.update({password: newPassword})
   },

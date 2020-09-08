@@ -29,7 +29,7 @@ UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
 
 CompanyModel.hasMany(ApproachModel)
-CompanyModel.hasMany(SMSConfigurationModel)
+CompanyModel.hasOne(SMSConfigurationModel)
 CompanyModel.belongsTo(CityModel)
 CompanyModel.belongsTo(CategoryModel)
 

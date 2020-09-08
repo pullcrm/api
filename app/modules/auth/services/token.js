@@ -29,4 +29,8 @@ export default {
       throw new ApiException(403, 'Failed to authenticate refresh token')
     }
   },
+
+  deactivateRefreshTokens: async userId => {
+    return TokenModel.destroy({where: {userId}})
+  },
 }
