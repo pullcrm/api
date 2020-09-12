@@ -41,6 +41,16 @@ export default class SmsClient {
     })
   }
 
+  removeSms (params) {
+    return this.read_url({
+      file: 'status.php',
+      params: {
+        del: 1,
+        ...params,
+      }
+    })
+  }
+
   getSmsStatus (params) {
     return this.read_url({
       file: 'status.php',
