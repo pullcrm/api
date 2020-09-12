@@ -11,7 +11,8 @@ const ApproachSchema = (connection, type) => {
 
     status: {
       type: type.ENUM('ALL', 'DASHBOARD', 'HIDE'),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'ALL'
     }
   })
 }
