@@ -1,7 +1,7 @@
 import validate from "../../utils/validate"
 import joi from "joi"
 
-import SMS from '../../services/smsc'
+import SMS from '../../providers/smsc'
 
 export default {
   balance: async (req, res, next) => {

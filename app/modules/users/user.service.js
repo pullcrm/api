@@ -1,7 +1,7 @@
 import cryptoRandomString from 'crypto-random-string'
 import UserModel from './user.model'
 import ApiException from "../../exceptions/api"
-import SMS from '../../services/smsc'
+import SMS from '../../providers/smsc'
 import TokenService from '../auth/services/token'
 import {client as redis} from '../../providers/redis'
 import FileModel from '../files/file.model'
