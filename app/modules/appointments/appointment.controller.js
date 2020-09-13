@@ -43,7 +43,7 @@ export default {
       const formattedData = {
         employeeId: req.body.employeeId,
         clientId: req.body.clientId,
-        fullname: req.body.fullname,
+        fullName: req.body.fullName,
         phone: req.body.phone,
         companyId: req.companyId,
         procedures: req.body.procedures,
@@ -62,7 +62,7 @@ export default {
       validate(formattedData, joi.object().keys({
         employeeId: joi.number(),
         clientId: joi.number(),
-        fullname: joi.string(),
+        fullName: joi.string(),
         phone: joi.string(),
         companyId: joi.number(),
         procedures: joi.array(),
@@ -85,7 +85,7 @@ export default {
       const formattedData = {
         employeeId: req.body.employeeId,
         clientId: req.body.clientId,
-        fullname: req.body.fullname,
+        fullName: req.body.fullName,
         phone: req.body.phone,
         companyId: req.companyId,
         procedures: req.body.procedures,
@@ -103,7 +103,7 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         employeeId: joi.number(),
         clientId: joi.number(),
-        fullname: joi.string(),
+        fullName: joi.string(),
         phone: joi.string(),
         companyId: joi.number(),
         procedures: joi.array(),

@@ -40,7 +40,7 @@ const AppointmentSchema = (connection, type) => {
     phone: {
       type: type.STRING,
     },
-    fullname: {
+    fullName: {
       type: type.STRING,
     },
     total: {
