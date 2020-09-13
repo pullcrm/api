@@ -152,7 +152,7 @@ export default {
       }
 
       validate({...data, ...params}, joi.object().keys({
-        smsIdentifier: joi.string(),
+        smsIdentifier: joi.string().allow(null),
         appointmentId: joi.number().required(),
         companyId: joi.number().required()
       }))
