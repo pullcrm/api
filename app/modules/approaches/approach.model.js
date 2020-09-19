@@ -14,6 +14,12 @@ const ApproachSchema = (connection, type) => {
       allowNull: false,
       defaultValue: 'ALL'
     },
+
+    description: {
+      type: type.STRING,
+      allowNull: false,
+      defaultValue: ''
+    }
   })
 }
 

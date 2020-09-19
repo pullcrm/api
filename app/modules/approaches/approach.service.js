@@ -58,8 +58,8 @@ export default {
     return approaches
   },
 
-  updateStatus: async (data, params) => {
-    const employee = await ApproachModel.findOne({where: {userId: params.employeeId, companyId: params.companyId}})
+  update: async (data, params) => {
+    const employee = await ApproachModel.findOne({where: {userId: params.userId, companyId: params.companyId}})
 
     if(!employee) {
       throw new ApiException(404, 'Employee wasn\'t found')

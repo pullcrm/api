@@ -22,7 +22,8 @@ const ProcedureSchema = (connection, type) => {
     },
     description: {
       type: type.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     }
   }, {
     hooks: {

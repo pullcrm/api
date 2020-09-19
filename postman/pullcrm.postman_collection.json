@@ -342,7 +342,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\",\n\t\"avatarId\": 2\n}",
+							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\",\n    \"description\": \"\",\n    \"status\": \"ALL\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -359,42 +359,6 @@
 								"companies",
 								"my",
 								"staff",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Employee Status",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Baerer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"status\": \"HIDE\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/companies/my/employees/1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"companies",
-								"my",
-								"employees",
 								"1"
 							]
 						}
@@ -1015,7 +979,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/procedures?offset=0&limit=0",
+							"raw": "{{host}}/api/procedures?offset=0&limit=5",
 							"host": [
 								"{{host}}"
 							],
@@ -1030,7 +994,7 @@
 								},
 								{
 									"key": "limit",
-									"value": "0"
+									"value": "5"
 								}
 							]
 						}

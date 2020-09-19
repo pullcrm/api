@@ -216,10 +216,15 @@ export default {
   //TODO only admin can update his employers
   updateEmployee: async (req, res, next) => {
     try {
-      const formattedData = {
+      const userData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         avatarId: req.body.avatarId,
+      }
+
+      const employeeData = {
+        description: req.body.description,
+        status: req.body.status,
       }
 
       const params = {
@@ -227,44 +232,23 @@ export default {
         userId: req.params.id
       }
 
-      validate({...formattedData, ...params}, joi.object().keys({
+      validate({...userData, ...employeeData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         userId: joi.number().required(),
         firstName: joi.string(),
         lastName: joi.string(),
         avatarId: joi.number(),
+        description: joi.string().allow(''),
+        status: joi.string().valid(ALL, HIDE, DASHBOARD),
       }))
 
-      const users = await UserService.update(formattedData, params)
-      res.send(users)
+      const user = await UserService.update(userData, params)
+      const employee = await ApproachService.update(employeeData, params)
+
+      res.send({...user.toJSON(), ...employee.toJSON()})
     } catch (error) {
       next(error)
     }
   },
-
-  updateEmployeeStatus: async (req, res, next) => {
-    try {
-      const formattedData = {
-        status: req.body.status,
-      }
-
-      const params = {
-        companyId: req.companyId,
-        employeeId: req.params.id
-      }
-
-      validate({...formattedData, ...params}, joi.object().keys({
-        companyId: joi.number().required(),
-        employeeId: joi.number().required(),
-        status: joi.string().valid(ALL, HIDE, DASHBOARD).required()
-      }))
-
-      const employee = await ApproachService.updateStatus(formattedData, params)
-      res.send(employee)
-    } catch (error) {
-      next(error)
-    }
-  },
-  
 }
 
