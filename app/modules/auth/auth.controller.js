@@ -22,10 +22,11 @@ export default {
 
       const user = await AuthService.findBy({phone: formattedData.phone})
       const userId = user.get('id')
+      const activeCompany = await ApproachService.activeCompany(userId)
 
       AuthService.checkPasswords(formattedData.password, user.password)
 
-      const accessToken = generateAccessToken(userId)
+      const accessToken = generateAccessToken(userId, activeCompany && activeCompany.id)
       const refreshToken = generateRefreshToken(userId)
 
       await TokenService.create(refreshToken, userId)

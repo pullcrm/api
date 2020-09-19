@@ -20,6 +20,10 @@ const ProcedureSchema = (connection, type) => {
       type: type.BIGINT,
       allowNull: false
     },
+    description: {
+      type: type.STRING,
+      allowNull: false
+    }
   }, {
     hooks: {
       afterUpdate: options => {

@@ -25,6 +25,16 @@ export default {
     }
   },
 
+  activeCompany: async companyId => {
+    const approach = await ApproachModel.findOne({where: companyId,
+      include: [{
+        model: CompanyModel
+      }]
+    })
+
+    return approach.company
+  },
+
   findMyApproaches: async userId => {
     const approaches = await ApproachModel.findAll({
       where: {userId},

@@ -53,6 +53,7 @@ export default {
         name: req.body.name,
         price: req.body.price,
         duration: req.body.duration,
+        description: req.body.description
       }
 
       const params = {
@@ -65,7 +66,8 @@ export default {
         price: joi.number(),
         duration: joi.number(),
         procedureId: joi.number().required(),
-        companyId: joi.number().required()
+        companyId: joi.number().required(),
+        description: joi.string().allow(''),
       }))
 
       const roles = await ProceduresService.update(formattedData, params)
