@@ -38,7 +38,7 @@ export default {
       }))
 
       await ApproachService.checkBy(formattedData)
-      const company = await CompanyService.findBy({id: formattedData.companyId, userId: formattedData.userId})
+      const company = await CompanyService.findOne({id: formattedData.companyId, userId: formattedData.userId})
       res.send(company)
     } catch (error) {
       next(error)

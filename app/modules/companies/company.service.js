@@ -9,14 +9,21 @@ import FileModel from '../files/file.model'
 import SMSConfigurationModel from './models/smsConfiguration'
 
 export default {
-  findBy: async params => {
-    const company = await CompanyModel.findOne({where: params, raw: true})
+  findOne: async params => {
+    const company = await CompanyModel.findOne({where: params, attributes: {exclude: ['categoryId', 'userId', 'cityId', 'logoId']},
+      include: [
+        {model: CategoryModel},
+        {model: CityModel},
+        {model: SMSConfigurationModel},
+        {model: FileModel, as: 'logo'}
+      ]})
 
     if(!company) {
       throw new ApiException(404, 'Company was not found')
     }
 
     return company
+    
   },
 
   findAll: async params => {
