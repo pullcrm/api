@@ -96,6 +96,35 @@ export default {
     }
   },
 
+  updateSMSConfiguration: async (req, res, next) => {
+    try {
+      const formattedData = {
+        remindAfterCreation: req.body.remindAfterCreation,
+        beforeTime: req.body.beforeTime,
+        remindBeforeTime: req.body.remindBeforeTime
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        remindAfterCreation: joi.boolean(),
+        remindBeforeTime: joi.boolean(),
+        beforeTime: joi.number().when('remindBeforeTime', {is: true, then: joi.required()}),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+      }))
+
+      const company = await CompanyService.updateSMSConfiguration(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   update: async (req, res, next) => {
     try {
       const formattedData = {

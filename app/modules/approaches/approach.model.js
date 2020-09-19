@@ -13,7 +13,7 @@ const ApproachSchema = (connection, type) => {
       type: type.ENUM('ALL', 'DASHBOARD', 'HIDE'),
       allowNull: false,
       defaultValue: 'ALL'
-    }
+    },
   })
 }
 

@@ -11,7 +11,21 @@ const SMSConfigurationSchema = (connection, type) => {
     token: {
       type: type.STRING,
       allowNull: false
-    }
+    },
+    remindAfterCreation: {
+      type: type.BOOLEAN,
+      allowNull: false,
+      default: true,
+    },
+    beforeTime: {
+      type: type.INTEGER,
+      allowNull: true,
+    },
+    remindBeforeTime: {
+      type: type.BOOLEAN,
+      allowNull: false,
+      default: false,
+    },
   })
 }
 

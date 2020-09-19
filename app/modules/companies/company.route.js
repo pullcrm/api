@@ -13,5 +13,6 @@ router.put('/my/staff/:id', auth(), CompanyController.updateEmployee)
 router.put('/my/employees/:id', auth(), CompanyController.updateEmployeeStatus)
 router.post('/my/staff', auth(), CompanyController.addEmployee)
 router.post('/my/sms', auth(), CompanyController.addSMSConfiguration)
+router.put('/my/sms', auth(), CompanyController.updateSMSConfiguration)
 
 export default router
