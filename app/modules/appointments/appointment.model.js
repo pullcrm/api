@@ -30,7 +30,7 @@ const AppointmentSchema = (connection, type) => {
     },
     startTime: {
       type: type.TIME,
-      allowNull: false,
+      allowNull: true,
     },
     isQueue: {
       type: type.BOOLEAN,
