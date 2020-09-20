@@ -32,6 +32,10 @@ export default {
       }]
     })
 
+    if(!approach) {
+      return {id: 0}
+    }
+
     return approach.company
   },
 

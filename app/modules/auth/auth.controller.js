@@ -26,7 +26,7 @@ export default {
 
       AuthService.checkPasswords(formattedData.password, user.password)
 
-      const accessToken = generateAccessToken(userId, activeCompany && activeCompany.id)
+      const accessToken = generateAccessToken(userId, activeCompany.id)
       const refreshToken = generateRefreshToken(userId)
 
       await TokenService.create(refreshToken, userId)
