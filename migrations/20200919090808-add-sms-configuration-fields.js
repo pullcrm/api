@@ -10,7 +10,7 @@ module.exports = {
         {
           type: Sequelize.DataTypes.BOOLEAN,
           allowNull: false,
-          default: true,
+          defaultValue: true,
         },
         {transaction}
       )
@@ -31,7 +31,7 @@ module.exports = {
         {
           type: Sequelize.DataTypes.BOOLEAN,
           allowNull: false,
-          default: false,
+          defaultValue: false
         },
         {transaction}
       )

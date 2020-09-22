@@ -15,7 +15,7 @@ const SMSConfigurationSchema = (connection, type) => {
     remindAfterCreation: {
       type: type.BOOLEAN,
       allowNull: false,
-      default: true,
+      defaultValue: true,
     },
     beforeTime: {
       type: type.INTEGER,
@@ -24,7 +24,7 @@ const SMSConfigurationSchema = (connection, type) => {
     remindBeforeTime: {
       type: type.BOOLEAN,
       allowNull: false,
-      default: false,
+      defaultValue: false,
     },
   })
 }
