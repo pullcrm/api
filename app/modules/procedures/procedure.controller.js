@@ -30,14 +30,16 @@ export default {
         name: req.body.name,
         price: req.body.price,
         duration: req.body.duration,
-        companyId: req.companyId
+        companyId: req.companyId,
+        description: req.body.description
       }
 
       validate(formattedData, joi.object().keys({
         name: joi.string().required(),
         price: joi.number().required(),
         duration: joi.number().required(),
-        companyId: joi.number().required()
+        companyId: joi.number().required(),
+        description: joi.string().allow('')
       }))
 
       const roles = await ProceduresService.create(formattedData)
