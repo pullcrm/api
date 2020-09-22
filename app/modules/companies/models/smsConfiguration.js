@@ -19,7 +19,8 @@ const SMSConfigurationSchema = (connection, type) => {
     },
     beforeTime: {
       type: type.INTEGER,
-      allowNull: true,
+      allowNull: false,
+      defaultValue: 60,
     },
     remindBeforeTime: {
       type: type.BOOLEAN,
