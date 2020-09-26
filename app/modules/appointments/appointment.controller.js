@@ -2,6 +2,8 @@ import AppointmentService from './appointment.service'
 import validate from "../../utils/validate"
 import joi from "joi"
 
+import {WORKING_HOURS_SLOTS} from '../../constants/times'
+
 export default {
   index: async (req, res, next) => {
     try {
@@ -162,4 +164,48 @@ export default {
       next(error)
     }
   },
+
+  // TODO: Need code review
+  hoursSlots: async (req, res, next) => {
+    try {
+      const formattedData = {
+        date: req.body.date,
+        userId: req.userId,
+        companyId: req.companyId,
+        excludeId: req.body.excludeId,
+        employeeId: req.body.employeeId
+      }
+
+      validate(formattedData, joi.object().keys({
+        date: joi.string(),
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        excludeId: joi.number().allow(null),
+        employeeId: joi.number().required()
+      }))
+
+      const appointments = await AppointmentService.fetchHoursSlots(formattedData)
+
+      const slots = {...WORKING_HOURS_SLOTS}
+
+      appointments.forEach(({startTime, procedures}) => {
+        const duration = procedures.reduce((result, procedure) => {
+          return result + procedure.duration
+        }, 0)
+
+        const slotCount = duration / 15
+        const startIndex = Object.keys(slots).indexOf(startTime.slice(0, 5))
+        
+        for (let index = 0; index < slotCount; index++) {
+          const key = Object.keys(slots)[startIndex + index]
+
+          slots[key] = true
+        }
+      })
+
+      res.send(slots)
+    } catch(error) {
+      next(error)
+    }
+  }
 }

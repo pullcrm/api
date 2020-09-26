@@ -91,4 +91,32 @@ export default {
 
     return appointment.update({smsIdentifier})
   },
+
+  // TODO: Need code review
+  fetchHoursSlots: async ({date, companyId, excludeId, employeeId}) => {
+    const baseCondition = {
+      isQueue: false,
+      companyId,
+      employeeId
+    }
+
+    if (excludeId) {
+      baseCondition.id = {
+        [Op.ne]: excludeId
+      }
+    }
+
+    baseCondition.date = {
+      [Op.gt]: date,
+      [Op.lt]: addDayToDate(date)
+    }
+
+    return AppointmentModel.findAll({
+      where: baseCondition,
+      attributes: {exclude: ['companyId', 'employeeId', 'clientId']},
+      include: [
+        {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}}
+      ],
+    })
+  },
 }
