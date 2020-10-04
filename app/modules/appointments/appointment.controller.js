@@ -4,6 +4,7 @@ import joi from "joi"
 
 import {WORKING_HOURS_SLOTS} from '../../constants/times'
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
+import ProcedureModel from '../procedures/procedure.model'
 
 export default {
   index: async (req, res, next) => {
@@ -58,10 +59,6 @@ export default {
         status: req.body.status,
       }
 
-      const params = {
-        userId: req.userId
-      }
-
       //TODO need to validate clientId, procedures for owner
       validate(formattedData, joi.object().keys({
         employeeId: joi.number(),
@@ -78,7 +75,7 @@ export default {
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
       }))
 
-      const appointment = await AppointmentService.create(formattedData, params)
+      const appointment = await AppointmentService.create(formattedData)
       res.send(appointment)
     } catch(error) {
       next(error)
@@ -216,15 +213,15 @@ export default {
 
   publicCreation: async (req, res, next) => {
     try {
-      const total = Array.isArray(req.body.procedures) && req.body.procedures.reduce((sum, procedure) => sum + Number(procedure.price), 0)
-      const procedures = Array.isArray(req.body.procedures) && req.body.procedures.map(P => P.id)
+      const procedures = Array.isArray(req.body.procedures) && await ProcedureModel.findAll({where: {id: req.body.procedures}, raw: true})
+      const total = procedures.reduce((sum, procedure) => sum + Number(procedure.price), 0)
 
       const formattedData = {
         employeeId: req.body.employeeId,
         fullName: req.body.fullName,
         phone: req.body.phone,
         companyId: req.body.companyId,
-        procedures,
+        procedures: req.body.procedures,
         date: req.body.date,
         startTime: req.body.startTime,
         total,
