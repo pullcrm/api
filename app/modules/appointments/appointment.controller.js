@@ -3,6 +3,7 @@ import validate from "../../utils/validate"
 import joi from "joi"
 
 import {WORKING_HOURS_SLOTS} from '../../constants/times'
+import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 
 export default {
   index: async (req, res, next) => {
@@ -53,7 +54,8 @@ export default {
         startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
-        isQueue: req.body.isQueue
+        isQueue: req.body.isQueue,
+        status: req.body.status,
       }
 
       const params = {
@@ -73,6 +75,7 @@ export default {
         total: joi.number(),
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
       }))
 
       const appointment = await AppointmentService.create(formattedData, params)
@@ -95,7 +98,8 @@ export default {
         startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
-        isQueue: req.body.isQueue
+        isQueue: req.body.isQueue,
+        status: req.body.status,
       }
 
       const params = {
@@ -115,6 +119,7 @@ export default {
         description: joi.string().allow(''),
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
       }))
 
       const appointment = await AppointmentService.update(formattedData, params)

@@ -1,3 +1,3 @@
 export const IN_PROGRESS = 'IN_PROGRESS'
-export const CANCELLED = 'CANCELLED'
-export const DANE = 'DANE'
+export const CANCELED = 'CANCELED'
+export const COMPLETED = 'COMPLETED'

@@ -1,5 +1,6 @@
 import {Sequelize} from 'sequelize'
 import {mysql} from '../../config/connections'
+import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 
 // companyId
 // serviceIds: [1, 2]
@@ -54,6 +55,11 @@ const AppointmentSchema = (connection, type) => {
     smsIdentifier: {
       type: type.STRING,
       allowNull: true,
+    },
+    status: {
+      type: type.ENUM(IN_PROGRESS, COMPLETED, CANCELED),
+      allowNull: false,
+      defaultValue: IN_PROGRESS
     }
   })
 }
