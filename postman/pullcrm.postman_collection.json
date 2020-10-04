@@ -1218,6 +1218,71 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Procedures",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/public/procedures?companyId=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"procedures"
+							],
+							"query": [
+								{
+									"key": "companyId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Appointment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [\n        {\n            \"id\": 1,\n            \"price\": 200\n        }\n    ],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"description\": \"Description some\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/public/appointments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"appointments"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
