@@ -212,5 +212,45 @@ export default {
     } catch(error) {
       next(error)
     }
+  },
+
+  publicCreation: async (req, res, next) => {
+    try {
+      const total = Array.isArray(req.body.procedures) && req.body.procedures.reduce((sum, procedure) => sum + Number(procedure.price), 0)
+      const procedures = Array.isArray(req.body.procedures) && req.body.procedures.map(P => P.id)
+
+      const formattedData = {
+        employeeId: req.body.employeeId,
+        fullName: req.body.fullName,
+        phone: req.body.phone,
+        companyId: req.body.companyId,
+        procedures,
+        date: req.body.date,
+        startTime: req.body.startTime,
+        total,
+        description: req.body.description,
+        status: IN_PROGRESS,
+        isQueue: false
+      }
+
+      validate(formattedData, joi.object().keys({
+        employeeId: joi.number(),
+        fullName: joi.string(),
+        phone: joi.string(),
+        companyId: joi.number(),
+        procedures: joi.array(),
+        date: joi.date(),
+        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
+        total: joi.number(),
+        description: joi.string().allow(''),
+        isQueue: joi.boolean().allow(null),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+      }))
+
+      const appointment = await AppointmentService.create(formattedData)
+      res.send(appointment)
+    } catch(error) {
+      next(error)
+    }
   }
 }

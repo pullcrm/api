@@ -1,6 +1,6 @@
 import {Router} from 'express'
-import ProcedureController from './procedure.controller'
-import auth from '../../middlewares/auth'
+import ProcedureController from '../procedure.controller'
+import auth from '../../../middlewares/auth'
 
 const router = Router()
 

@@ -96,4 +96,25 @@ export default {
       next(error)
     }
   },
+
+  publicFindAllProcedures: async (req, res, next) => {
+    try {
+      const formattedData = {
+        offset: +req.query.offset || 0,
+        limit: +req.query.limit || 20,
+        companyId: req.query.companyId
+      }
+
+      validate(formattedData, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+        companyId: joi.number()
+      }))
+
+      const procedures = await ProceduresService.findAll(formattedData)
+      res.send(procedures)
+    } catch (error) {
+      next(error)
+    }
+  },
 }
