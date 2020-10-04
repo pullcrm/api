@@ -19,4 +19,21 @@ export default {
       next(error)
     }
   },
+
+  publicFindAllEmployees: async (req, res, next) => {
+    try {
+      const formattedData = {
+        companyId: req.query.companyId
+      }
+
+      validate(formattedData, joi.object().keys({
+        companyId: joi.number()
+      }))
+
+      const employees = await ApproachService.findByCompanyId(formattedData.companyId)
+      res.send(employees)
+    } catch(error) {
+      next(error)
+    }
+  }
 }

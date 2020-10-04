@@ -7,6 +7,7 @@ import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
 import SMSConfigurationModel from '../companies/models/smsConfiguration'
+import {ALL} from '../../constants/employees'
 
 export default {
   findAll: async ({companyId}) => {
@@ -60,6 +61,23 @@ export default {
       }}]})
     
     return approaches
+  },
+
+  findByCompanyId: async companyId => {
+    const employees = await ApproachModel.findAll({
+      where: {companyId, status: ALL},
+      attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
+      include: [{
+        model: UserModel,
+        attributes: ['firstName', 'lastName'],
+        include: {
+          model: FileModel,
+          as: 'avatar'
+        }
+      }]
+    })
+    
+    return employees
   },
 
   update: async (data, params) => {

@@ -686,7 +686,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"date\": \"2020-09-05\",\n    \"startTime\": \"17:56:22\",\n    \"description\": \"Коментарій\"\n}",
+							"raw": "{\n\t\"status\": \"CANCELED\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1184,6 +1184,36 @@
 							"path": [
 								"api",
 								"files"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Widget",
+			"item": [
+				{
+					"name": "Get Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/approaches",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"approaches"
 							]
 						}
 					},

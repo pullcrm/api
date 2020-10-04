@@ -6,7 +6,8 @@ import roleRouter from './modules/roles/role.route'
 import companyRouter from './modules/companies/company.route'
 import cityRouter from './modules/cities/city.route'
 import categoryRouter from './modules/categories/category.route'
-import approachRouter from './modules/approaches/approach.route'
+import approachRouter from './modules/approaches/routes/approach.private'
+import approachPublicRouter from './modules/approaches/routes/approach.public.js'
 import procedureRouter from './modules/procedures/procedure.route'
 import fileRouter from './modules/files/file.route'
 import smscRouter from './modules/smsc/smsc.route'
@@ -24,5 +25,7 @@ api.use('/approaches', approachRouter)
 api.use('/procedures', procedureRouter)
 api.use('/files', fileRouter)
 api.use('/smsc', smscRouter)
+
+api.use('/public/approaches', approachPublicRouter)
 
 export default api
