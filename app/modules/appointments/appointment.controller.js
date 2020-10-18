@@ -2,7 +2,8 @@ import AppointmentService from './appointment.service'
 import validate from "../../utils/validate"
 import joi from "joi"
 
-import {WORKING_HOURS_SLOTS} from '../../constants/times'
+import {getHoursSlots} from '../../logics/appointments'
+
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 import ProcedureModel from '../procedures/procedure.model'
 
@@ -188,22 +189,31 @@ export default {
 
       const appointments = await AppointmentService.fetchHoursSlots(formattedData)
 
-      const slots = {...WORKING_HOURS_SLOTS}
+      const slots = getHoursSlots(appointments)
 
-      appointments.forEach(({startTime, procedures}) => {
-        const duration = procedures.reduce((result, procedure) => {
-          return result + procedure.duration
-        }, 0)
+      res.send(slots)
+    } catch(error) {
+      next(error)
+    }
+  },
 
-        const slotCount = duration / 15
-        const startIndex = Object.keys(slots).indexOf(startTime.slice(0, 5))
-        
-        for (let index = 0; index < slotCount; index++) {
-          const key = Object.keys(slots)[startIndex + index]
+  publicHoursSlots: async (req, res, next) => {
+    try {
+      const formattedData = {
+        date: req.body.date,
+        companyId: req.body.companyId,
+        employeeId: req.body.employeeId
+      }
 
-          slots[key] = true
-        }
-      })
+      validate(formattedData, joi.object().keys({
+        date: joi.string(),
+        companyId: joi.number().required(),
+        employeeId: joi.number().required()
+      }))
+
+      const appointments = await AppointmentService.fetchHoursSlots(formattedData)
+
+      const slots = getHoursSlots(appointments)
 
       res.send(slots)
     } catch(error) {
@@ -233,11 +243,11 @@ export default {
       validate(formattedData, joi.object().keys({
         employeeId: joi.number(),
         fullName: joi.string(),
-        phone: joi.string(),
+        phone: joi.string().length(10),
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
+        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/),
         total: joi.number(),
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
