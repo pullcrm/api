@@ -250,5 +250,22 @@ export default {
       next(error)
     }
   },
+
+  publicGetCompany: async (req, res, next) => {
+    try {
+      const formattedData = {
+        companyId: req.params.id
+      }
+
+      validate(formattedData, joi.object().keys({
+        companyId: joi.number()
+      }))
+
+      const company = await CompanyService.findOne({id: formattedData.companyId})
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 

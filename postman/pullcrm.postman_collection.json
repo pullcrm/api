@@ -1220,6 +1220,33 @@
 					"response": []
 				},
 				{
+					"name": "Get Company",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/public/companies/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"companies",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Procedures",
 					"request": {
 						"method": "GET",
