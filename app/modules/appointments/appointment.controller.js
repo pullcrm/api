@@ -6,6 +6,7 @@ import {getHoursSlots} from '../../logics/appointments'
 
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 import ProcedureModel from '../procedures/procedure.model'
+import TimeOffService from '../timeoff/timeoff.service'
 
 export default {
   index: async (req, res, next) => {
@@ -76,6 +77,7 @@ export default {
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
       }))
 
+      await TimeOffService.checkTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       res.send(appointment)
     } catch(error) {

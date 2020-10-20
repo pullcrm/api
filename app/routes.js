@@ -14,6 +14,7 @@ import procedureRouter from './modules/procedures/routes/procedure.private'
 import procedurePublicRouter from './modules/procedures/routes/procedure.public'
 import fileRouter from './modules/files/file.route'
 import smscRouter from './modules/smsc/smsc.route'
+import timeOffRouter from './modules/timeoff/timeoff.route'
 
 const api = Router()
 
@@ -28,6 +29,7 @@ api.use('/approaches', approachRouter)
 api.use('/procedures', procedureRouter)
 api.use('/files', fileRouter)
 api.use('/smsc', smscRouter)
+api.use('/timeoff', timeOffRouter)
 
 api.use('/public/approaches', approachPublicRouter)
 api.use('/public/procedures', procedurePublicRouter)

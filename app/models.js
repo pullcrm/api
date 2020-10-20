@@ -10,6 +10,10 @@ import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
 import TokenModel from "./modules/auth/models/token"
 import SMSConfigurationModel from "./modules/companies/models/smsConfiguration"
+import TimeOffModel from './modules/timeoff/timeoff.model'
+import TimeOffService from './modules/timeoff/timeoff.service'
+
+TimeOffService.checkTime({startTile: '17:56:01', date: '2020-10-19 00:00:00', employeeId: 1})
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'staff',
@@ -23,6 +27,7 @@ CompanyModel.belongsTo(UserModel, {
 
 ApproachModel.belongsTo(UserModel)
 ApproachModel.belongsTo(CompanyModel)
+TimeOffModel.belongsTo(ApproachModel, {as: 'employee'})
 
 UserModel.hasMany(ApproachModel)
 UserModel.hasMany(TokenModel, {as: 'tokens'})
