@@ -7,14 +7,32 @@ import {addDayToDate, formatDate} from '../../utils/time'
 import {Op} from 'sequelize'
 
 export default {
-  findAll: async ({date, companyId, isQueue = false}) => {
-    const baseCondition = {companyId, isQueue}
+  findAll: async ({date, companyId}) => {
+    const baseCondition = {
+      isQueue: false,
+      companyId
+    }
 
-    if(date && isQueue === false) {
-      baseCondition.date = {
-        [Op.gt]: date,
-        [Op.lt]: addDayToDate(date)
-      }
+    baseCondition.date = {
+      [Op.gt]: date,
+      [Op.lt]: addDayToDate(date)
+    }
+
+    return AppointmentModel.findAll({
+      where: baseCondition,
+      attributes: {exclude: ['companyId', 'employeeId', 'clientId']},
+      include: [
+        {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
+        {model: UserModel, as: 'employee'},
+        {model: UserModel, as: 'client'}
+      ],
+    })
+  },
+
+  queue: async ({companyId}) => {
+    const baseCondition = {
+      isQueue: true,
+      companyId
     }
 
     return AppointmentModel.findAll({
