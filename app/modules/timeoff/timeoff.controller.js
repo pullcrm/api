@@ -3,13 +3,28 @@ import TimeOffService from './timeoff.service'
 import validate from "../../utils/validate"
 
 export default {
+  index: async (req, res, next) => {
+    try {
+      const params = {
+        employeeId: req.query.employeeId,
+        startDateTime: req.query.startDateTime,
+        endDateTime: req.query.endDateTime
+      }
+
+      const timeoffs = await TimeOffService.findAll(params)
+
+      res.send(timeoffs)
+    } catch(error) {
+      next(error)
+    }
+  },
+
   create: async (req, res, next) => {
     try {
       const formattedData = {
         employeeId: req.body.employeeId,
-        date: req.body.date,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime
+        startDateTime: req.body.startDateTime,
+        endDateTime: req.body.endDateTime
       }
 
       const params = {
@@ -18,9 +33,8 @@ export default {
 
       validate({...formattedData,  ...params}, joi.object().keys({
         employeeId: joi.number().required(),
-        date: joi.string().required(),
-        startTime: joi.string().required(),
-        endTime: joi.string().required(),
+        startDateTime: joi.string().required(),
+        endDateTime: joi.string().required(),
         userId: joi.number().required()
       }))
 

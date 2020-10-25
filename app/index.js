@@ -56,4 +56,11 @@ const server = http
   .createServer(app)
   .listen(port)
 
+process.on('uncaughtException', function( err ) {
+  console.error(err.stack)
+})
+
+server.on('error', e => console.log(e))
+
 export default server
+

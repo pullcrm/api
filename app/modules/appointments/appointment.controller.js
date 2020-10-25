@@ -77,7 +77,7 @@ export default {
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
       }))
 
-      await TimeOffService.checkTime(formattedData)
+      // await TimeOffService.checkTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       res.send(appointment)
     } catch(error) {

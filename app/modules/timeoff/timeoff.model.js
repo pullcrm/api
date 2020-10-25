@@ -8,17 +8,12 @@ const TimeOffSchema = (connection, type) => {
       primaryKey: true,
       autoIncrement: true
     },
-    date: {
+    startDateTime: {
       type: type.DATE,
-      defaultValue: Sequelize.NOW,
       allowNull: false,
     },
-    startTime: {
-      type: type.TIME,
-      allowNull: false,
-    },
-    endTime: {
-      type: type.TIME,
+    endDateTime: {
+      type: type.DATE,
       allowNull: false,
     },
   }

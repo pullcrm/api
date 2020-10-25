@@ -2,7 +2,6 @@ import {Op} from 'sequelize'
 import TimeOffModel from './timeoff.model'
 import ApiException from "../../exceptions/api"
 import {addDayToDate} from '../../utils/time'
-import ProcedureModel from '../procedures/procedure.model'
 
 export default {
   create: async data => {
@@ -17,6 +16,35 @@ export default {
     }
 
     return timeOff.update(data, {returning: true})
+  },
+
+  findAll: async ({employeeId, startDateTime, endDateTime}) => {
+    const timeOff = await TimeOffModel.findAll({where: {employeeId,
+      [Op.or]: [
+        {
+          startDateTime: {
+            [Op.lte]: startDateTime,
+          },
+          endDateTime: {
+            [Op.gte]: startDateTime
+          }
+        },
+        {
+          startDateTime: {
+            [Op.gte]: startDateTime,
+            [Op.lt]: endDateTime
+          },
+        },
+        {
+          endDateTime: {
+            [Op.gte]: startDateTime,
+            [Op.lte]: endDateTime
+          }
+        }
+      ],  
+    }})
+
+    return timeOff
   },
 
   checkTime: async appointment => {

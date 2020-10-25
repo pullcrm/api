@@ -1193,6 +1193,90 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "TimeOff",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"employeeId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/timeoff",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"timeoff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Index",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/timeoff?employeeId=1&startDateTime=2020-10-25 08:00:00&endDateTime=2020-10-25 14:00:00",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"timeoff"
+							],
+							"query": [
+								{
+									"key": "employeeId",
+									"value": "1"
+								},
+								{
+									"key": "startDateTime",
+									"value": "2020-10-25 08:00:00"
+								},
+								{
+									"key": "endDateTime",
+									"value": "2020-10-25 14:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Widget",
 			"item": [
 				{

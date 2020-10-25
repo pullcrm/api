@@ -13,7 +13,7 @@ import SMSConfigurationModel from "./modules/companies/models/smsConfiguration"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import TimeOffService from './modules/timeoff/timeoff.service'
 
-TimeOffService.checkTime({startTile: '17:56:01', date: '2020-10-19 00:00:00', employeeId: 1})
+// TimeOffService.checkTime({startTile: '17:56:01', date: '2020-10-19 00:00:00', employeeId: 1})
 
 CompanyModel.belongsToMany(UserModel, {
   as: 'staff',
@@ -92,4 +92,4 @@ mysql.sync().then(async () => {
   if(citiesCount === 0) {
     await CityModel.bulkCreate([{name: 'Черновцы'}, {name: 'Киев'}])
   }
-})
+}).catch(e => console.log(e))
