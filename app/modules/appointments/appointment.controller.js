@@ -12,33 +12,36 @@ export default {
   index: async (req, res, next) => {
     try {
       const formattedData = {
-        companyId: req.companyId,
-        userId: req.userId,
-        offset: req.query.offset,
-        limit: req.query.limit,
         date: req.query.date,
+        companyId: req.companyId
       }
 
       validate(formattedData, joi.object().keys({
-        offset: joi.number(),
-        limit: joi.number(),
-        date: joi.string(),
-        userId: joi.number().required(),
+        date: joi.string().required(),
         companyId: joi.number().required()
       }))
 
-      const [appointments, queue] = await Promise.all([
-        AppointmentService.findAll(formattedData),
-        AppointmentService.findAll({
-          ...formattedData,
-          isQueue: true
-        })
-      ])
+      const appointments = await AppointmentService.findAll(formattedData)
 
-      res.send({
-        queue,
-        appointments
-      })
+      res.send(appointments)
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  queue: async (req, res, next) => {
+    try {
+      const formattedData = {
+        companyId: req.companyId,
+      }
+
+      validate(formattedData, joi.object().keys({
+        companyId: joi.number().required()
+      }))
+
+      const queue = await AppointmentService.queue(formattedData)
+
+      res.send(queue)
     } catch(error) {
       next(error)
     }
