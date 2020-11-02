@@ -7,13 +7,13 @@ export default {
     try {
       const params = {
         employeeId: req.query.employeeId,
+        endDateTime: req.query.endDateTime,
         startDateTime: req.query.startDateTime,
-        endDateTime: req.query.endDateTime
       }
 
-      const timeoffs = await TimeOffService.findAll(params)
+      const timeOffs = await TimeOffService.findAll(params)
 
-      res.send(timeoffs)
+      res.send(timeOffs)
     } catch(error) {
       next(error)
     }

@@ -19,30 +19,26 @@ export default {
   },
 
   findAll: async ({employeeId, startDateTime, endDateTime}) => {
-    const timeOff = await TimeOffModel.findAll({where: {employeeId,
+    const where = {
       [Op.or]: [
         {
           startDateTime: {
-            [Op.lte]: startDateTime,
-          },
-          endDateTime: {
-            [Op.gte]: startDateTime
+            [Op.between]: [startDateTime, endDateTime]
           }
         },
         {
-          startDateTime: {
-            [Op.gte]: startDateTime,
-            [Op.lt]: endDateTime
-          },
-        },
-        {
           endDateTime: {
-            [Op.gte]: startDateTime,
-            [Op.lte]: endDateTime
+            [Op.between]: [startDateTime, endDateTime]
           }
         }
-      ],  
-    }})
+      ]
+    }
+
+    if (employeeId) {
+      where.employeeId = employeeId
+    }
+
+    const timeOff = await TimeOffModel.findAll({where})
 
     return timeOff
   },
