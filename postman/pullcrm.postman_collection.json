@@ -1229,6 +1229,73 @@
 					"response": []
 				},
 				{
+					"name": "Update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"employeeId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/timeoff",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"timeoff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"employeeId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/timeoff/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"timeoff",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Index",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true

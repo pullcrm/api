@@ -2,10 +2,17 @@ import {Op} from 'sequelize'
 import TimeOffModel from './timeoff.model'
 import ApiException from "../../exceptions/api"
 import {addDayToDate} from '../../utils/time'
+import UserModel from '../users/user.model'
+import ApproachModel from '../approaches/approach.model'
 
 export default {
   create: async data => {
-    return TimeOffModel.create(data, {returning: true})
+    const timeOff = await TimeOffModel.create(data, {returning: true})
+    return TimeOffModel.findOne({where: {id: timeOff.id}, include: [
+      {
+        model: ApproachModel, as: 'employee', include: {model: UserModel}, 
+      }
+    ]})
   },
 
   update: async (data, {timeOffId}) => {
@@ -82,5 +89,16 @@ export default {
     console.log(times)
   
     return times
-  }
+  },
+
+  destroy: async ({timeOffId}) => {
+    const timeOff = await TimeOffModel.findOne({where: {id: timeOffId}})
+
+    if(!timeOff) {
+      throw new ApiException(404, 'TimeOff wasn\'t found')
+    }
+
+    await timeOff.destroy()
+    return {destroy: 'OK'}
+  },
 }
