@@ -25,17 +25,19 @@ export default {
     return timeOff.update(data, {returning: true})
   },
 
-  findAll: async ({employeeId, startDateTime, endDateTime}) => {
+  findAll: async ({employeeId, date}) => {
+    const endDate = addDayToDate(date)
+  
     const where = {
       [Op.or]: [
         {
           startDateTime: {
-            [Op.between]: [startDateTime, endDateTime]
+            [Op.between]: [date, endDate]
           }
         },
         {
           endDateTime: {
-            [Op.between]: [startDateTime, endDateTime]
+            [Op.between]: [date, endDate]
           }
         }
       ]

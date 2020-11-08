@@ -192,9 +192,12 @@ export default {
         employeeId: joi.number().required()
       }))
 
-      const appointments = await AppointmentService.fetchHoursSlots(formattedData)
+      const [timeOffs, appointments] = await Promise.all([
+        TimeOffService.findAll(formattedData),
+        AppointmentService.fetchHoursSlots(formattedData)
+      ])
 
-      const slots = getHoursSlots(appointments)
+      const slots = getHoursSlots({appointments, timeOffs})
 
       res.send(slots)
     } catch(error) {
@@ -216,9 +219,12 @@ export default {
         employeeId: joi.number().required()
       }))
 
-      const appointments = await AppointmentService.fetchHoursSlots(formattedData)
+      const [timeOffs, appointments] = await Promise.all([
+        TimeOffService.findAll(formattedData),
+        AppointmentService.fetchHoursSlots(formattedData)
+      ])
 
-      const slots = getHoursSlots(appointments)
+      const slots = getHoursSlots({appointments, timeOffs})
 
       res.send(slots)
     } catch(error) {

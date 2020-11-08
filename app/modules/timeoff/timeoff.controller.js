@@ -6,9 +6,8 @@ export default {
   index: async (req, res, next) => {
     try {
       const params = {
+        date: req.query.date,
         employeeId: req.query.employeeId,
-        endDateTime: req.query.endDateTime,
-        startDateTime: req.query.startDateTime,
       }
 
       const timeOffs = await TimeOffService.findAll(params)
