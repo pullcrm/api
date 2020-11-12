@@ -78,7 +78,7 @@ export default {
   },
 
   addSMSConfiguration: async ({token}, {companyId, userId}) => {
-    const company = await CompanyModel.findOne({id: companyId})
+    const company = await CompanyModel.findOne({where: {id: companyId}})
 
     if(company.get('userId') !== userId) {
       throw new ApiException(403, 'You don\'t own this company!')
@@ -91,7 +91,7 @@ export default {
   },
 
   updateSMSConfiguration: async (data, {companyId, userId}) => {
-    const company = await CompanyModel.findOne({id: companyId})
+    const company = await CompanyModel.findOne({where: {id: companyId}})
     const smsConfiguration = await SMSConfigurationModel.findOne({companyId: company.id})
 
     if(company.get('userId') !== userId) {
