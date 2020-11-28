@@ -24,7 +24,7 @@ CompanyModel.belongsTo(UserModel, {
 
 ApproachModel.belongsTo(UserModel)
 ApproachModel.belongsTo(CompanyModel)
-TimeOffModel.belongsTo(ApproachModel, {as: 'employee'})
+TimeOffModel.belongsTo(UserModel, {as: 'employee'})
 
 UserModel.hasMany(ApproachModel)
 UserModel.hasMany(TokenModel, {as: 'tokens'})
