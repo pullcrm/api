@@ -29,6 +29,14 @@ export default {
     })
   },
 
+  find: async appointmentId => {
+    return AppointmentModel.findOne({where: {id: appointmentId}, include: [
+      {model: ProcedureModel, as: 'procedures'},
+      {model: UserModel, as: 'employee'},
+      {model: UserModel, as: 'client'}
+    ]})
+  },
+
   queue: async ({companyId}) => {
     const baseCondition = {
       isQueue: true,

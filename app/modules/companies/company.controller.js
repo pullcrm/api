@@ -6,6 +6,7 @@ import UserService from '../users/user.service'
 import ApproachService from '../approaches/approach.service'
 import {mysql} from "../../config/connections"
 import {ALL, HIDE, DASHBOARD} from '../../constants/employees'
+import SMSPrivateService from '../sms/services/sms.private'
 
 export default {
   index: async (req, res, next) => {
@@ -64,60 +65,6 @@ export default {
       }))
 
       const company = await CompanyService.create(formattedData)
-
-      res.send(company)
-    } catch (error) {
-      next(error)
-    }
-  },
-
-  addSMSConfiguration: async (req, res, next) => {
-    try {
-      const formattedData = {
-        token: req.body.token,
-      }
-
-      const params = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate({...formattedData, ...params}, joi.object().keys({
-        token: joi.string().required(),
-        companyId: joi.number().required(),
-        userId: joi.number().required(),
-      }))
-
-      const company = await CompanyService.addSMSConfiguration(formattedData, params)
-
-      res.send(company)
-    } catch (error) {
-      next(error)
-    }
-  },
-
-  updateSMSConfiguration: async (req, res, next) => {
-    try {
-      const formattedData = {
-        remindAfterCreation: req.body.remindAfterCreation,
-        beforeTime: req.body.beforeTime,
-        remindBeforeTime: req.body.remindBeforeTime
-      }
-
-      const params = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate({...formattedData, ...params}, joi.object().keys({
-        remindAfterCreation: joi.boolean(),
-        remindBeforeTime: joi.boolean(),
-        beforeTime: joi.number().when('remindBeforeTime', {is: true, then: joi.required()}),
-        companyId: joi.number().required(),
-        userId: joi.number().required(),
-      }))
-
-      const company = await CompanyService.updateSMSConfiguration(formattedData, params)
 
       res.send(company)
     } catch (error) {

@@ -413,7 +413,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\"\n}\n",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -619,7 +619,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"total\": 520,\n    \"description\": \"\"\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-11-29\",\n    \"startTime\": \"17:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": true,\n    \"smsRemindInMinutes\": 45,\n    \"smsCreationNotify\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -893,6 +893,137 @@
 							"path": [
 								"api",
 								"cities"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "SMS",
+			"item": [
+				{
+					"name": "Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/sms/balance",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"0958323358\",\n    \"smsIdentifier\": \"d65be694-f2a5-428a-9684-e5e8ef2fded5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Configuration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"tsarr\",\n    \"password\": \"Xo4Ar2g8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Configuration",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms"
 							]
 						}
 					},

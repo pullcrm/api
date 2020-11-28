@@ -13,7 +13,7 @@ import approachPublicRouter from './modules/approaches/routes/approach.public.js
 import procedureRouter from './modules/procedures/routes/procedure.private'
 import procedurePublicRouter from './modules/procedures/routes/procedure.public'
 import fileRouter from './modules/files/file.route'
-import smscRouter from './modules/smsc/smsc.route'
+import smsRouter from './modules/sms/sms.route'
 import timeOffRouter from './modules/timeoff/timeoff.route'
 
 const api = Router()
@@ -28,7 +28,7 @@ api.use('/categories', categoryRouter)
 api.use('/approaches', approachRouter)
 api.use('/procedures', procedureRouter)
 api.use('/files', fileRouter)
-api.use('/smsc', smscRouter)
+api.use('/sms', smsRouter)
 api.use('/timeoff', timeOffRouter)
 
 api.use('/public/approaches', approachPublicRouter)

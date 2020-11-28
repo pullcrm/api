@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import TokenModel from "../models/token"
 import ApiException from "../../../exceptions/api"
 

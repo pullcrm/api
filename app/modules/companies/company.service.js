@@ -6,7 +6,7 @@ import CityModel from "../cities/city.model"
 import CategoryModel from "../categories/category.model"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
-import SMSConfigurationModel from './models/smsConfiguration'
+import SMSConfigurationModel from '../sms/sms.model'
 
 export default {
   findOne: async params => {
@@ -76,29 +76,4 @@ export default {
 
     return company.getStaff({limit, offset, include: [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}})
   },
-
-  addSMSConfiguration: async ({token}, {companyId, userId}) => {
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    return SMSConfigurationModel.create({
-      token,
-      companyId
-    })
-  },
-
-  updateSMSConfiguration: async (data, {companyId, userId}) => {
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-    const smsConfiguration = await SMSConfigurationModel.findOne({companyId: company.id})
-
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    return smsConfiguration.update(data)
-  },
-
 }

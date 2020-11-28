@@ -1,12 +1,17 @@
-import AppointmentService from './appointment.service'
-import validate from "../../utils/validate"
 import joi from "joi"
+import {v4 as uuid} from 'uuid'
+import dayjs from 'dayjs'
 
 import {getAvailableTime} from '../../logics/appointments'
 
+import AppointmentService from './appointment.service'
+import validate from "../../utils/validate"
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 import ProcedureModel from '../procedures/procedure.model'
 import TimeOffService from '../timeoff/timeoff.service'
+import SMSPrivateService from '../sms/services/sms.private'
+import {creationNotifyMessage, remindNotifyMessage} from '../sms/sms.view'
+import {subtractTime} from "../../utils/time"
 
 export default {
   index: async (req, res, next) => {
@@ -62,6 +67,10 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
+        smsRemindNotify: req.body.smsRemindNotify,
+        smsRemindInMinutes: req.body.smsRemindInMinutes,
+        smsCreationNotify: req.body.smsCreationNotify,
+        smsIdentifier: req.body.smsRemindNotify ? uuid() : null,
       }
 
       //TODO need to validate clientId, procedures for owner
@@ -72,16 +81,42 @@ export default {
         phone: joi.string(),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date(),
+        date: joi.date().required(),
         startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsRemindNotify: joi.boolean(),
+        smsRemindInMinutes: joi.number(),
+        smsCreationNotify: joi.boolean(),
+        smsIdentifier: joi.string().allow(null)
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const appointment = await AppointmentService.create(formattedData)
+      const newAppointment = await AppointmentService.create(formattedData)
+      const appointment = await AppointmentService.find(newAppointment.id)
+
+      if(formattedData.smsCreationNotify) {
+        await SMSPrivateService.send({
+          id: uuid(),
+          time: '0',
+          phone: appointment.phone || appointment.client.phone,
+          message: creationNotifyMessage(appointment) 
+        }, formattedData.companyId)
+      }
+
+      if(formattedData.smsRemindNotify) {
+        const time = `${dayjs(formattedData.date).format('DD.MM.YY')} ${subtractTime(formattedData.startTime, formattedData.smsRemindInMinutes)}`
+  
+        await SMSPrivateService.send({
+          id: formattedData.smsIdentifier,
+          time,
+          phone: appointment.phone || appointment.client.phone,
+          message: remindNotifyMessage(appointment, formattedData.smsRemindInMinutes)
+        }, formattedData.companyId)
+      }
+
       res.send(appointment)
     } catch(error) {
       next(error)
