@@ -65,9 +65,7 @@ export default {
     return result
   },
 
-  update: async (data, {appointmentId}) => {
-    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
-
+  update: async (data, appointment) => {
     if(!appointment) {
       throw new ApiException(404, 'Appointment wasn\'t found')
     }
@@ -115,7 +113,7 @@ export default {
       throw new ApiException(403, 'That is not your appointment')
     }
 
-    return appointment.update({smsIdentifier})
+    await appointment.update({smsIdentifier})
   },
 
   fetchByEmployeeId: async ({date, companyId, excludeId, employeeId}) => {

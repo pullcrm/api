@@ -18,12 +18,12 @@ const SMSConfigurationSchema = (connection, type) => {
       allowNull: false,
       defaultValue: true,
     },
-    beforeTime: {
+    remindBeforeInMinutes: {
       type: type.INTEGER,
       allowNull: false,
       defaultValue: 60,
     },
-    remindBeforeTime: {
+    remindBefore: {
       type: type.BOOLEAN,
       allowNull: false,
       defaultValue: false,

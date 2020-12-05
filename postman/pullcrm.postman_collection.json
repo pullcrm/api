@@ -619,7 +619,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-11-29\",\n    \"startTime\": \"17:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": true,\n    \"smsRemindInMinutes\": 45,\n    \"smsCreationNotify\": false\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-12-05\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": true,\n    \"smsCreationNotify\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -686,7 +686,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"status\": \"CANCELED\"\n}",
+							"raw": "{\n\t\"startTime\": \"23:50:00\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -694,14 +694,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments/1",
+							"raw": "{{host}}/api/appointments/46",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"appointments",
-								"1"
+								"46"
 							]
 						}
 					},
@@ -942,7 +942,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone\": \"0958323358\",\n    \"smsIdentifier\": \"d65be694-f2a5-428a-9684-e5e8ef2fded5\"\n}",
+							"raw": "{\n    \"phone\": \"0958323358\",\n    \"smsIdentifier\": \"f6752907-dbfb-4978-a59f-af36e5e4d462\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

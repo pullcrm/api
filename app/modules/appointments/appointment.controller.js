@@ -68,9 +68,8 @@ export default {
         isQueue: req.body.isQueue,
         status: req.body.status,
         smsRemindNotify: req.body.smsRemindNotify,
-        smsRemindInMinutes: req.body.smsRemindInMinutes,
-        smsCreationNotify: req.body.smsCreationNotify,
         smsIdentifier: req.body.smsRemindNotify ? uuid() : null,
+        smsCreationNotify: req.body.smsCreationNotify,
       }
 
       //TODO need to validate clientId, procedures for owner
@@ -87,36 +86,15 @@ export default {
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsIdentifier: joi.string().allow(null),
         smsRemindNotify: joi.boolean(),
         smsRemindInMinutes: joi.number(),
         smsCreationNotify: joi.boolean(),
-        smsIdentifier: joi.string().allow(null)
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const newAppointment = await AppointmentService.create(formattedData)
-      const appointment = await AppointmentService.find(newAppointment.id)
-
-      if(formattedData.smsCreationNotify) {
-        await SMSPrivateService.send({
-          id: uuid(),
-          time: '0',
-          phone: appointment.phone || appointment.client.phone,
-          message: creationNotifyMessage(appointment) 
-        }, formattedData.companyId)
-      }
-
-      if(formattedData.smsRemindNotify) {
-        const time = `${dayjs(formattedData.date).format('DD.MM.YY')} ${subtractTime(formattedData.startTime, formattedData.smsRemindInMinutes)}`
-  
-        await SMSPrivateService.send({
-          id: formattedData.smsIdentifier,
-          time,
-          phone: appointment.phone || appointment.client.phone,
-          message: remindNotifyMessage(appointment, formattedData.smsRemindInMinutes)
-        }, formattedData.companyId)
-      }
-
+      const appointment = await AppointmentService.create(formattedData)
+      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
       res.send(appointment)
     } catch(error) {
       next(error)
@@ -160,8 +138,11 @@ export default {
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
       }))
 
-      const appointment = await AppointmentService.update(formattedData, params)
-      res.send(appointment)
+      const appointment = await AppointmentService.find(params.appointmentId)
+      const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, appointment)
+      const mewAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, appointment)
+
+      res.send(mewAppointment)
     } catch (error) {
       next(error)
     }
@@ -202,7 +183,9 @@ export default {
         companyId: joi.number().required()
       }))
 
-      res.send(await AppointmentService.changeSMSIdentifier(data, params))
+      const appointment = await AppointmentService.changeSMSIdentifier(data, params)
+
+      res.send(appointment)
     } catch (error) {
       next(error)
     }
