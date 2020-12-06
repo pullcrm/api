@@ -8,6 +8,18 @@ const ApproachSchema = (connection, type) => {
       primaryKey: true,
       autoIncrement: true
     },
+
+    status: {
+      type: type.ENUM('ALL', 'DASHBOARD', 'HIDE'),
+      allowNull: false,
+      defaultValue: 'ALL'
+    },
+
+    description: {
+      type: type.STRING,
+      allowNull: false,
+      defaultValue: ''
+    }
   })
 }
 
