@@ -110,8 +110,7 @@ export default {
     return appointment.update({smsIdentifier})
   },
 
-  // TODO: Need code review
-  fetchHoursSlots: async ({date, companyId, excludeId, employeeId}) => {
+  fetchByEmployeeId: async ({date, companyId, excludeId, employeeId}) => {
     const baseCondition = {
       isQueue: false,
       companyId,

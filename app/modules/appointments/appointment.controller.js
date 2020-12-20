@@ -2,7 +2,7 @@ import AppointmentService from './appointment.service'
 import validate from "../../utils/validate"
 import joi from "joi"
 
-import {getHoursSlots} from '../../logics/appointments'
+import {getAvailableTime} from '../../logics/appointments'
 
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 import ProcedureModel from '../procedures/procedure.model'
@@ -173,15 +173,16 @@ export default {
     }
   },
 
-  // TODO: Need code review
-  hoursSlots: async (req, res, next) => {
+  // TODO: Refactor
+  availableTime: async (req, res, next) => {
     try {
       const formattedData = {
         date: req.body.date,
         userId: req.userId,
         companyId: req.companyId,
         excludeId: req.body.excludeId,
-        employeeId: req.body.employeeId
+        employeeId: req.body.employeeId,
+        duration: req.body.duration
       }
 
       validate(formattedData, joi.object().keys({
@@ -189,44 +190,55 @@ export default {
         userId: joi.number().required(),
         companyId: joi.number().required(),
         excludeId: joi.number().allow(null),
-        employeeId: joi.number().required()
+        employeeId: joi.number().required(),
+        duration: joi.number().required()
       }))
 
       const [timeOffs, appointments] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchHoursSlots(formattedData)
+        AppointmentService.fetchByEmployeeId(formattedData)
       ])
 
-      const slots = getHoursSlots({appointments, timeOffs})
+      const availableTime = getAvailableTime({
+        duration: formattedData.duration,
+        timeOffs,
+        appointments,
+      })
 
-      res.send(slots)
+      res.send(availableTime)
     } catch(error) {
       next(error)
     }
   },
 
-  publicHoursSlots: async (req, res, next) => {
+  publicAvailableTime: async (req, res, next) => {
     try {
       const formattedData = {
         date: req.body.date,
         companyId: req.body.companyId,
-        employeeId: req.body.employeeId
+        employeeId: req.body.employeeId,
+        duration: req.body.duration
       }
 
       validate(formattedData, joi.object().keys({
         date: joi.string(),
         companyId: joi.number().required(),
-        employeeId: joi.number().required()
+        employeeId: joi.number().required(),
+        duration: joi.number().required()
       }))
 
       const [timeOffs, appointments] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchHoursSlots(formattedData)
+        AppointmentService.fetchByEmployeeId(formattedData)
       ])
 
-      const slots = getHoursSlots({appointments, timeOffs})
+      const availableTime = getAvailableTime({
+        duration: formattedData.duration,
+        timeOffs,
+        appointments,
+      })
 
-      res.send(slots)
+      res.send(availableTime)
     } catch(error) {
       next(error)
     }
