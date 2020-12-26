@@ -140,7 +140,7 @@ export default {
 
       const appointment = await AppointmentService.find(params.appointmentId)
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, appointment)
-      const mewAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, appointment)
+      const mewAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, appointment.id)
 
       res.send(mewAppointment)
     } catch (error) {

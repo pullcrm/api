@@ -65,7 +65,9 @@ export default {
     return result
   },
 
-  update: async (data, appointment) => {
+  update: async (data, appointmentId) => {
+    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
+
     if(!appointment) {
       throw new ApiException(404, 'Appointment wasn\'t found')
     }
@@ -75,7 +77,7 @@ export default {
     }
 
     const result = await mysql.transaction(async transaction => {
-      await appointment.update(data, {plain: true, transaction})
+      await appointment.update(data, {transaction})
 
       if(data.procedures && Array.isArray(data.procedures)) {
         await appointment.setProcedures(data.procedures, {transaction})
