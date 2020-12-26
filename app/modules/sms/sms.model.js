@@ -1,6 +1,6 @@
 import {mysql} from "../../config/connections"
 import {Sequelize} from "sequelize"
-import {encrypt} from '../../utils/crypto'
+import {encrypt, decrypt} from '../../utils/crypto'
 
 const SMSConfigurationSchema = (connection, type) => {
   return connection.define('sms_configurations', {
@@ -46,13 +46,13 @@ const SMSConfigurationSchema = (connection, type) => {
 
       beforeUpdate: config => {
         if(config.password) {
-          config.password = encrypt(config.password)
+          config.password = JSON.stringify(encrypt(decrypt(JSON.parse(config.password))))
         }
       },
 
       beforeBulkUpdate: options => {
         if(options.attributes.password) {
-          options.attributes.password = encrypt(options.attributes.password)
+          options.attributes.password = JSON.stringify(encrypt(decrypt(JSON.parse(options.attributes.password))))
         }
       }
     }
