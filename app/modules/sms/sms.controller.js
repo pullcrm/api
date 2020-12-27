@@ -6,7 +6,6 @@ export default {
   addSMSConfiguration: async (req, res, next) => {
     try {
       const formattedData = {
-        token: req.body.token,
         login: req.body.login,
         password: req.body.password
       }
@@ -17,13 +16,13 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        token: joi.string().required(),
         login: joi.string().required(),
         password: joi.string().required(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
       }))
 
+      // TODO: Check valid login:password
       const company = await SMSPrivateService.addSMSConfiguration(formattedData, params)
 
       res.send(company)
@@ -35,9 +34,9 @@ export default {
   updateSMSConfiguration: async (req, res, next) => {
     try {
       const formattedData = {
+        remindBefore: req.body.remindBefore,
         remindAfterCreation: req.body.remindAfterCreation,
-        beforeTime: req.body.beforeTime,
-        remindBeforeTime: req.body.remindBeforeTime
+        remindBeforeInMinutes: req.body.remindBeforeInMinutes,
       }
 
       const params = {
@@ -46,11 +45,11 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        remindAfterCreation: joi.boolean(),
-        remindBeforeTime: joi.boolean(),
-        beforeTime: joi.number().when('remindBeforeTime', {is: true, then: joi.required()}),
-        companyId: joi.number().required(),
         userId: joi.number().required(),
+        companyId: joi.number().required(),
+        remindBefore: joi.boolean(),
+        remindAfterCreation: joi.boolean(),
+        remindBeforeInMinutes: joi.number().when('remindBeforeTime', {is: true, then: joi.required()}),
       }))
 
       const company = await SMSPrivateService.updateSMSConfiguration(formattedData, params)

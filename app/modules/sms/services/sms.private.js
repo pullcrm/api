@@ -108,6 +108,7 @@ export default {
 
     return SMSConfigurationModel.create({
       ...data,
+      token: '', // TODO: Need remove from model
       companyId
     })
   },

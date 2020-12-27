@@ -1,17 +1,17 @@
 import joi from "joi"
 import {v4 as uuid} from 'uuid'
-import dayjs from 'dayjs'
+
+import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 
 import {getAvailableTime} from '../../logics/appointments'
 
-import AppointmentService from './appointment.service'
 import validate from "../../utils/validate"
-import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
+
 import ProcedureModel from '../procedures/procedure.model'
+
 import TimeOffService from '../timeoff/timeoff.service'
 import SMSPrivateService from '../sms/services/sms.private'
-import {creationNotifyMessage, remindNotifyMessage} from '../sms/sms.view'
-import {subtractTime} from "../../utils/time"
+import AppointmentService from './appointment.service'
 
 export default {
   index: async (req, res, next) => {
@@ -139,10 +139,11 @@ export default {
       }))
 
       const appointment = await AppointmentService.find(params.appointmentId)
+      // FIXME: Need review (smsIdentifier)
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, appointment)
-      const mewAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, appointment.id)
+      const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, appointment.id)
 
-      res.send(mewAppointment)
+      res.send(newAppointment)
     } catch (error) {
       next(error)
     }
