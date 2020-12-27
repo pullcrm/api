@@ -145,11 +145,7 @@ export default {
         smsRemindNotify: joi.boolean().allow(null),
       }))
 
-      let smsIdentifier = null
-
-      if (formattedData.smsRemindNotify !== null) {
-        smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
-      }
+      const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
 
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 

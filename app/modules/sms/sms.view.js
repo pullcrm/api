@@ -1,75 +1,32 @@
 import dayjs from 'dayjs'
 
+import {setTime} from '../../utils/time'
+
 export function creationNotifyMessage (payload) {
   const {procedures, date, startTime, employee} = payload
 
   const proceduresText = procedures.map(({name}) => name).join(', ')
   
-  return `Новая запись! ${proceduresText} на ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)}. Сотрудник ${employee.firstName}`
+  return `Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Сотрудник ${employee.firstName}`
 }
   
-export function remindNotifyMessage ({procedures}, minutes) {
+export function remindNotifyMessage ({procedures, date, startTime}) {
   const proceduresText = procedures.map(({name}) => name).join(', ')
   
-  return `Через ${getDurationName(minutes)} у вас ${proceduresText}`
+  return `Напоминание о записи! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} у вас ${proceduresText}`
 }
 
-export const durations = getDurations()
-
-export function getDurationName (time) {
-  return durations.find(item => item.value === time)?.name
+export function isTimeExpired (dateTime) {
+  // dateTime as dayjs
+  return dateTime.diff(new Date()) < 0
 }
 
-function getDurations () {
-  const list = []
+export function isAppointmentEdited (oldAppointment, newAppointment) {
+  const newDateTime = setTime(newAppointment.date, newAppointment.startTime).format('DD.MM.YY HH:mm')
+  const oldDateTime = !oldAppointment.isQueue && setTime(oldAppointment.date, oldAppointment.startTime).format('DD.MM.YY HH:mm')
 
-  let hour = 0
-  let minute = 0
-
-  while (hour < 4) {
-    const time = []
-
-    minute += 15
-
-    if (minute === 60) {
-      hour++
-      minute = 0
-    }
-
-    if (hour > 0) {
-      time.push(`${hour} ${pluralize(hour, 'час', 'часа', 'часов')}`)
-    }
-
-    if (minute > 0) {
-      time.push(`${minute} минут`)
-    }
-
-    list.push({
-      name: time.join(' '),
-      value: hour * 60 + minute
-    })
-  }
-
-  return list
-}
-
-export function pluralize (number, one, two, five) {
-  number = Math.abs(number)
-  number %= 100
-
-  if (number >= 5 && number <= 20) {
-    return five
-  }
-
-  number %= 10
-
-  if (number === 1) {
-    return one
-  }
-
-  if (number >= 2 && number <= 4) {
-    return two
-  }
-
-  return five
+  return (
+    newDateTime !== oldDateTime ||
+    newAppointment.smsRemindNotify !== Boolean(oldAppointment.smsIdentifier)
+  )
 }

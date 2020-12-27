@@ -11,7 +11,12 @@ import CompanyModel from '../../companies/models/company'
 
 import appointmentService from '../../appointments/appointment.service'
 
-import {creationNotifyMessage, remindNotifyMessage} from '../sms.view'
+import {
+  isTimeExpired,
+  isAppointmentEdited,
+  remindNotifyMessage,
+  creationNotifyMessage
+} from '../sms.view'
 
 export default {
   sendAfterAppointmentCreate: async ({smsRemindNotify, smsCreationNotify, appointmentId, ...data}) => {
@@ -25,10 +30,9 @@ export default {
 
     const appointment = await appointmentService.find(appointmentId)
 
-    const startDateTime = setTime(appointment.startDate, appointment.startTime)
+    const startDateTime = setTime(appointment.date, appointment.startTime)
 
-    // If time is expired
-    if (startDateTime.diff(new Date()) < 0) {
+    if (isTimeExpired(startDateTime)) {
       return
     }
 
@@ -55,7 +59,7 @@ export default {
 
       await SMS.send({
         id: appointment.smsIdentifier,
-        mes: remindNotifyMessage(appointment, smsConfiguration.remindBeforeInMinutes),
+        mes: remindNotifyMessage(appointment),
         time: sendDateTime.format('DD.MM.YY HH:mm'),
         phones: appointment.phone || appointment.client.phone
       })
@@ -71,25 +75,10 @@ export default {
 
     let smsIdentifier = appointment.smsIdentifier
 
-    const newDateTime = data.isQueue && setTime(data.startDate, data.startTime).format('DD.MM.YY HH:mm')
-    const oldDateTime = appointment.isQueue && setTime(appointment.startDate, appointment.startTime).format('DD.MM.YY HH:mm')
-
-    if (
-      newDateTime === oldDateTime &&
-      data.smsRemindNotify === Boolean(appointment.smsIdentifier)
-    ) {
-      return smsIdentifier
-    }
-
-    // If time is expired
-    if (newDateTime && newDateTime.diff(new Date()) < 0) {
-      return smsIdentifier
-    }
-
     const smsConfiguration = await SMSConfigurationModel.findOne({where: {companyId: data.companyId}})
 
     if(!smsConfiguration) {
-      throw new ApiException(404, 'You don\'t have sms configuration!')
+      return smsIdentifier
     }
 
     const SMS = privateSMS({
@@ -98,6 +87,25 @@ export default {
     })
 
     const phone = appointment.phone || appointment.client.phone
+
+    if (data.isQueue) {
+      await smsIdentifier && SMS.remove({
+        id: smsIdentifier,
+        phone
+      })
+
+      return null
+    }
+
+    if (isAppointmentEdited(appointment, data) === false) {
+      return smsIdentifier
+    }
+
+    const startDateTime = setTime(data.date, data.startTime)
+
+    if (isTimeExpired(startDateTime)) {
+      return smsIdentifier
+    }
 
     if (smsIdentifier) {
       // remove old sms
@@ -109,14 +117,19 @@ export default {
       smsIdentifier = null
     }
 
-    if(newDateTime && data.smsRemindNotify) {
+    if(data.smsRemindNotify) {
       smsIdentifier = makeRandom(4)
 
-      const sendDateTime = newDateTime.subtract(smsConfiguration.remindBeforeInMinutes, 'm')
+      const sendDateTime = startDateTime.subtract(smsConfiguration.remindBeforeInMinutes, 'm')
+
+      const message = remindNotifyMessage({
+        ...data,
+        procedures: appointment.procedures
+      })
 
       await SMS.send({
         id: smsIdentifier,
-        mes: remindNotifyMessage(appointment, smsConfiguration.remindBeforeInMinutes),
+        mes: message,
         time: sendDateTime.format('DD.MM.YY HH:mm'),
         phones: phone
       })
