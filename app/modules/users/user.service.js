@@ -1,11 +1,18 @@
-import cryptoRandomString from 'crypto-random-string'
-import UserModel from './user.model'
-import ApiException from "../../exceptions/api"
-import {globalSMS} from '../../providers/smsc'
-import TokenService from '../auth/services/token'
-import {client as redis} from '../../providers/redis'
-import FileModel from '../files/file.model'
 import {RESET_PASSWORD, REGISTRATION} from '../../constants/redis'
+
+import {makeRandom} from '../../utils/make-random'
+
+import ApiException from "../../exceptions/api"
+
+import {client as redis} from '../../providers/redis'
+
+import TokenService from '../auth/services/token'
+import SMSGlobalService from '../sms/services/sms.global'
+
+import UserModel from './user.model'
+import FileModel from '../files/file.model'
+
+const SMS_CLIENT_ENABLED = process.env.SMS_CLIENT_ENABLED
 
 export default {
   findOneByPhone: async ({phone}) => {
@@ -23,10 +30,10 @@ export default {
   },
   
   sendConfirmationCode: async ({phone, type}) => {
-    let code = cryptoRandomString({length: 4, type: 'numeric'})
+    let code = makeRandom(4, {type: 'numeric'})
 
-    if (phone === '9999999999') {
-      code = 9999
+    if (SMS_CLIENT_ENABLED === 'false') {
+      code = phone.substring(6, 10) /* Get last 4 digits from phone */
     }
 
     redis.hmset(`${type}-${phone}`, {
@@ -37,11 +44,13 @@ export default {
 
     redis.expire(`${type}-${phone}`, 1800)
 
-    if (phone === '9999999999') {
-      return {}
+    if (SMS_CLIENT_ENABLED === 'false') {
+      return {
+        result: true
+      }
     }
 
-    return globalSMS.send({
+    return SMSGlobalService.send({
       phones: phone,
       mes: `Код PullCRM: ${code}`
     })
