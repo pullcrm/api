@@ -139,6 +139,17 @@ export default {
   },
 
   addSMSConfiguration: async (data, {companyId, userId}) => {
+    const SMS = privateSMS({
+      login: data.login,
+      password: data.password
+    })
+
+    const result = await SMS.getBalance()
+
+    if (JSON.parse(result).error) {
+      throw new ApiException(404, 'Sms account wasn\'t found')
+    }
+
     const company = await CompanyModel.findOne({where: {id: companyId}})
 
     if(company.get('userId') !== userId) {

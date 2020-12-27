@@ -22,7 +22,6 @@ export default {
         userId: joi.number().required(),
       }))
 
-      // TODO: Check valid login:password
       const company = await SMSPrivateService.addSMSConfiguration(formattedData, params)
 
       res.send(company)
