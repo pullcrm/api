@@ -69,11 +69,21 @@ export default {
       throw new ApiException(404, 'Appointment was not found!')
     }
 
+    let smsIdentifier = appointment.smsIdentifier
+
     const newDateTime = data.isQueue && setTime(data.startDate, data.startTime).format('DD.MM.YY HH:mm')
     const oldDateTime = appointment.isQueue && setTime(appointment.startDate, appointment.startTime).format('DD.MM.YY HH:mm')
 
-    if (newDateTime === oldDateTime) {
-      return
+    if (
+      newDateTime === oldDateTime &&
+      data.smsRemindNotify === Boolean(appointment.smsIdentifier)
+    ) {
+      return smsIdentifier
+    }
+
+    // If time is expired
+    if (newDateTime && newDateTime.diff(new Date()) < 0) {
+      return smsIdentifier
     }
 
     const smsConfiguration = await SMSConfigurationModel.findOne({where: {companyId: data.companyId}})
@@ -87,7 +97,6 @@ export default {
       password: decrypt(JSON.parse(smsConfiguration.password))
     })
 
-    let smsIdentifier = appointment.smsIdentifier
     const phone = appointment.phone || appointment.client.phone
 
     if (smsIdentifier) {
