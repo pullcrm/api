@@ -1,11 +1,11 @@
 import joi from "joi"
-import {v4 as uuid} from 'uuid'
 
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 
 import {getAvailableTime} from '../../logics/appointments'
 
-import validate from "../../utils/validate"
+import validate from '../../utils/validate'
+import {makeRandom} from '../../utils/make-random'
 
 import ProcedureModel from '../procedures/procedure.model'
 
@@ -68,7 +68,6 @@ export default {
         isQueue: req.body.isQueue,
         status: req.body.status,
         smsRemindNotify: req.body.smsRemindNotify,
-        smsIdentifier: req.body.smsRemindNotify ? uuid() : null,
         smsCreationNotify: req.body.smsCreationNotify,
       }
 
@@ -81,20 +80,26 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date().required(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
-        smsIdentifier: joi.string().allow(null),
         smsRemindNotify: joi.boolean(),
         smsRemindInMinutes: joi.number(),
         smsCreationNotify: joi.boolean(),
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const appointment = await AppointmentService.create(formattedData)
+      const smsIdentifier = formattedData.smsRemindNotify ? makeRandom(4) : null
+
+      const appointment = await AppointmentService.create({
+        ...formattedData,
+        smsIdentifier
+      })
+
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+
       res.send(appointment)
     } catch(error) {
       next(error)
@@ -105,10 +110,10 @@ export default {
     try {
       const formattedData = {
         employeeId: req.body.employeeId,
-        clientId: req.body.clientId,
+        clientId: req.body.clientId, // Not need to send
         fullName: req.body.fullName,
-        phone: req.body.phone,
-        companyId: req.companyId,
+        phone: req.body.phone, // Not need to send
+        companyId: req.companyId, // Not need to send
         procedures: req.body.procedures,
         date: req.body.date,
         startTime: req.body.startTime,
@@ -116,6 +121,7 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
+        smsRemindNotify: req.body.smsRemindNotify,
       }
 
       const params = {
@@ -130,18 +136,22 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow(''),
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsRemindNotify: joi.boolean().allow(null),
       }))
 
-      const appointment = await AppointmentService.find(params.appointmentId)
-      // FIXME: Need review (smsIdentifier)
-      const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, appointment)
-      const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, appointment.id)
+      let smsIdentifier = null
+
+      if (formattedData.smsRemindNotify !== null) {
+        smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
+      }
+
+      const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 
       res.send(newAppointment)
     } catch (error) {
@@ -289,7 +299,7 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/),
         total: joi.number(),
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),

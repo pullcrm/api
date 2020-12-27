@@ -2,10 +2,10 @@ import dayjs from 'dayjs'
 
 export function creationNotifyMessage (payload) {
   const {procedures, date, startTime, employee} = payload
+
   const proceduresText = procedures.map(({name}) => name).join(', ')
-  const parsedDate = dayjs(date)
   
-  return `Новая запись! ${proceduresText} на ${parsedDate.format('DD.MM')} в ${startTime.slice(0, 5)}. Сотрудник ${employee.firstName}`
+  return `Новая запись! ${proceduresText} на ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)}. Сотрудник ${employee.firstName}`
 }
   
 export function remindNotifyMessage ({procedures}, minutes) {

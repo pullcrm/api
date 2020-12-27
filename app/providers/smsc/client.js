@@ -2,7 +2,6 @@ const FormData = require('form-data')
 
 export default class SMSClient {
   constructor (data) {
-    console.log('CREDS', data)
     this.endpoint = 'https://smsc.ua/sys/'
     this.password = data.password
     this.login = data.login
@@ -17,7 +16,6 @@ export default class SMSClient {
     }
 
     for (const i in params) {
-      console.log('INNER PARAMS', params)
       fd.append(i, params[i])
     }
 

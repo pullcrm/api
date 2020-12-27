@@ -1,102 +1,119 @@
 import ApiException from '../../../exceptions/api'
-import {v4 as uuid} from 'uuid'
-import dayjs from 'dayjs'
+
 import {privateSMS} from '../../../providers/smsc'
+
+import {setTime} from '../../../utils/time'
+import {decrypt} from '../../../utils/crypto'
+import {makeRandom} from '../../../utils/make-random'
+
 import SMSConfigurationModel from '../sms.model'
 import CompanyModel from '../../companies/models/company'
-import {decrypt} from '../../../utils/crypto'
+
 import appointmentService from '../../appointments/appointment.service'
+
 import {creationNotifyMessage, remindNotifyMessage} from '../sms.view'
-import {subtractTime} from '../../../utils/time'
 
 export default {
-  sendAfterAppointmentCreate: async data => {
+  sendAfterAppointmentCreate: async ({smsRemindNotify, smsCreationNotify, appointmentId, ...data}) => {
+    if (data.isQueue) {
+      return
+    }
+
+    if (!smsRemindNotify && !smsCreationNotify) {
+      return
+    }
+
+    const appointment = await appointmentService.find(appointmentId)
+
+    const startDateTime = setTime(appointment.startDate, appointment.startTime)
+
+    // If time is expired
+    if (startDateTime.diff(new Date()) < 0) {
+      return
+    }
+
     const smsConfiguration = await SMSConfigurationModel.findOne({where: {companyId: data.companyId}})
 
     if(!smsConfiguration) {
       throw new ApiException(404, 'You don\'t have sms configuration!')
     }
 
-    const appointment = await appointmentService.find(data.appointmentId)
-
-    if(!appointment) {
-      throw new ApiException(404, 'Something wrong with the appointment!')
-    }
-
-    const creds = {
+    const SMS = privateSMS({
       login: smsConfiguration.login,
-      psw: decrypt(JSON.parse(smsConfiguration.password))
-    }
+      password: decrypt(JSON.parse(smsConfiguration.password))
+    })
 
-    if(data.smsCreationNotify) {
-      await privateSMS(creds).send({
-        id: uuid(),
-        time: '0',
+    if(smsCreationNotify) {
+      await SMS.send({
         phones: appointment.phone || appointment.client.phone,
-        mes: creationNotifyMessage(appointment),
-        psw: creds.psw
+        mes: creationNotifyMessage(appointment)
       })
     }
 
-    if(data.smsRemindNotify) {
-      const time = `${dayjs(data.date).format('DD.MM.YY')} ${subtractTime(data.startTime, smsConfiguration.remindBeforeInMinutes)}`
-      
-      await privateSMS(creds).send({
-        id: data.smsIdentifier,
-        time,
-        phones: appointment.phone || appointment.client.phone,
+    if(smsRemindNotify) {
+      const sendDateTime = startDateTime.subtract(smsConfiguration.remindBeforeInMinutes, 'm')
+
+      await SMS.send({
+        id: appointment.smsIdentifier,
         mes: remindNotifyMessage(appointment, smsConfiguration.remindBeforeInMinutes),
-        psw: creds.psw
+        time: sendDateTime.format('DD.MM.YY HH:mm'),
+        phones: appointment.phone || appointment.client.phone
       })
     }
   },
 
-  sendAfterAppointmentUpdate: async (data, appointment) => {
-    const phone = data.phone || appointment.phone || appointment.client.phone
+  sendAfterAppointmentUpdate: async (data, appointmentId) => {
+    const appointment = await appointmentService.find(appointmentId)
 
     if(!appointment) {
       throw new ApiException(404, 'Appointment was not found!')
     }
 
-    if(data.startTime !== appointment.get('startTime') && appointment.smsIdentifier) {
-      const smsConfiguration = await SMSConfigurationModel.findOne({where: {companyId: data.companyId}})
+    const newDateTime = data.isQueue && setTime(data.startDate, data.startTime).format('DD.MM.YY HH:mm')
+    const oldDateTime = appointment.isQueue && setTime(appointment.startDate, appointment.startTime).format('DD.MM.YY HH:mm')
 
-      if(!smsConfiguration) {
-        throw new ApiException(404, 'You don\'t have sms configuration!')
-      }
+    if (newDateTime === oldDateTime) {
+      return
+    }
 
-      const creds = {
-        login: smsConfiguration.login,
-        psw: decrypt(JSON.parse(smsConfiguration.password))
-      }
+    const smsConfiguration = await SMSConfigurationModel.findOne({where: {companyId: data.companyId}})
 
-      const sentSMS = await privateSMS(creds).getStatus({
-        id: appointment.smsIdentifier,
-        phone,
-        psw: creds.psw
+    if(!smsConfiguration) {
+      throw new ApiException(404, 'You don\'t have sms configuration!')
+    }
+
+    const SMS = privateSMS({
+      login: smsConfiguration.login,
+      password: decrypt(JSON.parse(smsConfiguration.password))
+    })
+
+    let smsIdentifier = appointment.smsIdentifier
+    const phone = appointment.phone || appointment.client.phone
+
+    if (smsIdentifier) {
+      // remove old sms
+      await SMS.remove({
+        id: smsIdentifier,
+        phone
       })
 
-      if(JSON.parse(sentSMS).status <= 0) {
-        await privateSMS(creds).remove({
-          id: appointment.smsIdentifier,
-          phone,
-          psw: creds.psw
-        })
-
-        const time = `${dayjs(data.date).format('DD.MM.YY')} ${subtractTime(data.startTime, smsConfiguration.remindBeforeInMinutes)}`
-        const smsIdentifier = uuid()
-
-        await privateSMS(creds).send({
-          id: smsIdentifier,
-          time,
-          phones: phone,
-          mes: remindNotifyMessage(appointment, smsConfiguration.remindBeforeInMinutes),
-          psw: creds.psw
-        })
-        
-        return smsIdentifier
-      }
+      smsIdentifier = null
     }
+
+    if(newDateTime && data.smsRemindNotify) {
+      smsIdentifier = makeRandom(4)
+
+      const sendDateTime = newDateTime.subtract(smsConfiguration.remindBeforeInMinutes, 'm')
+
+      await SMS.send({
+        id: smsIdentifier,
+        mes: remindNotifyMessage(appointment, smsConfiguration.remindBeforeInMinutes),
+        time: sendDateTime.format('DD.MM.YY HH:mm'),
+        phones: phone
+      })
+    }
+
+    return smsIdentifier
   },
 
   addSMSConfiguration: async (data, {companyId, userId}) => {
@@ -133,15 +150,14 @@ export default {
 
     const creds = {
       login: smsConfig.login,
-      psw: decrypt(JSON.parse(smsConfig.password))
+      password: decrypt(JSON.parse(smsConfig.password))
     }
 
     return privateSMS(creds).send({
       id,
       time,
       phones: phone,
-      mes: message,
-      psw: creds.psw
+      mes: message
     })
   },
 
@@ -154,7 +170,7 @@ export default {
 
     const creds = {
       login: smsConfig.login,
-      psw: decrypt(JSON.parse(smsConfig.password))
+      password: decrypt(JSON.parse(smsConfig.password))
     }
 
     return privateSMS(creds).getBalance(creds)
@@ -169,14 +185,14 @@ export default {
 
     const creds = {
       login: smsConfig.login,
-      psw: decrypt(JSON.parse(smsConfig.password))
+      password: decrypt(JSON.parse(smsConfig.password))
     }
     
     return privateSMS(creds).getStatus({
       phone,
       all: 1,
       id : smsIdentifier,
-      psw: creds.psw,
+      psw: creds.password,
       login: creds.login
     })
   }

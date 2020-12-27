@@ -2,11 +2,11 @@
   Generate random string/characters
   https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 */
-export function makeRandom (length, {type}) {
+export function makeRandom (length, params = {}) {
   let result = ''
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
-  if (type === 'numeric') {
+  if (params.type === 'numeric') {
     characters = '0123456789'
   }
 
