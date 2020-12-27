@@ -12,7 +12,7 @@ import SMSGlobalService from '../sms/services/sms.global'
 import UserModel from './user.model'
 import FileModel from '../files/file.model'
 
-const SMS_CLIENT_ENABLED = process.env.SMS_CLIENT_ENABLED
+const SMS_CLIENT_SEND_REAL_SMS = process.env.SMS_CLIENT_SEND_REAL_SMS
 
 export default {
   findOneByPhone: async ({phone}) => {
@@ -32,7 +32,7 @@ export default {
   sendConfirmationCode: async ({phone, type}) => {
     let code = makeRandom(4, {type: 'numeric'})
 
-    if (SMS_CLIENT_ENABLED === 'false') {
+    if (SMS_CLIENT_SEND_REAL_SMS === 'false') {
       code = phone.substring(6, 10) /* Get last 4 digits from phone */
     }
 
@@ -44,7 +44,7 @@ export default {
 
     redis.expire(`${type}-${phone}`, 1800)
 
-    if (SMS_CLIENT_ENABLED === 'false') {
+    if (SMS_CLIENT_SEND_REAL_SMS === 'false') {
       return {
         result: true
       }
