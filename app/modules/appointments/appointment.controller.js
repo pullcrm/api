@@ -86,7 +86,6 @@ export default {
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         smsRemindNotify: joi.boolean(),
-        smsRemindInMinutes: joi.number(),
         smsCreationNotify: joi.boolean(),
       }))
 
@@ -271,7 +270,7 @@ export default {
 
   publicCreation: async (req, res, next) => {
     try {
-      const procedures = Array.isArray(req.body.procedures) && await ProcedureModel.findAll({where: {id: req.body.procedures}, raw: true})
+      const procedures = await ProcedureModel.findAll({where: {id: req.body.procedures}, raw: true})
       const total = procedures.reduce((sum, procedure) => sum + Number(procedure.price), 0)
 
       const formattedData = {
@@ -285,7 +284,9 @@ export default {
         total,
         description: req.body.description,
         status: IN_PROGRESS,
-        isQueue: false
+        isQueue: false,
+        smsRemindNotify: true,
+        smsCreationNotify: true,
       }
 
       validate(formattedData, joi.object().keys({
@@ -298,11 +299,21 @@ export default {
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/),
         total: joi.number(),
         description: joi.string().allow(''),
-        isQueue: joi.boolean().allow(null),
+        isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsRemindNotify: joi.boolean(),
+        smsCreationNotify: joi.boolean(),
       }))
 
-      const appointment = await AppointmentService.create(formattedData)
+      const smsIdentifier = makeRandom(4)
+
+      const appointment = await AppointmentService.create({
+        ...formattedData,
+        smsIdentifier
+      })
+
+      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+
       res.send(appointment)
     } catch(error) {
       next(error)
