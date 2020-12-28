@@ -29,6 +29,14 @@ export default {
     })
   },
 
+  find: async appointmentId => {
+    return AppointmentModel.findOne({where: {id: appointmentId}, include: [
+      {model: ProcedureModel, as: 'procedures'},
+      {model: UserModel, as: 'employee'},
+      {model: UserModel, as: 'client'}
+    ]})
+  },
+
   queue: async ({companyId}) => {
     const baseCondition = {
       isQueue: true,
@@ -57,7 +65,7 @@ export default {
     return result
   },
 
-  update: async (data, {appointmentId}) => {
+  update: async (data, appointmentId) => {
     const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
 
     if(!appointment) {
@@ -69,7 +77,7 @@ export default {
     }
 
     const result = await mysql.transaction(async transaction => {
-      await appointment.update(data, {plain: true, transaction})
+      await appointment.update(data, {transaction})
 
       if(data.procedures && Array.isArray(data.procedures)) {
         await appointment.setProcedures(data.procedures, {transaction})
@@ -107,7 +115,7 @@ export default {
       throw new ApiException(403, 'That is not your appointment')
     }
 
-    return appointment.update({smsIdentifier})
+    await appointment.update({smsIdentifier})
   },
 
   fetchByEmployeeId: async ({date, companyId, excludeId, employeeId}) => {

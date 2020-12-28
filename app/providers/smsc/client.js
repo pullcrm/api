@@ -1,10 +1,10 @@
 const FormData = require('form-data')
 
-export default class SmsClient {
-  constructor ({login, password}) {
+export default class SMSClient {
+  constructor (data) {
     this.endpoint = 'https://smsc.ua/sys/'
-    this.password = password
-    this.login = login
+    this.password = data.password
+    this.login = data.login
   }
 
   read_url ({file, params}) {
@@ -34,14 +34,14 @@ export default class SmsClient {
     })
   }
 
-  sendSms (params) {
+  send(params) {
     return this.read_url({
       file: 'send.php',
       params
     })
   }
 
-  removeSms (params) {
+  remove(params) {
     return this.read_url({
       file: 'status.php',
       params: {
@@ -51,21 +51,21 @@ export default class SmsClient {
     })
   }
 
-  getSmsStatus (params) {
+  getStatus(params) {
     return this.read_url({
       file: 'status.php',
       params
     })
   }
 
-  getBalance (params) {
+  getBalance(params) {
     return this.read_url({
       file: 'balance.php',
       params
     })
   }
 
-  get params () {
+  get params() {
     return {
       charset: 'utf-8',
       login: this.login,
