@@ -6,7 +6,7 @@ import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
-import SMSConfigurationModel from '../companies/models/smsConfiguration'
+import SMSConfigurationModel from '../sms/sms.model'
 import {ALL} from '../../constants/employees'
 
 export default {

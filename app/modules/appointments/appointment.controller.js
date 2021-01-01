@@ -1,12 +1,17 @@
-import AppointmentService from './appointment.service'
-import validate from "../../utils/validate"
 import joi from "joi"
 
-import {getHoursSlots} from '../../logics/appointments'
-
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
+
+import {getAvailableTime} from '../../logics/appointments'
+
+import validate from '../../utils/validate'
+import {makeRandom} from '../../utils/make-random'
+
 import ProcedureModel from '../procedures/procedure.model'
+
 import TimeOffService from '../timeoff/timeoff.service'
+import SMSPrivateService from '../sms/services/sms.private'
+import AppointmentService from './appointment.service'
 
 export default {
   index: async (req, res, next) => {
@@ -62,6 +67,8 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
+        smsRemindNotify: req.body.smsRemindNotify,
+        smsCreationNotify: req.body.smsCreationNotify,
       }
 
       //TODO need to validate clientId, procedures for owner
@@ -72,16 +79,26 @@ export default {
         phone: joi.string(),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
+        date: joi.date().required(),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsRemindNotify: joi.boolean(),
+        smsCreationNotify: joi.boolean(),
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const appointment = await AppointmentService.create(formattedData)
+      const smsIdentifier = formattedData.smsRemindNotify ? makeRandom(4) : null
+
+      const appointment = await AppointmentService.create({
+        ...formattedData,
+        smsIdentifier
+      })
+
+      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+
       res.send(appointment)
     } catch(error) {
       next(error)
@@ -92,10 +109,10 @@ export default {
     try {
       const formattedData = {
         employeeId: req.body.employeeId,
-        clientId: req.body.clientId,
+        clientId: req.body.clientId, // Not need to send
         fullName: req.body.fullName,
-        phone: req.body.phone,
-        companyId: req.companyId,
+        phone: req.body.phone, // Not need to send
+        companyId: req.companyId, // Not need to send
         procedures: req.body.procedures,
         date: req.body.date,
         startTime: req.body.startTime,
@@ -103,6 +120,7 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
+        smsRemindNotify: req.body.smsRemindNotify,
       }
 
       const params = {
@@ -117,16 +135,20 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/).allow(null),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow(''),
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsRemindNotify: joi.boolean().allow(null),
       }))
 
-      const appointment = await AppointmentService.update(formattedData, params)
-      res.send(appointment)
+      const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
+
+      const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
+
+      res.send(newAppointment)
     } catch (error) {
       next(error)
     }
@@ -167,21 +189,24 @@ export default {
         companyId: joi.number().required()
       }))
 
-      res.send(await AppointmentService.changeSMSIdentifier(data, params))
+      const appointment = await AppointmentService.changeSMSIdentifier(data, params)
+
+      res.send(appointment)
     } catch (error) {
       next(error)
     }
   },
 
-  // TODO: Need code review
-  hoursSlots: async (req, res, next) => {
+  // TODO: Refactor
+  availableTime: async (req, res, next) => {
     try {
       const formattedData = {
         date: req.body.date,
         userId: req.userId,
         companyId: req.companyId,
         excludeId: req.body.excludeId,
-        employeeId: req.body.employeeId
+        employeeId: req.body.employeeId,
+        duration: req.body.duration
       }
 
       validate(formattedData, joi.object().keys({
@@ -189,44 +214,55 @@ export default {
         userId: joi.number().required(),
         companyId: joi.number().required(),
         excludeId: joi.number().allow(null),
-        employeeId: joi.number().required()
+        employeeId: joi.number().required(),
+        duration: joi.number().required()
       }))
 
       const [timeOffs, appointments] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchHoursSlots(formattedData)
+        AppointmentService.fetchByEmployeeId(formattedData)
       ])
 
-      const slots = getHoursSlots({appointments, timeOffs})
+      const availableTime = getAvailableTime({
+        duration: formattedData.duration,
+        timeOffs,
+        appointments,
+      })
 
-      res.send(slots)
+      res.send(availableTime)
     } catch(error) {
       next(error)
     }
   },
 
-  publicHoursSlots: async (req, res, next) => {
+  publicAvailableTime: async (req, res, next) => {
     try {
       const formattedData = {
         date: req.body.date,
         companyId: req.body.companyId,
-        employeeId: req.body.employeeId
+        employeeId: req.body.employeeId,
+        duration: req.body.duration
       }
 
       validate(formattedData, joi.object().keys({
         date: joi.string(),
         companyId: joi.number().required(),
-        employeeId: joi.number().required()
+        employeeId: joi.number().required(),
+        duration: joi.number().required()
       }))
 
       const [timeOffs, appointments] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchHoursSlots(formattedData)
+        AppointmentService.fetchByEmployeeId(formattedData)
       ])
 
-      const slots = getHoursSlots({appointments, timeOffs})
+      const availableTime = getAvailableTime({
+        duration: formattedData.duration,
+        timeOffs,
+        appointments,
+      })
 
-      res.send(slots)
+      res.send(availableTime)
     } catch(error) {
       next(error)
     }
@@ -234,7 +270,7 @@ export default {
 
   publicCreation: async (req, res, next) => {
     try {
-      const procedures = Array.isArray(req.body.procedures) && await ProcedureModel.findAll({where: {id: req.body.procedures}, raw: true})
+      const procedures = await ProcedureModel.findAll({where: {id: req.body.procedures}, raw: true})
       const total = procedures.reduce((sum, procedure) => sum + Number(procedure.price), 0)
 
       const formattedData = {
@@ -248,7 +284,9 @@ export default {
         total,
         description: req.body.description,
         status: IN_PROGRESS,
-        isQueue: false
+        isQueue: false,
+        smsRemindNotify: true,
+        smsCreationNotify: true,
       }
 
       validate(formattedData, joi.object().keys({
@@ -258,14 +296,24 @@ export default {
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2})\:([0-9]{2})\:([0-9]{2})$/),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/),
         total: joi.number(),
         description: joi.string().allow(''),
-        isQueue: joi.boolean().allow(null),
+        isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        smsRemindNotify: joi.boolean(),
+        smsCreationNotify: joi.boolean(),
       }))
 
-      const appointment = await AppointmentService.create(formattedData)
+      const smsIdentifier = makeRandom(4)
+
+      const appointment = await AppointmentService.create({
+        ...formattedData,
+        smsIdentifier
+      })
+
+      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+
       res.send(appointment)
     } catch(error) {
       next(error)

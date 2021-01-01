@@ -413,7 +413,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\"\n}\n",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -619,7 +619,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"total\": 520,\n    \"description\": \"\"\n}",
+							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-12-05\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": true,\n    \"smsCreationNotify\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -686,7 +686,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"status\": \"CANCELED\"\n}",
+							"raw": "{\n\t\"startTime\": \"23:50:00\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -694,14 +694,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments/1",
+							"raw": "{{host}}/api/appointments/46",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"appointments",
-								"1"
+								"46"
 							]
 						}
 					},
@@ -893,6 +893,137 @@
 							"path": [
 								"api",
 								"cities"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "SMS",
+			"item": [
+				{
+					"name": "Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/sms/balance",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"0958323358\",\n    \"smsIdentifier\": \"f6752907-dbfb-4978-a59f-af36e5e4d462\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Configuration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"tsarr\",\n    \"password\": \"Xo4Ar2g8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Configuration",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms"
 							]
 						}
 					},

@@ -11,7 +11,5 @@ router.get('/:id', auth(), CompanyController.show)
 router.get('/my/staff', auth(), CompanyController.findStaff)
 router.put('/my/staff/:id', auth(), CompanyController.updateEmployee)
 router.post('/my/staff', auth(), CompanyController.addEmployee)
-router.post('/my/sms', auth(), CompanyController.addSMSConfiguration)
-router.put('/my/sms', auth(), CompanyController.updateSMSConfiguration)
 
 export default router

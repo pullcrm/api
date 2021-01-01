@@ -32,8 +32,6 @@ export default {
         file: {...req.file, path: req.file.path.replace('uploads', '')}
       }
 
-      console.log(req.file)
-
       const params = {
         userId: req.userId,
         companyId: req.companyId

@@ -13,6 +13,6 @@ router.get('/queue',  auth(), AppointmentController.queue)
 
 router.put('/:id/sms', auth(), AppointmentController.changeSMSIdentifier)
 
-router.post('/slots',  auth(), AppointmentController.hoursSlots)
+router.post('/available-time',  auth(), AppointmentController.availableTime)
 
 export default router

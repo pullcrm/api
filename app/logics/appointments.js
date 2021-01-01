@@ -1,4 +1,6 @@
-import {WORKING_HOURS_SLOTS, WORKING_HOURS} from '../constants/times'
+import difference from 'lodash/difference'
+
+import {WORKING_HOURS} from '../constants/times'
 
 // TODO: Refactor
 function getTime (date) {
@@ -14,13 +16,14 @@ function getTime (date) {
 }
 
 // TODO: Refactor
-export function getHoursSlots (payload) {
+export function getAvailableTime (payload) {
   const {
+    duration,
     timeOffs,
     appointments
   } = payload
 
-  const slots = {...WORKING_HOURS_SLOTS}
+  let closedTimes = []
 
   timeOffs.forEach(timeOff => {
     const startTime = getTime(timeOff.startDateTime)
@@ -29,27 +32,31 @@ export function getHoursSlots (payload) {
     const indexStartTime = WORKING_HOURS.indexOf(startTime)
     const indexEndTime = WORKING_HOURS.indexOf(endTime) + 1
 
-    const closeTimes = WORKING_HOURS.slice(indexStartTime, indexEndTime)
-
-    closeTimes.forEach(time => {
-      slots[time] = true
-    })
+    closedTimes = [...closedTimes, ...WORKING_HOURS.slice(indexStartTime, indexEndTime)]
   })
 
   appointments.forEach(({startTime, procedures}) => {
-    const duration = procedures.reduce((result, procedure) => {
+    const proceduresDuration = procedures.reduce((result, procedure) => {
       return result + procedure.duration
     }, 0)
 
-    const slotCount = duration / 15
-    const startIndex = Object.keys(slots).indexOf(startTime.slice(0, 5))
-    
-    for (let index = 0; index < slotCount; index++) {
-      const key = Object.keys(slots)[startIndex + index]
+    const timePoints = proceduresDuration / 15
 
-      slots[key] = true
-    }
+    const indexStartTime = WORKING_HOURS.indexOf(startTime.slice(0, 5))
+    const indexEndTime = indexStartTime + timePoints
+
+    closedTimes = [...closedTimes, ...WORKING_HOURS.slice(indexStartTime, indexEndTime)]
   })
 
-  return slots
+  const times = difference(WORKING_HOURS, [...new Set(closedTimes)]).filter((time, index, arr) => {
+    const timePoints = (duration / 15) - 1
+
+    const indexEndTime = WORKING_HOURS.indexOf(time) + timePoints
+
+    if (!arr[index + timePoints]) return false
+
+    return WORKING_HOURS[indexEndTime] === arr[index + timePoints]
+  })
+
+  return times
 }
