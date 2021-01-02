@@ -2,17 +2,10 @@ import {Op} from 'sequelize'
 import TimeOffModel from './timeoff.model'
 import ApiException from "../../exceptions/api"
 import {addDayToDate} from '../../utils/time'
-import UserModel from '../users/user.model'
-import ApproachModel from '../approaches/approach.model'
 
 export default {
   create: async data => {
-    const timeOff = await TimeOffModel.create(data, {returning: true})
-    return TimeOffModel.findOne({where: {id: timeOff.id}, include: [
-      {
-        model: ApproachModel, as: 'employee', include: {model: UserModel}, 
-      }
-    ]})
+    return await TimeOffModel.create(data, {returning: true})
   },
 
   update: async (data, {timeOffId}) => {
