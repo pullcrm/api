@@ -1,19 +1,7 @@
+import dayjs from "dayjs"
 import difference from 'lodash/difference'
 
 import {WORKING_HOURS} from '../constants/times'
-
-// TODO: Refactor
-function getTime (date) {
-  date = new Date(date)
-
-  let minutes = date.getMinutes()
-
-  if (minutes === 0) {
-    minutes = '00'
-  }
-
-  return `${date.getHours()}:${minutes}`
-}
 
 // TODO: Refactor
 export function getAvailableTime (payload) {
@@ -26,8 +14,8 @@ export function getAvailableTime (payload) {
   let closedTimes = []
 
   timeOffs.forEach(timeOff => {
-    const startTime = getTime(timeOff.startDateTime)
-    const endTime = getTime(timeOff.endDateTime)
+    const startTime = dayjs(timeOff.startDateTime).format('HH:mm')
+    const endTime = dayjs(timeOff.endDateTime).format('HH:mm')
 
     const indexStartTime = WORKING_HOURS.indexOf(startTime)
     const indexEndTime = WORKING_HOURS.indexOf(endTime) + 1
