@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import joi from 'joi'
 import AuthService from './services/auth'
-import ApproachService from '../approaches/approach.service'
+import SpecialistService from '../specialists/specialist.service'
 import RoleService from '../roles/role.service'
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken} from '../../utils/token'
 import validate from "../../utils/validate"
@@ -22,7 +22,7 @@ export default {
 
       const user = await AuthService.findBy({phone: formattedData.phone})
       const userId = user.get('id')
-      const activeCompany = await ApproachService.activeCompany(userId)
+      const activeCompany = await SpecialistService.activeCompany(userId)
 
       AuthService.checkPasswords(formattedData.password, user.password)
 
@@ -58,7 +58,7 @@ export default {
       const role = await RoleService.findBy({name: roleName})
 
       await TokenService.checkRefreshToken(refreshToken, userId)
-      await ApproachService.checkBy({companyId, roleId: role.id, userId})
+      await SpecialistService.checkBy({companyId, roleId: role.id, userId})
 
       const accessToken = generateAccessToken(userId, companyId, roleName)
 

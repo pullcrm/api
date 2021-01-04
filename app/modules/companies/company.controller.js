@@ -3,10 +3,9 @@ import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import UserService from '../users/user.service'
-import ApproachService from '../approaches/approach.service'
+import SpecialistService from '../specialists/specialist.service'
 import {mysql} from "../../config/connections"
 import {ALL, HIDE, DASHBOARD} from '../../constants/employees'
-import SMSPrivateService from '../sms/services/sms.private'
 
 export default {
   index: async (req, res, next) => {
@@ -38,7 +37,7 @@ export default {
         companyId: joi.number()
       }))
 
-      await ApproachService.checkBy(formattedData)
+      await SpecialistService.checkBy(formattedData)
       const company = await CompanyService.findOne({id: formattedData.companyId, userId: formattedData.userId})
       res.send(company)
     } catch (error) {
@@ -169,7 +168,7 @@ export default {
         avatarId: req.body.avatarId,
       }
 
-      const employeeData = {
+      const specialistData = {
         description: req.body.description,
         status: req.body.status,
       }
@@ -179,7 +178,7 @@ export default {
         userId: req.params.id
       }
 
-      validate({...userData, ...employeeData, ...params}, joi.object().keys({
+      validate({...userData, ...specialistData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         userId: joi.number().required(),
         firstName: joi.string(),
@@ -190,9 +189,9 @@ export default {
       }))
 
       const user = await UserService.update(userData, params)
-      const employee = await ApproachService.update(employeeData, params)
+      const specialist = await SpecialistService.update(specialistData, params)
 
-      res.send({...user.toJSON(), ...employee.toJSON()})
+      res.send({...user.toJSON(), ...specialist.toJSON()})
     } catch (error) {
       next(error)
     }
