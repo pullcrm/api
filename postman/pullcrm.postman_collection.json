@@ -171,8 +171,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Companies",
@@ -470,8 +469,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Auth",
@@ -563,8 +561,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Appointments",
@@ -742,8 +739,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Roles",
@@ -805,14 +801,13 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
-			"name": "Approaches",
+			"name": "Specialists",
 			"item": [
 				{
-					"name": "My Approaches",
+					"name": "My Specialists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -823,20 +818,19 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/approaches",
+							"raw": "{{host}}/api/specialists",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"approaches"
+								"specialists"
 							]
 						}
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Cities",
@@ -898,8 +892,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "SMS",
@@ -1029,8 +1022,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Categories",
@@ -1092,8 +1084,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Procedures",
@@ -1233,8 +1224,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Files",
@@ -1320,8 +1310,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "TimeOff",
@@ -1471,14 +1460,13 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Widget",
 			"item": [
 				{
-					"name": "Get Employees",
+					"name": "Get Specialists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1489,13 +1477,20 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/approaches",
+							"raw": "{{host}}/api/public/specialists?companyId=3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"approaches"
+								"public",
+								"specialists"
+							],
+							"query": [
+								{
+									"key": "companyId",
+									"value": "3"
+								}
 							]
 						}
 					},
@@ -1593,9 +1588,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

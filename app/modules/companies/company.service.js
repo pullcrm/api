@@ -1,6 +1,6 @@
 import {mysql} from '../../config/connections'
 import CompanyModel from './models/company'
-import ApproachModel from "../approaches/approach.model"
+import SpecialistModel from "../specialists/specialist.model"
 import RoleModel from "../roles/role.model"
 import CityModel from "../cities/city.model"
 import CategoryModel from "../categories/category.model"
@@ -34,7 +34,7 @@ export default {
     const result = await mysql.transaction(async transaction => {
       const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: CategoryModel}], transaction})
       const adminRole = await RoleModel.findOne({where: {name: 'ADMIN'}, raw: true, transaction})
-      await ApproachModel.create({userId: company.userId, companyId: company.id, roleId: adminRole.id}, {transaction})
+      await SpecialistModel.create({userId: company.userId, companyId: company.id, roleId: adminRole.id}, {transaction})
 
       return company
     })
@@ -63,8 +63,8 @@ export default {
   },
 
   addEmployee: async (user, params, transaction) => {
-    const employeeRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
-    return ApproachModel.create({userId: user.id, companyId: params.companyId, roleId: employeeRole.id}, {transaction})
+    const specialistsRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
+    return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
   },
 
   findStaff: async ({companyId, limit, offset}) => {

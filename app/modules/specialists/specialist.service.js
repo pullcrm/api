@@ -1,4 +1,4 @@
-import ApproachModel from './approach.model'
+import SpecialistModel from './specialist.model'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
@@ -11,37 +11,37 @@ import {ALL} from '../../constants/employees'
 
 export default {
   findAll: async ({companyId}) => {
-    return ApproachModel.findAll({companyId})
+    return SpecialistModel.findAll({companyId})
   },
 
   create: async data => {
-    return ApproachModel.create(data)
+    return SpecialistModel.create(data)
   },
 
   checkBy: async params => {
-    const approach = await ApproachModel.findOne({where: params})
+    const specialist = await SpecialistModel.findOne({where: params})
 
-    if (!approach) {
+    if (!specialist) {
       throw new ApiException(403, 'You don\'t have permissions for that operation')
     }
   },
 
   activeCompany: async companyId => {
-    const approach = await ApproachModel.findOne({where: companyId,
+    const specialist = await SpecialistModel.findOne({where: companyId,
       include: [{
         model: CompanyModel
       }]
     })
 
-    if(!approach) {
+    if(!specialist) {
       return {id: 0}
     }
 
-    return approach.company
+    return specialist.company
   },
 
-  findMyApproaches: async userId => {
-    const approaches = await ApproachModel.findAll({
+  findSpecialistsByUser: async userId => {
+    const specialists = await SpecialistModel.findAll({
       where: {userId},
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
@@ -60,11 +60,11 @@ export default {
         as: 'avatar'
       }}]})
     
-    return approaches
+    return specialists
   },
 
   findByCompanyId: async companyId => {
-    const employees = await ApproachModel.findAll({
+    const specialists = await SpecialistModel.findAll({
       where: {companyId, status: ALL},
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
@@ -77,16 +77,16 @@ export default {
       }]
     })
     
-    return employees
+    return specialists
   },
 
   update: async (data, params) => {
-    const employee = await ApproachModel.findOne({where: {userId: params.userId, companyId: params.companyId}})
+    const specialist = await SpecialistModel.findOne({where: {userId: params.userId, companyId: params.companyId}})
 
-    if(!employee) {
+    if(!specialist) {
       throw new ApiException(404, 'Employee wasn\'t found')
     }
 
-    return employee.update(data)
+    return specialist.update(data)
   }
 }

@@ -1,9 +1,9 @@
 import {Router} from 'express'
-import ApproachController from '../approach.controller'
+import SpecialistController from '../specialist.controller'
 import auth from '../../../middlewares/auth'
 
 const router = Router()
 
-router.get('/', auth(), ApproachController.findMyApproaches)
+router.get('/', auth(), SpecialistController.findMySpecialists)
 
 export default router
