@@ -9,30 +9,6 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "Index",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/users",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Profile",
 					"request": {
 						"method": "GET",
@@ -293,7 +269,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Staff",
+					"name": "Get Specialists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -304,7 +280,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/companies/my/staff?offset=0&limit=2",
+							"raw": "{{host}}/api/companies/my/specialists?offset=0&limit=2",
 							"host": [
 								"{{host}}"
 							],
@@ -312,7 +288,7 @@
 								"api",
 								"companies",
 								"my",
-								"staff"
+								"specialists"
 							],
 							"query": [
 								{
@@ -329,19 +305,19 @@
 					"response": []
 				},
 				{
-					"name": "Update Employee",
+					"name": "Update Specialist",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Baerer {{token}}",
-								"type": "text"
+								"type": "text",
+								"value": "Baerer {{token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\",\n    \"description\": \"\",\n    \"status\": \"ALL\"\n}",
+							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an424\",\n    \"description\": \"\",\n    \"status\": \"DASHBOARD\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -349,7 +325,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/staff/1",
+							"raw": "{{host}}/api/companies/my/specialists/1",
 							"host": [
 								"{{host}}"
 							],
@@ -357,7 +333,7 @@
 								"api",
 								"companies",
 								"my",
-								"staff",
+								"specialists",
 								"1"
 							]
 						}
@@ -365,7 +341,7 @@
 					"response": []
 				},
 				{
-					"name": "Add Employee",
+					"name": "Add Specialist",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -377,7 +353,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Bogdan\",\n\t\"lastName\": \"Tsarik\",\n\t\"phone\": \"0660646333\",\n\t\"password\": \"1111\",\n\t\"code\": 8644\n}\n",
+							"raw": "{\n\t\"firstName\": \"Bogdan\",\n\t\"lastName\": \"Tsarik\",\n\t\"phone\": \"0660646333\",\n\t\"password\": \"1111\",\n\t\"code\": \"6333\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -385,7 +361,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/staff",
+							"raw": "{{host}}/api/companies/my/specialists",
 							"host": [
 								"{{host}}"
 							],
@@ -393,7 +369,7 @@
 								"api",
 								"companies",
 								"my",
-								"staff"
+								"specialists"
 							]
 						}
 					},
@@ -585,7 +561,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments?date=2020-07-25",
+							"raw": "{{host}}/api/appointments?date=2020-12-05",
 							"host": [
 								"{{host}}"
 							],
@@ -596,7 +572,7 @@
 							"query": [
 								{
 									"key": "date",
-									"value": "2020-07-25"
+									"value": "2020-12-05"
 								}
 							]
 						}
@@ -616,7 +592,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-12-05\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": true,\n    \"smsCreationNotify\": true\n}",
+							"raw": "{\n\t\"specialistId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-12-05\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": false,\n    \"smsCreationNotify\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1567,7 +1543,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [\n        {\n            \"id\": 1,\n            \"price\": 200\n        }\n    ],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"description\": \"Description some\"\n}",
+							"raw": "{\n\t\"specialistId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"description\": \"Description some\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

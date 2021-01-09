@@ -7,6 +7,7 @@ import CategoryModel from "../categories/category.model"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
 import SMSConfigurationModel from '../sms/sms.model'
+import UserModel from '../users/user.model'
 
 export default {
   findOne: async params => {
@@ -62,18 +63,18 @@ export default {
     return result
   },
 
-  addEmployee: async (user, params, transaction) => {
-    const specialistsRole = await RoleModel.findOne({where: {name: 'EMPLOYEE'}, raw: true, transaction})
+  addSpecialist: async (user, params, transaction) => {
+    const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
     return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
   },
 
-  findStaff: async ({companyId, limit, offset}) => {
+  findSpecialists: async ({companyId, limit, offset}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
 
     if(!company) {
       throw new ApiException(403, 'You don\'t own this company!')
     }
 
-    return company.getStaff({limit, offset, include: [{model: FileModel, as: 'avatar'}], attributes: {exclude: ['avatarId']}})
+    return company.getSpecialists({limit, offset, include: [{model: UserModel, include: {model: FileModel, as: 'avatar', attributes: {exclude: ['avatarId']}}}]})
   },
 }

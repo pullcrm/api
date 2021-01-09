@@ -5,7 +5,7 @@ import CompanyService from './company.service'
 import UserService from '../users/user.service'
 import SpecialistService from '../specialists/specialist.service'
 import {mysql} from "../../config/connections"
-import {ALL, HIDE, DASHBOARD} from '../../constants/employees'
+import {ALL, HIDE, DASHBOARD} from '../../constants/specialists'
 
 export default {
   index: async (req, res, next) => {
@@ -102,7 +102,7 @@ export default {
     }
   },
 
-  findStaff: async (req, res, next) => {
+  findSpecialists: async (req, res, next) => {
     try {
       const formattedData = {
         offset: +req.query.offset || 0,
@@ -116,14 +116,14 @@ export default {
         companyId: joi.number().required(),
       }))
 
-      const users = await CompanyService.findStaff(formattedData)
+      const users = await CompanyService.findSpecialists(formattedData)
       res.send(users)
     } catch (error) {
       next(error)
     }
   },
 
-  addEmployee: async (req, res, next) => {
+  addSpecialist: async (req, res, next) => {
     try {
       const formattedData = {
         firstName: req.body.firstName,
@@ -148,7 +148,7 @@ export default {
 
       const result = await mysql.transaction(async transaction => {
         const user = await UserService.create(formattedData, params, transaction)
-        await CompanyService.addEmployee(user, params, transaction)
+        await CompanyService.addSpecialist(user, params, transaction)
 
         return user
       })
@@ -160,7 +160,7 @@ export default {
   },
 
   //TODO only admin can update his employers
-  updateEmployee: async (req, res, next) => {
+  updateSpecialist: async (req, res, next) => {
     try {
       const userData = {
         firstName: req.body.firstName,

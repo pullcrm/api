@@ -7,7 +7,7 @@ import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
 import SMSConfigurationModel from '../sms/sms.model'
-import {ALL} from '../../constants/employees'
+import {ALL} from '../../constants/specialists'
 
 export default {
   findAll: async ({companyId}) => {
@@ -84,7 +84,7 @@ export default {
     const specialist = await SpecialistModel.findOne({where: {userId: params.userId, companyId: params.companyId}})
 
     if(!specialist) {
-      throw new ApiException(404, 'Employee wasn\'t found')
+      throw new ApiException(404, 'Specialist wasn\'t found')
     }
 
     return specialist.update(data)

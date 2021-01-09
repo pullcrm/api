@@ -3,8 +3,10 @@ import {mysql} from '../../config/connections'
 import ProcedureModel from '../procedures/procedure.model'
 import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
-import {addDayToDate, formatDate} from '../../utils/time'
+import {addDayToDate} from '../../utils/time'
 import {Op} from 'sequelize'
+import ClientModel from '../clients/client.model'
+import SpecialistModel from '../specialists/specialist.model'
 
 export default {
   findAll: async ({date, companyId}) => {
@@ -20,11 +22,11 @@ export default {
 
     return AppointmentModel.findAll({
       where: baseCondition,
-      attributes: {exclude: ['companyId', 'employeeId', 'clientId']},
+      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
       include: [
         {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: UserModel, as: 'employee'},
-        {model: UserModel, as: 'client'}
+        {model: SpecialistModel,  as: 'specialist', include: {model: UserModel, raw: true}},
+        {model: ClientModel, as: 'client', include: {model: UserModel}}
       ],
     })
   },
@@ -32,8 +34,8 @@ export default {
   find: async appointmentId => {
     return AppointmentModel.findOne({where: {id: appointmentId}, include: [
       {model: ProcedureModel, as: 'procedures'},
-      {model: UserModel, as: 'employee'},
-      {model: UserModel, as: 'client'}
+      {model: SpecialistModel, as: 'specialist'},
+      {model: ClientModel, as: 'client'}
     ]})
   },
 
@@ -45,11 +47,11 @@ export default {
 
     return AppointmentModel.findAll({
       where: baseCondition,
-      attributes: {exclude: ['companyId', 'employeeId', 'clientId']},
+      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
       include: [
         {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: UserModel, as: 'employee'},
-        {model: UserModel, as: 'client'}
+        {model: SpecialistModel, as: 'specialist'},
+        {model: ClientModel, as: 'client'}
       ],
     })
   },
@@ -118,11 +120,11 @@ export default {
     await appointment.update({smsIdentifier})
   },
 
-  fetchByEmployeeId: async ({date, companyId, excludeId, employeeId}) => {
+  fetchBySpecialistId: async ({date, companyId, excludeId, specialistId}) => {
     const baseCondition = {
       isQueue: false,
       companyId,
-      employeeId
+      specialistId
     }
 
     if (excludeId) {
@@ -138,7 +140,7 @@ export default {
 
     return AppointmentModel.findAll({
       where: baseCondition,
-      attributes: {exclude: ['companyId', 'employeeId', 'clientId']},
+      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
       include: [
         {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}}
       ],

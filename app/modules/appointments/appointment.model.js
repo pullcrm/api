@@ -2,16 +2,6 @@ import {Sequelize} from 'sequelize'
 import {mysql} from '../../config/connections'
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 
-// companyId
-// serviceIds: [1, 2]
-// total: number
-// employeeId (`staff`)
-// date: Дата в який день проходить запис 21.04.2020
-// timeStart: 14:00
-// timeEnd 16:00
-// status: ‘COMPLETED’ | ‘INPROGRESS’
-// clientId: (‘Customer’)
-
 const AppointmentSchema = (connection, type) => {
   return connection.define('appointments', {
     id: {
@@ -60,6 +50,10 @@ const AppointmentSchema = (connection, type) => {
       type: type.ENUM(IN_PROGRESS, COMPLETED, CANCELED),
       allowNull: false,
       defaultValue: IN_PROGRESS
+    },
+    source: {
+      type: type.STRING,
+      allowNull: true
     }
   })
 }
