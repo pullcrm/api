@@ -18,7 +18,7 @@ export default {
     return timeOff.update(data, {returning: true})
   },
 
-  findAll: async ({employeeId, date}) => {
+  findAll: async ({specialistId, date}) => {
     const endDate = addDayToDate(date)
   
     const where = {
@@ -36,8 +36,8 @@ export default {
       ]
     }
 
-    if (employeeId) {
-      where.employeeId = employeeId
+    if (specialistId) {
+      where.specialistId = specialistId
     }
 
     const timeOff = await TimeOffModel.findAll({where})
@@ -46,7 +46,7 @@ export default {
   },
 
   checkTime: async appointment => {
-    const times = await TimeOffModel.findAll({where: {employeeId: appointment.employeeId,
+    const times = await TimeOffModel.findAll({where: {specialistId: appointment.specialistId,
       date: {
         [Op.gt]: appointment.date,
         [Op.lt]: addDayToDate(appointment.date)

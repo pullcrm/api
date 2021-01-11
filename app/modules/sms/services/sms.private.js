@@ -49,7 +49,7 @@ export default {
 
     if(smsCreationNotify) {
       await SMS.send({
-        phones: appointment.phone || appointment.client.phone,
+        phones: appointment.phone || appointment.client.user.phone,
         mes: creationNotifyMessage(appointment)
       })
     }
@@ -61,7 +61,7 @@ export default {
         id: appointment.smsIdentifier,
         mes: remindNotifyMessage(appointment),
         time: sendDateTime.format('DD.MM.YY HH:mm'),
-        phones: appointment.phone || appointment.client.phone
+        phones: appointment.phone || appointment.client.user.phone
       })
     }
   },
@@ -86,7 +86,7 @@ export default {
       password: decrypt(JSON.parse(smsConfiguration.password))
     })
 
-    const phone = appointment.phone || appointment.client.phone
+    const phone = appointment.phone || appointment.client.user.phone
 
     if (data.isQueue) {
       await smsIdentifier && SMS.remove({

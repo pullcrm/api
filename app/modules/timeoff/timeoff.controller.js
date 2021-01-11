@@ -7,7 +7,7 @@ export default {
     try {
       const params = {
         date: req.query.date,
-        employeeId: req.query.employeeId,
+        specialistId: req.query.specialistId,
       }
 
       const timeOffs = await TimeOffService.findAll(params)
@@ -21,7 +21,7 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         startDateTime: req.body.startDateTime,
         endDateTime: req.body.endDateTime
       }
@@ -31,7 +31,7 @@ export default {
       }
 
       validate({...formattedData,  ...params}, joi.object().keys({
-        employeeId: joi.number().required(),
+        specialistId: joi.number().required(),
         startDateTime: joi.string().required(),
         endDateTime: joi.string().required(),
         userId: joi.number().required()
@@ -47,7 +47,7 @@ export default {
   update: async (req, res, next) => {
     try {
       const formattedData = {
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         startDateTime: req.body.startDateTime,
         endDateTime: req.body.endDateTime
       }
@@ -58,7 +58,7 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        employeeId: joi.number().required(),
+        specialistId: joi.number().required(),
         startDateTime: joi.string().required(),
         endDateTime: joi.string().required(),
         timeOffId: joi.number().required(),

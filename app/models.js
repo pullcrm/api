@@ -1,4 +1,5 @@
 import {mysql} from "./config/connections"
+import {ADMIN, INVITED, SPECIALIST} from './constants/roles'
 import UserModel from './modules/users/user.model'
 import CompanyModel from './modules/companies/models/company'
 import SpecialistModel from "./modules/specialists/specialist.model"
@@ -11,11 +12,12 @@ import FileModel from './modules/files/file.model'
 import TokenModel from "./modules/auth/models/token"
 import SMSConfigurationModel from "./modules/sms/sms.model"
 import TimeOffModel from './modules/timeoff/timeoff.model'
+import ClientModel from "./modules/clients/client.model"
 
-CompanyModel.belongsToMany(UserModel, {
-  as: 'staff',
-  through: {model: SpecialistModel, unique: false},
-})
+// CompanyModel.belongsToMany(UserModel, {
+//   as: 'specialists',
+//   through: {model: SpecialistModel, unique: false},
+// })
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -25,7 +27,7 @@ CompanyModel.belongsTo(UserModel, {
 SpecialistModel.belongsTo(UserModel)
 SpecialistModel.belongsTo(CompanyModel)
 
-TimeOffModel.belongsTo(UserModel, {as: 'employee'})
+TimeOffModel.belongsTo(SpecialistModel, {as: 'specialist'})
 
 UserModel.hasMany(SpecialistModel)
 UserModel.hasMany(TokenModel, {as: 'tokens'})
@@ -50,6 +52,9 @@ ProcedureModel.belongsToMany(AppointmentModel,{
   timestamps: false
 })
 
+UserModel.belongsToMany(CompanyModel, {through: ClientModel})
+ClientModel.belongsTo(UserModel)
+
 UserModel.belongsToMany(ProcedureModel,{
   through: 'user_procedures',
   timestamps: false
@@ -69,8 +74,8 @@ CompanyModel.hasMany(ProcedureModel)
 CompanyModel.belongsTo(FileModel, {as: 'logo'})
 
 AppointmentModel.belongsTo(CompanyModel)
-AppointmentModel.belongsTo(UserModel, {as: 'client'})
-AppointmentModel.belongsTo(UserModel, {as: 'employee'})
+AppointmentModel.belongsTo(ClientModel, {as: 'client'})
+AppointmentModel.belongsTo(SpecialistModel, {as: 'specialist'})
 
 FileModel.belongsToMany(UserModel, {
   through: 'file_users',
@@ -85,7 +90,7 @@ mysql.sync().then(async () => {
   const citiesCount = await CityModel.count()
 
   if(rolesCount === 0) {
-    await RoleModel.bulkCreate([{name: 'ADMIN'}, {name: 'INVITED'}, {name: 'EMPLOYEE'}])
+    await RoleModel.bulkCreate([{name: ADMIN}, {name: INVITED}, {name: SPECIALIST}])
   }
 
   if(categoriesCount === 0) {
