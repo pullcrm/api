@@ -132,7 +132,7 @@ export default {
   send: async ({phone, message, id, time}, companyId) => {
     const smsConfiguration = await CompanySettingsModel.findOne({where: {companyId}})
 
-    if(!smsConfiguration || smsConfiguration.smsToken) {
+    if(!smsConfiguration || !smsConfiguration.smsToken) {
       throw new ApiException(404, 'SMS Config was not found')
     }
 
