@@ -212,6 +212,116 @@ export default {
     } catch (error) {
       next(error)
     }
-  }
+  },
+
+  addSettings: async (req, res, next) => {
+    try {
+      const formattedData = {
+        login: req.body.login,
+        password: req.body.password,
+        hasCreationSMS: req.body.hasCreationSMS,
+        hasRemindSMS: req.body.hasRemindSMS,
+        remindSMSMinutes: req.body.remindSMSMinutes
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        login: joi.string().required(),
+        password: joi.string().required(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        hasCreationSMS: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+      }))
+
+      const company = await CompanyService.addSettings(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  updateSettings: async (req, res, next) => {
+    try {
+      const formattedData = {
+        hasCreationSMS: req.body.hasCreationSMS,
+        hasRemindSMS: req.body.hasRemindSMS,
+        remindSMSMinutes: req.body.remindSMSMinutes
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        hasCreationSMS: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+      }))
+
+      const company = await CompanyService.updateSettings(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  deleteSettings: async (req, res, next) => {
+    try {
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      await CompanyService.deleteSettings(params)
+
+      res.send({message: 'OK'})
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getStats: async (req, res, next) => {
+    try {
+      const formattedData = {
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        startDate: joi.string(),
+        endDate: joi.string(),
+      }))
+
+      const stats = await CompanyService.getStats(formattedData, params)
+
+      res.send(stats)
+
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 

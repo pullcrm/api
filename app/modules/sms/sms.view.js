@@ -27,6 +27,6 @@ export function isAppointmentEdited (oldAppointment, newAppointment) {
 
   return (
     newDateTime !== oldDateTime ||
-    newAppointment.smsRemindNotify !== Boolean(oldAppointment.smsIdentifier)
+    newAppointment.hasRemindSMS !== Boolean(oldAppointment.smsIdentifier)
   )
 }

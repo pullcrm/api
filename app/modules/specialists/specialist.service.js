@@ -6,7 +6,7 @@ import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
-import SMSConfigurationModel from '../sms/sms.model'
+import CompanySettingsModel from '../companies/models/settings'
 import {ALL} from '../../constants/specialists'
 
 export default {
@@ -50,7 +50,7 @@ export default {
         include: [
           {model: CategoryModel},
           {model: CityModel},
-          {model: SMSConfigurationModel},
+          {model: CompanySettingsModel},
           {model: FileModel, as: 'logo'}
         ]
       },
