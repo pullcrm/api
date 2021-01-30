@@ -6,8 +6,17 @@ import CityModel from "../cities/city.model"
 import CategoryModel from "../categories/category.model"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
-import SMSConfigurationModel from '../sms/sms.model'
+import CompanySettingsModel from '../companies/models/settings'
 import UserModel from '../users/user.model'
+import {privateSMS} from '../../providers/smsc'
+import {encrypt} from '../../utils/crypto'
+import jsonwebtoken from 'jsonwebtoken'
+import decodeSMSCreds from '../../utils/decodeSMSCreds'
+import {Transaction} from 'sequelize'
+import AppointmentModel from '../appointments/appointment.model'
+import sequelize from 'sequelize'
+import {addDayToDate} from '../../utils/time'
+import {Op} from 'sequelize'
 
 export default {
   findOne: async params => {
@@ -15,7 +24,7 @@ export default {
       include: [
         {model: CategoryModel},
         {model: CityModel},
-        {model: SMSConfigurationModel},
+        {model: CompanySettingsModel},
         {model: FileModel, as: 'logo'}
       ]})
 
@@ -77,4 +86,97 @@ export default {
 
     return company.getSpecialists({limit, offset, include: [{model: UserModel, include: {model: FileModel, as: 'avatar', attributes: {exclude: ['avatarId']}}}]})
   },
+
+  addSettings: async (data, {companyId, userId}) => {
+    const SMS = privateSMS({
+      login: data.login,
+      password: data.password
+    })
+
+    const result = await SMS.getBalance()
+
+    if (JSON.parse(result).error) {
+      throw new ApiException(404, 'SMS account wasn\'t found')
+    }
+
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const smsToken = Buffer.from(JSON.stringify({
+      login: data.login,
+      password: encrypt(data.password)
+    })).toString('hex')
+
+    return CompanySettingsModel.create({
+      hasRemindSMS: data.hasRemindSMS,
+      remindSMSMinutes: data.remindSMSMinutes,
+      hasCreationSMS: data.hasCreationSMS,
+      smsToken: smsToken,
+      companyId
+    })
+  },
+
+  updateSettings: async (data, {companyId, userId}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+    
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const companySettings = await CompanySettingsModel.findOne({where: {companyId: company.id}})
+
+    if(!companySettings) {
+      throw new ApiException(404, 'You don\'t have SMS configuration!')
+    }
+
+    return companySettings.update(data)
+  },
+
+  deleteSettings: async ({companyId, userId}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const companySettings = await CompanySettingsModel.findOne({where: {companyId: company.id}})
+
+    if(!companySettings) {
+      throw new ApiException(404, 'You don\'t have SMS configuration!')
+    }
+
+    return companySettings.destroy({companyId})
+  },
+
+  getStats: async ({startDate, endDate}, {companyId, userId}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const whereConditions = {companyId}
+
+    if(startDate) {
+      whereConditions.date = {...whereConditions.date, [Op.gt]: startDate,}
+    }
+
+    if(endDate) {
+      whereConditions.date = {...whereConditions.date, [Op.lt]: addDayToDate(endDate),}
+    }
+
+    const [stats] = await AppointmentModel.findAll(
+      {
+        where: whereConditions,
+        attributes: [
+          [sequelize.fn('sum', sequelize.col('total')), 'total'],
+          [sequelize.fn('avg', sequelize.col('total')), 'average']
+        ]
+      })
+
+    return stats
+  }
 }

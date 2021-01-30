@@ -68,8 +68,8 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
-        smsRemindNotify: req.body.smsRemindNotify,
-        smsCreationNotify: req.body.smsCreationNotify,
+        hasRemindSMS: req.body.hasRemindSMS,
+        hasCreationSMS: req.body.hasCreationSMS,
         source: ADMIN_PANEL
       }
 
@@ -87,13 +87,13 @@ export default {
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
-        smsRemindNotify: joi.boolean(),
-        smsCreationNotify: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        hasCreationSMS: joi.boolean(),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const smsIdentifier = formattedData.smsRemindNotify ? makeRandom(4) : null
+      const smsIdentifier = formattedData.hasRemindSMS ? makeRandom(4) : null
 
       const appointment = await AppointmentService.create({
         ...formattedData,
@@ -123,7 +123,7 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
-        smsRemindNotify: req.body.smsRemindNotify,
+        hasRemindSMS: req.body.hasRemindSMS,
       }
 
       const params = {
@@ -144,7 +144,7 @@ export default {
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
-        smsRemindNotify: joi.boolean().allow(null),
+        hasRemindSMS: joi.boolean().allow(null),
       }))
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
@@ -289,8 +289,8 @@ export default {
         source: WIDGET,
         status: IN_PROGRESS,
         isQueue: false,
-        smsRemindNotify: true,
-        smsCreationNotify: true,
+        hasRemindSMS: true,
+        hasCreationSMS: true,
       }
 
       validate(formattedData, joi.object().keys({
@@ -306,8 +306,8 @@ export default {
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
-        smsRemindNotify: joi.boolean(),
-        smsCreationNotify: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        hasCreationSMS: joi.boolean(),
       }))
 
       const smsIdentifier = makeRandom(4)

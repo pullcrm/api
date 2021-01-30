@@ -8,8 +8,13 @@ router.get('/', auth(), CompanyController.index)
 router.post('/', auth(), CompanyController.create)
 router.put('/:id', auth(), CompanyController.update)
 router.get('/:id', auth(), CompanyController.show)
+
 router.get('/my/specialists', auth(), CompanyController.findSpecialists)
 router.put('/my/specialists/:id', auth(), CompanyController.updateSpecialist)
 router.post('/my/specialists', auth(), CompanyController.addSpecialist)
+router.post('/my/settings', auth(), CompanyController.addSettings)
+router.put('/my/settings', auth(), CompanyController.updateSettings)
+router.delete('/my/settings', auth(), CompanyController.deleteSettings)
+router.get('/my/stats', auth(), CompanyController.getStats)
 
 export default router

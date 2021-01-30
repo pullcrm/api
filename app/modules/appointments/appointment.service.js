@@ -34,8 +34,8 @@ export default {
   find: async appointmentId => {
     return AppointmentModel.findOne({where: {id: appointmentId}, include: [
       {model: ProcedureModel, as: 'procedures'},
-      {model: SpecialistModel, as: 'specialist'},
-      {model: ClientModel, as: 'client'}
+      {model: SpecialistModel, as: 'specialist', include: [{model: UserModel}]},
+      {model: ClientModel, as: 'client', include: [{model: UserModel}]}
     ]})
   },
 
@@ -50,8 +50,8 @@ export default {
       attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
       include: [
         {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: SpecialistModel, as: 'specialist'},
-        {model: ClientModel, as: 'client'}
+        {model: SpecialistModel, as: 'specialist', include: [{model: UserModel}]},
+        {model: ClientModel, as: 'client', include: [{model: UserModel}]}
       ],
     })
   },

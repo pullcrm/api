@@ -177,6 +177,42 @@
 					"response": []
 				},
 				{
+					"name": "Get Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/companies/my/stats?startDate=\"2021-01-29\"&endDate=\"2021-01-29\"",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "\"2021-01-29\""
+								},
+								{
+									"key": "endDate",
+									"value": "\"2021-01-29\""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Show",
 					"request": {
 						"method": "GET",
@@ -376,7 +412,7 @@
 					"response": []
 				},
 				{
-					"name": "Add SMS Configuration",
+					"name": "Add Settings",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -388,7 +424,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
+							"raw": "{\n    \"hasRemindSMS\": true,\n    \"remindSMSMinutes\": 60,\n    \"hasCreationSMS\": false,\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -396,7 +432,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/sms",
+							"raw": "{{host}}/api/companies/my/settings",
 							"host": [
 								"{{host}}"
 							],
@@ -404,14 +440,14 @@
 								"api",
 								"companies",
 								"my",
-								"sms"
+								"settings"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Update SMS Configuration",
+					"name": "Update Settings",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -423,7 +459,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"remindAfterCreation\": false,\n    \"beforeTime\": 60,\n    \"remindBeforeTime\": true\n}\n",
+							"raw": "{\n    \"hasRemindSMS\": false,\n    \"remindSMSMinutes\": 120,\n    \"hasCreationSMS\": true\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -431,7 +467,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/sms",
+							"raw": "{{host}}/api/companies/my/settings",
 							"host": [
 								"{{host}}"
 							],
@@ -439,7 +475,42 @@
 								"api",
 								"companies",
 								"my",
-								"sms"
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Settings",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hasRemindSMS\": false,\n    \"remindSMSMinutes\": 120,\n    \"hasCreationSMS\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/companies/my/settings",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"settings"
 							]
 						}
 					},
@@ -592,7 +663,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"specialistId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-12-05\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": false,\n    \"smsCreationNotify\": false\n}",
+							"raw": "{\n\t\"specialistId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2021-01-30\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"hasRemindSMS\": true,\n    \"hasCreationSMS\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -927,72 +998,6 @@
 								"api",
 								"sms",
 								"status"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Configuration",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"tsarr\",\n    \"password\": \"Xo4Ar2g8\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/sms",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"sms"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Configuration",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/sms",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"sms"
 							]
 						}
 					},

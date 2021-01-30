@@ -10,14 +10,9 @@ import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
 import TokenModel from "./modules/auth/models/token"
-import SMSConfigurationModel from "./modules/sms/sms.model"
+import CompanySettingsModel from "./modules/companies/models/settings"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import ClientModel from "./modules/clients/client.model"
-
-// CompanyModel.belongsToMany(UserModel, {
-//   as: 'specialists',
-//   through: {model: SpecialistModel, unique: false},
-// })
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -34,7 +29,7 @@ UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
 
 CompanyModel.hasMany(SpecialistModel)
-CompanyModel.hasOne(SMSConfigurationModel)
+CompanyModel.hasOne(CompanySettingsModel)
 CompanyModel.belongsTo(CityModel)
 CompanyModel.belongsTo(CategoryModel)
 
