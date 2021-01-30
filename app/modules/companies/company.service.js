@@ -17,6 +17,7 @@ import AppointmentModel from '../appointments/appointment.model'
 import sequelize from 'sequelize'
 import {addDayToDate} from '../../utils/time'
 import {Op} from 'sequelize'
+import {COMPLETED} from '../../constants/appointments'
 
 export default {
   findOne: async params => {
@@ -158,7 +159,10 @@ export default {
       throw new ApiException(403, 'You don\'t own this company!')
     }
 
-    const whereConditions = {companyId}
+    const whereConditions = {
+      companyId,
+      status: COMPLETED
+    }
 
     if(startDate) {
       whereConditions.date = {...whereConditions.date, [Op.gt]: startDate,}
