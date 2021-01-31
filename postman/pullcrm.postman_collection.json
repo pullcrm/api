@@ -9,30 +9,6 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "Index",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/users",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Profile",
 					"request": {
 						"method": "GET",
@@ -171,8 +147,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Companies",
@@ -196,6 +171,42 @@
 							"path": [
 								"api",
 								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/companies/my/stats?startDate=\"2021-01-29\"&endDate=\"2021-01-29\"",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "\"2021-01-29\""
+								},
+								{
+									"key": "endDate",
+									"value": "\"2021-01-29\""
+								}
 							]
 						}
 					},
@@ -294,7 +305,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Staff",
+					"name": "Get Specialists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -305,7 +316,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/companies/my/staff?offset=0&limit=2",
+							"raw": "{{host}}/api/companies/my/specialists?offset=0&limit=2",
 							"host": [
 								"{{host}}"
 							],
@@ -313,7 +324,7 @@
 								"api",
 								"companies",
 								"my",
-								"staff"
+								"specialists"
 							],
 							"query": [
 								{
@@ -330,19 +341,19 @@
 					"response": []
 				},
 				{
-					"name": "Update Employee",
+					"name": "Update Specialist",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Baerer {{token}}",
-								"type": "text"
+								"type": "text",
+								"value": "Baerer {{token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an\",\n    \"description\": \"\",\n    \"status\": \"ALL\"\n}",
+							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an424\",\n    \"description\": \"\",\n    \"status\": \"DASHBOARD\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -350,7 +361,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/staff/1",
+							"raw": "{{host}}/api/companies/my/specialists/1",
 							"host": [
 								"{{host}}"
 							],
@@ -358,7 +369,7 @@
 								"api",
 								"companies",
 								"my",
-								"staff",
+								"specialists",
 								"1"
 							]
 						}
@@ -366,7 +377,7 @@
 					"response": []
 				},
 				{
-					"name": "Add Employee",
+					"name": "Add Specialist",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -378,7 +389,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Bogdan\",\n\t\"lastName\": \"Tsarik\",\n\t\"phone\": \"0660646333\",\n\t\"password\": \"1111\",\n\t\"code\": 8644\n}\n",
+							"raw": "{\n\t\"firstName\": \"Bogdan\",\n\t\"lastName\": \"Tsarik\",\n\t\"phone\": \"0660646333\",\n\t\"password\": \"1111\",\n\t\"code\": \"6333\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -386,7 +397,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/staff",
+							"raw": "{{host}}/api/companies/my/specialists",
 							"host": [
 								"{{host}}"
 							],
@@ -394,14 +405,14 @@
 								"api",
 								"companies",
 								"my",
-								"staff"
+								"specialists"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Add SMS Configuration",
+					"name": "Add Settings",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -413,7 +424,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
+							"raw": "{\n    \"hasRemindSMS\": true,\n    \"remindSMSMinutes\": 60,\n    \"hasCreationSMS\": false,\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -421,7 +432,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/sms",
+							"raw": "{{host}}/api/companies/my/settings",
 							"host": [
 								"{{host}}"
 							],
@@ -429,14 +440,14 @@
 								"api",
 								"companies",
 								"my",
-								"sms"
+								"settings"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Update SMS Configuration",
+					"name": "Update Settings",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -448,7 +459,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"remindAfterCreation\": false,\n    \"beforeTime\": 60,\n    \"remindBeforeTime\": true\n}\n",
+							"raw": "{\n    \"hasRemindSMS\": false,\n    \"remindSMSMinutes\": 120,\n    \"hasCreationSMS\": true\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,7 +467,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/companies/my/sms",
+							"raw": "{{host}}/api/companies/my/settings",
 							"host": [
 								"{{host}}"
 							],
@@ -464,14 +475,48 @@
 								"api",
 								"companies",
 								"my",
-								"sms"
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Settings",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hasRemindSMS\": false,\n    \"remindSMSMinutes\": 120,\n    \"hasCreationSMS\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/companies/my/settings",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"settings"
 							]
 						}
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Auth",
@@ -563,8 +608,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Appointments",
@@ -588,7 +632,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments?date=2020-07-25",
+							"raw": "{{host}}/api/appointments?date=2020-12-05",
 							"host": [
 								"{{host}}"
 							],
@@ -599,7 +643,7 @@
 							"query": [
 								{
 									"key": "date",
-									"value": "2020-07-25"
+									"value": "2020-12-05"
 								}
 							]
 						}
@@ -619,7 +663,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-12-05\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"smsRemindNotify\": true,\n    \"smsCreationNotify\": true\n}",
+							"raw": "{\n\t\"specialistId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2021-01-30\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"hasRemindSMS\": true,\n    \"hasCreationSMS\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -742,8 +786,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Roles",
@@ -805,14 +848,13 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
-			"name": "Approaches",
+			"name": "Specialists",
 			"item": [
 				{
-					"name": "My Approaches",
+					"name": "My Specialists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -823,20 +865,19 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/approaches",
+							"raw": "{{host}}/api/specialists",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"approaches"
+								"specialists"
 							]
 						}
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Cities",
@@ -898,8 +939,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "SMS",
@@ -962,75 +1002,8 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Create Configuration",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"tsarr\",\n    \"password\": \"Xo4Ar2g8\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/sms",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"sms"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Configuration",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"token\": \"32123421312aAWDWADAWD\",\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/sms",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"sms"
-							]
-						}
-					},
-					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Categories",
@@ -1092,8 +1065,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Procedures",
@@ -1233,8 +1205,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Files",
@@ -1320,8 +1291,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "TimeOff",
@@ -1471,14 +1441,13 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Widget",
 			"item": [
 				{
-					"name": "Get Employees",
+					"name": "Get Specialists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1489,13 +1458,20 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/approaches",
+							"raw": "{{host}}/api/public/specialists?companyId=3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"approaches"
+								"public",
+								"specialists"
+							],
+							"query": [
+								{
+									"key": "companyId",
+									"value": "3"
+								}
 							]
 						}
 					},
@@ -1572,7 +1548,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"employeeId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [\n        {\n            \"id\": 1,\n            \"price\": 200\n        }\n    ],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"description\": \"Description some\"\n}",
+							"raw": "{\n\t\"specialistId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2020-10-05\",\n    \"startTime\": \"17:56:01\",\n    \"description\": \"Description some\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1593,9 +1569,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

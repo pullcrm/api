@@ -3,62 +3,6 @@ import joi from "joi"
 import SMSPrivateService from './services/sms.private'
 
 export default {
-  addSMSConfiguration: async (req, res, next) => {
-    try {
-      const formattedData = {
-        login: req.body.login,
-        password: req.body.password
-      }
-
-      const params = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate({...formattedData, ...params}, joi.object().keys({
-        login: joi.string().required(),
-        password: joi.string().required(),
-        companyId: joi.number().required(),
-        userId: joi.number().required(),
-      }))
-
-      const company = await SMSPrivateService.addSMSConfiguration(formattedData, params)
-
-      res.send(company)
-    } catch (error) {
-      next(error)
-    }
-  },
-
-  updateSMSConfiguration: async (req, res, next) => {
-    try {
-      const formattedData = {
-        remindBefore: req.body.remindBefore,
-        remindAfterCreation: req.body.remindAfterCreation,
-        remindBeforeInMinutes: req.body.remindBeforeInMinutes,
-      }
-
-      const params = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate({...formattedData, ...params}, joi.object().keys({
-        userId: joi.number().required(),
-        companyId: joi.number().required(),
-        remindBefore: joi.boolean(),
-        remindAfterCreation: joi.boolean(),
-        remindBeforeInMinutes: joi.number().when('remindBeforeTime', {is: true, then: joi.required()}),
-      }))
-
-      const company = await SMSPrivateService.updateSMSConfiguration(formattedData, params)
-
-      res.send(company)
-    } catch (error) {
-      next(error)
-    }
-  },
-
   balance: async (req, res, next) => {
     try {
       const params = {

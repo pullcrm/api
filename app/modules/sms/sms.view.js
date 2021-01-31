@@ -3,11 +3,11 @@ import dayjs from 'dayjs'
 import {setTime} from '../../utils/time'
 
 export function creationNotifyMessage (payload) {
-  const {procedures, date, startTime, employee} = payload
+  const {procedures, date, startTime, specialist} = payload
 
   const proceduresText = procedures.map(({name}) => name).join(', ')
   
-  return `Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Сотрудник ${employee.firstName}`
+  return `Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Сотрудник ${specialist.user.firstName}`
 }
   
 export function remindNotifyMessage ({procedures, date, startTime}) {
@@ -27,6 +27,6 @@ export function isAppointmentEdited (oldAppointment, newAppointment) {
 
   return (
     newDateTime !== oldDateTime ||
-    newAppointment.smsRemindNotify !== Boolean(oldAppointment.smsIdentifier)
+    newAppointment.hasRemindSMS !== Boolean(oldAppointment.smsIdentifier)
   )
 }

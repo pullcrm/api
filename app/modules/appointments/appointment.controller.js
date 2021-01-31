@@ -12,6 +12,7 @@ import ProcedureModel from '../procedures/procedure.model'
 import TimeOffService from '../timeoff/timeoff.service'
 import SMSPrivateService from '../sms/services/sms.private'
 import AppointmentService from './appointment.service'
+import { ADMIN_PANEL, WIDGET } from "../../constants/appointmentSources"
 
 export default {
   index: async (req, res, next) => {
@@ -55,7 +56,7 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         clientId: req.body.clientId,
         fullName: req.body.fullName,
         phone: req.body.phone,
@@ -67,13 +68,14 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
-        smsRemindNotify: req.body.smsRemindNotify,
-        smsCreationNotify: req.body.smsCreationNotify,
+        hasRemindSMS: req.body.hasRemindSMS,
+        hasCreationSMS: req.body.hasCreationSMS,
+        source: ADMIN_PANEL
       }
 
       //TODO need to validate clientId, procedures for owner
       validate(formattedData, joi.object().keys({
-        employeeId: joi.number(),
+        specialistId: joi.number(),
         clientId: joi.number(),
         fullName: joi.string(),
         phone: joi.string(),
@@ -85,12 +87,13 @@ export default {
         description: joi.string().allow(''),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
-        smsRemindNotify: joi.boolean(),
-        smsCreationNotify: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        hasCreationSMS: joi.boolean(),
+        source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const smsIdentifier = formattedData.smsRemindNotify ? makeRandom(4) : null
+      const smsIdentifier = formattedData.hasRemindSMS ? makeRandom(4) : null
 
       const appointment = await AppointmentService.create({
         ...formattedData,
@@ -108,7 +111,7 @@ export default {
   update: async (req, res, next) => {
     try {
       const formattedData = {
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         clientId: req.body.clientId, // Not need to send
         fullName: req.body.fullName,
         phone: req.body.phone, // Not need to send
@@ -120,7 +123,7 @@ export default {
         description: req.body.description,
         isQueue: req.body.isQueue,
         status: req.body.status,
-        smsRemindNotify: req.body.smsRemindNotify,
+        hasRemindSMS: req.body.hasRemindSMS,
       }
 
       const params = {
@@ -128,7 +131,7 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        employeeId: joi.number(),
+        specialistId: joi.number(),
         clientId: joi.number(),
         fullName: joi.string(),
         phone: joi.string(),
@@ -141,7 +144,7 @@ export default {
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
-        smsRemindNotify: joi.boolean().allow(null),
+        hasRemindSMS: joi.boolean().allow(null),
       }))
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
@@ -205,7 +208,7 @@ export default {
         userId: req.userId,
         companyId: req.companyId,
         excludeId: req.body.excludeId,
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         duration: req.body.duration
       }
 
@@ -214,13 +217,13 @@ export default {
         userId: joi.number().required(),
         companyId: joi.number().required(),
         excludeId: joi.number().allow(null),
-        employeeId: joi.number().required(),
+        specialistId: joi.number().required(),
         duration: joi.number().required()
       }))
 
       const [timeOffs, appointments] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchByEmployeeId(formattedData)
+        AppointmentService.fetchBySpecialistId(formattedData)
       ])
 
       const availableTime = getAvailableTime({
@@ -240,20 +243,20 @@ export default {
       const formattedData = {
         date: req.body.date,
         companyId: req.body.companyId,
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         duration: req.body.duration
       }
 
       validate(formattedData, joi.object().keys({
         date: joi.string(),
         companyId: joi.number().required(),
-        employeeId: joi.number().required(),
+        specialistId: joi.number().required(),
         duration: joi.number().required()
       }))
 
       const [timeOffs, appointments] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchByEmployeeId(formattedData)
+        AppointmentService.fetchBySpecialistId(formattedData)
       ])
 
       const availableTime = getAvailableTime({
@@ -274,7 +277,7 @@ export default {
       const total = procedures.reduce((sum, procedure) => sum + Number(procedure.price), 0)
 
       const formattedData = {
-        employeeId: req.body.employeeId,
+        specialistId: req.body.specialistId,
         fullName: req.body.fullName,
         phone: req.body.phone,
         companyId: req.body.companyId,
@@ -283,14 +286,15 @@ export default {
         startTime: req.body.startTime,
         total,
         description: req.body.description,
+        source: WIDGET,
         status: IN_PROGRESS,
         isQueue: false,
-        smsRemindNotify: true,
-        smsCreationNotify: true,
+        hasRemindSMS: req.body.hasRemindSMS,
+        hasCreationSMS: req.body.hasCreationSMS,
       }
 
       validate(formattedData, joi.object().keys({
-        employeeId: joi.number(),
+        specialistId: joi.number(),
         fullName: joi.string(),
         phone: joi.string().length(10),
         companyId: joi.number(),
@@ -301,8 +305,9 @@ export default {
         description: joi.string().allow(''),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
-        smsRemindNotify: joi.boolean(),
-        smsCreationNotify: joi.boolean(),
+        source: joi.string().valid(WIDGET, ADMIN_PANEL),
+        hasRemindSMS: joi.boolean(),
+        hasCreationSMS: joi.boolean(),
       }))
 
       const smsIdentifier = makeRandom(4)

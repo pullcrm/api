@@ -3,10 +3,9 @@ import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import UserService from '../users/user.service'
-import ApproachService from '../approaches/approach.service'
+import SpecialistService from '../specialists/specialist.service'
 import {mysql} from "../../config/connections"
-import {ALL, HIDE, DASHBOARD} from '../../constants/employees'
-import SMSPrivateService from '../sms/services/sms.private'
+import {ALL, HIDE, DASHBOARD} from '../../constants/specialists'
 
 export default {
   index: async (req, res, next) => {
@@ -38,7 +37,7 @@ export default {
         companyId: joi.number()
       }))
 
-      await ApproachService.checkBy(formattedData)
+      await SpecialistService.checkBy(formattedData)
       const company = await CompanyService.findOne({id: formattedData.companyId, userId: formattedData.userId})
       res.send(company)
     } catch (error) {
@@ -103,7 +102,7 @@ export default {
     }
   },
 
-  findStaff: async (req, res, next) => {
+  findSpecialists: async (req, res, next) => {
     try {
       const formattedData = {
         offset: +req.query.offset || 0,
@@ -117,14 +116,14 @@ export default {
         companyId: joi.number().required(),
       }))
 
-      const users = await CompanyService.findStaff(formattedData)
+      const users = await CompanyService.findSpecialists(formattedData)
       res.send(users)
     } catch (error) {
       next(error)
     }
   },
 
-  addEmployee: async (req, res, next) => {
+  addSpecialist: async (req, res, next) => {
     try {
       const formattedData = {
         firstName: req.body.firstName,
@@ -149,7 +148,7 @@ export default {
 
       const result = await mysql.transaction(async transaction => {
         const user = await UserService.create(formattedData, params, transaction)
-        await CompanyService.addEmployee(user, params, transaction)
+        await CompanyService.addSpecialist(user, params, transaction)
 
         return user
       })
@@ -161,7 +160,7 @@ export default {
   },
 
   //TODO only admin can update his employers
-  updateEmployee: async (req, res, next) => {
+  updateSpecialist: async (req, res, next) => {
     try {
       const userData = {
         firstName: req.body.firstName,
@@ -169,7 +168,7 @@ export default {
         avatarId: req.body.avatarId,
       }
 
-      const employeeData = {
+      const specialistData = {
         description: req.body.description,
         status: req.body.status,
       }
@@ -179,7 +178,7 @@ export default {
         userId: req.params.id
       }
 
-      validate({...userData, ...employeeData, ...params}, joi.object().keys({
+      validate({...userData, ...specialistData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         userId: joi.number().required(),
         firstName: joi.string(),
@@ -190,9 +189,9 @@ export default {
       }))
 
       const user = await UserService.update(userData, params)
-      const employee = await ApproachService.update(employeeData, params)
+      const specialist = await SpecialistService.update(specialistData, params)
 
-      res.send({...user.toJSON(), ...employee.toJSON()})
+      res.send({...user.toJSON(), ...specialist.toJSON()})
     } catch (error) {
       next(error)
     }
@@ -213,6 +212,116 @@ export default {
     } catch (error) {
       next(error)
     }
-  }
+  },
+
+  addSettings: async (req, res, next) => {
+    try {
+      const formattedData = {
+        login: req.body.login,
+        password: req.body.password,
+        hasCreationSMS: req.body.hasCreationSMS,
+        hasRemindSMS: req.body.hasRemindSMS,
+        remindSMSMinutes: req.body.remindSMSMinutes
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        login: joi.string().required(),
+        password: joi.string().required(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        hasCreationSMS: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+      }))
+
+      const company = await CompanyService.addSettings(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  updateSettings: async (req, res, next) => {
+    try {
+      const formattedData = {
+        hasCreationSMS: req.body.hasCreationSMS,
+        hasRemindSMS: req.body.hasRemindSMS,
+        remindSMSMinutes: req.body.remindSMSMinutes
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        hasCreationSMS: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+      }))
+
+      const company = await CompanyService.updateSettings(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  deleteSettings: async (req, res, next) => {
+    try {
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      await CompanyService.deleteSettings(params)
+
+      res.send({message: 'OK'})
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getStats: async (req, res, next) => {
+    try {
+      const formattedData = {
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        startDate: joi.string(),
+        endDate: joi.string(),
+      }))
+
+      const stats = await CompanyService.getStats(formattedData, params)
+
+      res.send(stats)
+
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 

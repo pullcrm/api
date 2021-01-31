@@ -1,9 +1,9 @@
-import ApproachService from './approach.service'
+import SpecialistService from './specialist.service'
 import validate from "../../utils/validate"
 import joi from "joi"
 
 export default {
-  findMyApproaches: async (req, res, next) => {
+  findMySpecialists: async (req, res, next) => {
     try {
       const formattedData = {
         userId: req.userId
@@ -13,25 +13,25 @@ export default {
         userId: joi.number()
       }))
 
-      const approaches = await ApproachService.findMyApproaches(formattedData.userId)
-      res.send(approaches)
+      const specialists = await SpecialistService.findSpecialistsByUser(formattedData.userId)
+      res.send(specialists)
     } catch(error) {
       next(error)
     }
   },
 
-  publicFindAllEmployees: async (req, res, next) => {
+  publicFindMySpecialists: async (req, res, next) => {
     try {
       const formattedData = {
         companyId: req.query.companyId
       }
 
       validate(formattedData, joi.object().keys({
-        companyId: joi.number()
+        companyId: joi.number().required()
       }))
 
-      const employees = await ApproachService.findByCompanyId(formattedData.companyId)
-      res.send(employees)
+      const specialists = await SpecialistService.findByCompanyId(formattedData.companyId)
+      res.send(specialists)
     } catch(error) {
       next(error)
     }

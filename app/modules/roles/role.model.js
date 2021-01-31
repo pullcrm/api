@@ -9,7 +9,7 @@ const RoleSchema = (connection, type) => {
       autoIncrement: true
     },
     name: {
-      type: type.ENUM('ADMIN', 'MANAGER', 'EMPLOYEE', 'CLIENT', 'INVITED'),
+      type: type.STRING,
       allowNull: false
     }
   })

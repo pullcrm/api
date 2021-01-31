@@ -1,8 +1,8 @@
 import {mysql} from "../../config/connections"
 import {Sequelize} from "sequelize"
 
-const ApproachSchema = (connection, type) => {
-  return connection.define('approaches', {
+const SpecialistSchema = (connection, type) => {
+  return connection.define('specialists', {
     id: {
       type: type.BIGINT,
       primaryKey: true,
@@ -23,5 +23,5 @@ const ApproachSchema = (connection, type) => {
   })
 }
 
-const ApproachModel = ApproachSchema(mysql, Sequelize)
-export default ApproachModel
+const SpecialistModel = SpecialistSchema(mysql, Sequelize)
+export default SpecialistModel
