@@ -289,8 +289,8 @@ export default {
         source: WIDGET,
         status: IN_PROGRESS,
         isQueue: false,
-        hasRemindSMS: true,
-        hasCreationSMS: true,
+        hasRemindSMS: req.body.hasRemindSMS,
+        hasCreationSMS: req.body.hasCreationSMS,
       }
 
       validate(formattedData, joi.object().keys({
