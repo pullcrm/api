@@ -1,3 +1,4 @@
+import sequelize from 'sequelize'
 import {mysql} from '../../config/connections'
 import CompanyModel from './models/company'
 import SpecialistModel from "../specialists/specialist.model"
@@ -10,13 +11,9 @@ import CompanySettingsModel from '../companies/models/settings'
 import UserModel from '../users/user.model'
 import {privateSMS} from '../../providers/smsc'
 import {encrypt} from '../../utils/crypto'
-import jsonwebtoken from 'jsonwebtoken'
-import decodeSMSCreds from '../../utils/decodeSMSCreds'
-import {Transaction} from 'sequelize'
 import AppointmentModel from '../appointments/appointment.model'
-import sequelize from 'sequelize'
 import {addDayToDate} from '../../utils/time'
-import {Op} from 'sequelize'
+import exclude from '../../utils/exclude'
 import {COMPLETED} from '../../constants/appointments'
 
 export default {
@@ -111,13 +108,15 @@ export default {
       password: encrypt(data.password)
     })).toString('hex')
 
-    return CompanySettingsModel.create({
+    const setting = await CompanySettingsModel.create({
       hasRemindSMS: data.hasRemindSMS,
       remindSMSMinutes: data.remindSMSMinutes,
       hasCreationSMS: data.hasCreationSMS,
       smsToken: smsToken,
       companyId
     })
+
+    return exclude(setting, ['smsToken'])
   },
 
   updateSettings: async (data, {companyId, userId}) => {
@@ -143,7 +142,7 @@ export default {
       throw new ApiException(403, 'You don\'t own this company!')
     }
 
-    const companySettings = await CompanySettingsModel.findOne({where: {companyId: company.id}})
+    const companySettings = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId: company.id}})
 
     if(!companySettings) {
       throw new ApiException(404, 'You don\'t have SMS configuration!')
@@ -165,11 +164,11 @@ export default {
     }
 
     if(startDate) {
-      whereConditions.date = {...whereConditions.date, [Op.gt]: startDate,}
+      whereConditions.date = {...whereConditions.date, [sequelize.Op.gt]: startDate,}
     }
 
     if(endDate) {
-      whereConditions.date = {...whereConditions.date, [Op.lt]: addDayToDate(endDate),}
+      whereConditions.date = {...whereConditions.date, [sequelize.Op.lt]: addDayToDate(endDate),}
     }
 
     const [stats] = await AppointmentModel.findAll(
