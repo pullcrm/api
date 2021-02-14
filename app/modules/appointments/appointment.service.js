@@ -1,6 +1,6 @@
 import AppointmentModel from './appointment.model'
 import {mysql} from '../../config/connections'
-import ProcedureModel from '../procedures/procedure.model'
+import ProcedureModel from '../procedures/models/procedure'
 import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
 import {addDayToDate} from '../../utils/time'

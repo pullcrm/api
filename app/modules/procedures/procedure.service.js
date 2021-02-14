@@ -1,5 +1,6 @@
-import ProcedureModel from './procedure.model'
-import ApiException from "../../exceptions/api";
+import ProcedureModel from './models/procedure'
+import ProcedureCategoriesModel from './models/category'
+import ApiException from "../../exceptions/api"
 
 export default {
   findAll: async ({companyId, limit, offset}) => {
@@ -36,6 +37,43 @@ export default {
     }
 
     await procedure.destroy()
+    return {destroy: 'OK'}
+  },
+
+  createCategory: async data => {
+    return ProcedureCategoriesModel.create(data)
+  },
+
+  findCategories: async ({companyId, limit, offset}) => {
+    return ProcedureCategoriesModel.findAll({where: {companyId}, limit, offset, attributes: {exclude: ['companyId']}})
+  },
+
+  updateCategory: async (data, {categoryId, companyId}) => {
+    const category = await ProcedureCategoriesModel.findOne({where: {id: categoryId}})
+
+    if(!category) {
+      throw new ApiException(404, 'Category wasn\'t found')
+    }
+
+    if(category.get('companyId') !== companyId) {
+      throw new ApiException(403, 'That is not your category')
+    }
+
+    return category.update(data, {plain: true})
+  },
+
+  destroyCategory: async ({categoryId, companyId}) => {
+    const category = await ProcedureCategoriesModel.findOne({where: {id: categoryId}})
+
+    if(!category) {
+      throw new ApiException(404, 'Category wasn\'t found')
+    }
+
+    if(category.get('companyId') !== companyId) {
+      throw new ApiException(403, 'That is not your category')
+    }
+
+    await category.destroy()
     return {destroy: 'OK'}
   },
 }
