@@ -68,7 +68,7 @@ export default {
 
     let smsIdentifier = appointment.smsIdentifier
 
-    const smsConfiguration = await CompanySettingsModel.findOne({where: {companyId: data.companyId}})
+    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       return smsIdentifier
@@ -130,7 +130,7 @@ export default {
   },
 
   send: async ({phone, message, id, time}, companyId) => {
-    const smsConfiguration = await CompanySettingsModel.findOne({where: {companyId}})
+    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       throw new ApiException(404, 'SMS Config was not found')
@@ -147,7 +147,7 @@ export default {
   },
 
   balance: async ({companyId}) => {
-    const smsConfiguration = await CompanySettingsModel.findOne({where: {companyId}})
+    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       throw new ApiException(404, 'SMS Configuretion was not found')
@@ -159,7 +159,7 @@ export default {
   },
 
   status: async ({phone, smsIdentifier}, companyId) => {
-    const smsConfiguration = await CompanySettingsModel.findOne({where: {companyId}})
+    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
     if(!smsConfiguration) {
       throw new ApiException(404, 'SMS Config was not found')
