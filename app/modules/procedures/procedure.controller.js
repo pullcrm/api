@@ -31,7 +31,8 @@ export default {
         price: req.body.price,
         duration: req.body.duration,
         companyId: req.companyId,
-        description: req.body.description
+        description: req.body.description,
+        procedureCategoryId: req.body.procedureCategoryId,
       }
 
       validate(formattedData, joi.object().keys({
@@ -39,7 +40,8 @@ export default {
         price: joi.number().required(),
         duration: joi.number().required(),
         companyId: joi.number().required(),
-        description: joi.string().allow('')
+        description: joi.string().allow(''),
+        procedureCategoryId: joi.number(),
       }))
 
       const roles = await ProceduresService.create(formattedData)
@@ -55,7 +57,8 @@ export default {
         name: req.body.name,
         price: req.body.price,
         duration: req.body.duration,
-        description: req.body.description
+        description: req.body.description,
+        procedureCategoryId: req.body.procedureCategoryId,
       }
 
       const params = {
@@ -70,6 +73,7 @@ export default {
         procedureId: joi.number().required(),
         companyId: joi.number().required(),
         description: joi.string().allow(''),
+        procedureCategoryId: joi.number(),
       }))
 
       const roles = await ProceduresService.update(formattedData, params)
