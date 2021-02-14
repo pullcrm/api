@@ -7,7 +7,7 @@ import {getAvailableTime} from '../../logics/appointments'
 import validate from '../../utils/validate'
 import {makeRandom} from '../../utils/make-random'
 
-import ProcedureModel from '../procedures/procedure.model'
+import ProcedureModel from '../procedures/models/procedure'
 
 import TimeOffService from '../timeoff/timeoff.service'
 import SMSPrivateService from '../sms/services/sms.private'

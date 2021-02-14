@@ -5,7 +5,7 @@ import CompanyModel from './modules/companies/models/company'
 import SpecialistModel from "./modules/specialists/specialist.model"
 import RoleModel from './modules/roles/role.model'
 import AppointmentModel from "./modules/appointments/appointment.model"
-import ProcedureModel from "./modules/procedures/procedure.model"
+import ProcedureModel from "./modules/procedures/models/procedure"
 import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
@@ -13,6 +13,7 @@ import TokenModel from "./modules/auth/models/token"
 import CompanySettingsModel from "./modules/companies/models/settings"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import ClientModel from "./modules/clients/client.model"
+import ProcedureCategoriesModel from './modules/procedures/models/category'
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -46,6 +47,9 @@ ProcedureModel.belongsToMany(AppointmentModel,{
   through: 'appointment_procedures',
   timestamps: false
 })
+
+ProcedureModel.belongsTo(ProcedureCategoriesModel)
+ProcedureCategoriesModel.belongsTo(CompanyModel)
 
 UserModel.belongsToMany(CompanyModel, {through: ClientModel})
 ClientModel.belongsTo(UserModel)
