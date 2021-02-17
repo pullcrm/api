@@ -19,6 +19,12 @@ const SpecialistSchema = (connection, type) => {
       type: type.STRING,
       allowNull: false,
       defaultValue: ''
+    },
+
+    specialization: {
+      type: type.STRING,
+      allowNull: false,
+      defaultValue: ''
     }
   })
 }
