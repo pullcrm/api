@@ -23,6 +23,10 @@ const FileSchema = (connection, type) => {
       get() {
         return process.env.HOST + '/api' + this.getDataValue('path')
       }
+    },
+    group: {
+      type: type.STRING,
+      allowNull: true,
     }
   })
 }
