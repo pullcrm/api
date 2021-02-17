@@ -28,6 +28,14 @@ const CompanySettingsSchema = (connection, type) => {
       defaultValue: false,
     },
   }, {
+    defaultScope: {
+      attributes: {exclude: ['smsToken']}
+    },
+    scopes: {
+      withSMSToken: {
+        attributes: {}
+      },
+    },
     indexes: [
       {
         unique: true,
