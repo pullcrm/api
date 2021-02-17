@@ -15,7 +15,7 @@ module.exports = {
 
       await queryInterface.addConstraint('procedures', ['procedureCategoryId'], {
         type: 'foreign key',
-        name: 'procedure_categories_ibfk_1',
+        name: 'procedure_categories_ibfk_2',
         references: {
           table: 'procedure_categories',
           field: 'id',
