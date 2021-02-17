@@ -171,6 +171,7 @@ export default {
       const specialistData = {
         description: req.body.description,
         status: req.body.status,
+        specialization: req.body.specialization
       }
 
       const params = {
@@ -185,6 +186,7 @@ export default {
         lastName: joi.string(),
         avatarId: joi.number(),
         description: joi.string().allow(''),
+        specialization: joi.string().allow(''),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
       }))
 
