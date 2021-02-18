@@ -97,7 +97,7 @@ export default {
     return user.update({password: newPassword})
   },
 
-  update: async (data, {userId}) => {
+  update: async (data, userId) => {
     const user = await UserModel.findOne({where: {id: userId}})
 
     if(!user) {

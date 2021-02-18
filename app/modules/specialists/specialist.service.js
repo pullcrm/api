@@ -81,7 +81,7 @@ export default {
   },
 
   update: async (data, params) => {
-    const specialist = await SpecialistModel.findOne({where: {id: params.userId, companyId: params.companyId}})
+    const specialist = await SpecialistModel.findOne({where: {id: params.specialistId, companyId: params.companyId}})
 
     if(!specialist) {
       throw new ApiException(404, 'Specialist wasn\'t found')

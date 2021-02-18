@@ -176,12 +176,12 @@ export default {
 
       const params = {
         companyId: req.companyId,
-        userId: req.params.id
+        specialistId: req.params.id
       }
 
       validate({...userData, ...specialistData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
-        userId: joi.number().required(),
+        specialistId: joi.number().required(),
         firstName: joi.string(),
         lastName: joi.string(),
         avatarId: joi.number(),
@@ -190,8 +190,8 @@ export default {
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
       }))
 
-      const user = await UserService.update(userData, params)
       const specialist = await SpecialistService.update(specialistData, params)
+      const user = await UserService.update(userData, specialist.userId)
 
       res.send({...user.toJSON(), ...specialist.toJSON()})
     } catch (error) {
