@@ -9,14 +9,16 @@ export default {
         offset: req.query.offset,
         limit: req.query.limit,
         userId: req.userId,
-        companyId: req.companyId
+        companyId: req.companyId,
+        group: req.query.group
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
         userId: joi.number().required(),
-        companyId: joi.number().optional()
+        companyId: joi.number().optional(),
+        group: joi.string()
       }))
 
       const files = await FileService.findMyFiles(formattedData)
@@ -29,7 +31,8 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        file: {...req.file, path: req.file.path.replace('uploads', '')}
+        file: {...req.file, path: req.file.path.replace('uploads', '')},
+        group: req.body.group
       }
 
       const params = {
@@ -45,7 +48,8 @@ export default {
           size: joi.number().integer().max(500000).error(new Error('File shoud be less than 500k'))
         }).unknown().required(),
         userId: joi.number().required(),
-        companyId: joi.number().optional()
+        companyId: joi.number().optional(),
+        group: joi.string().optional()
       }))
 
       const file = await FileService.upload(formattedData, params)
