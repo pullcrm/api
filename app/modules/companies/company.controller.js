@@ -166,6 +166,7 @@ export default {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         avatarId: req.body.avatarId,
+        email: req.body.email,
       }
 
       const specialistData = {
@@ -188,6 +189,7 @@ export default {
         description: joi.string().allow(''),
         specialization: joi.string().allow(''),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
+        email: joi.email().allow(''),
       }))
 
       const specialist = await SpecialistService.update(specialistData, params)
