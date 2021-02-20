@@ -189,7 +189,7 @@ export default {
         description: joi.string().allow(''),
         specialization: joi.string().allow(''),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
-        email: joi.email().allow(''),
+        email: joi.string().allow(''),
       }))
 
       const specialist = await SpecialistService.update(specialistData, params)
