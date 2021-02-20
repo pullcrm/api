@@ -61,7 +61,9 @@ export default {
       }
 
       const params = {
-        userId: req.userId,
+        // Add info who uploaded the file
+        // createdByUserId: req.userId,
+        userId: req.body.userId,
         companyId: req.companyId
       }
 
