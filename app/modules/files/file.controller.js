@@ -3,6 +3,31 @@ import validate from "../../utils/validate"
 import joi from "joi"
 
 export default {
+  getUserFiles: async (req, res, next) => {
+    try {
+      const formattedData = {
+        offset: req.query.offset,
+        limit: req.query.limit,
+        group: req.query.group,
+        userId: req.params.id,
+        companyId: req.companyId,
+      }
+
+      validate(formattedData, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        group: joi.string()
+      }))
+
+      const files = await FileService.findFiles(formattedData)
+      res.send(files)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   findMyFiles: async (req, res, next) => {
     try {
       const formattedData = {
@@ -21,7 +46,7 @@ export default {
         group: joi.string()
       }))
 
-      const files = await FileService.findMyFiles(formattedData)
+      const files = await FileService.findFiles(formattedData)
       res.send(files)
     } catch(error) {
       next(error)

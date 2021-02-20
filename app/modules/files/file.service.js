@@ -3,7 +3,7 @@ import FileModel from './file.model'
 import UserModel from '../users/user.model'
 
 export default {
-  findMyFiles: async ({userId, group}) => {
+  findFiles: async ({userId, group}) => {
     const whereCondition = {}
 
     if(group) {
