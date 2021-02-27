@@ -25,6 +25,12 @@ const SpecialistSchema = (connection, type) => {
       type: type.STRING,
       allowNull: false,
       defaultValue: ''
+    },
+
+    rate: {
+      type: type.BIGINT,
+      allowNull: false,
+      defaultValue: 0
     }
   })
 }

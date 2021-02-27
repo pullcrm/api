@@ -41,7 +41,7 @@ export default {
         userId: joi.number().required(),
       }))
 
-      res.send(await UserService.findOne({id: formattedData.userId}))
+      res.send(await UserService.profile(formattedData))
     } catch(error) {
       next(error)
     }

@@ -4,6 +4,9 @@ import auth from '../../../middlewares/auth'
 
 const router = Router()
 
-router.get('/', auth(), SpecialistController.findMySpecialists)
+router.get('/', auth(), SpecialistController.index)
+router.put('/bulk', auth(), SpecialistController.bulkUpdate)
+router.put('/:id', auth(), SpecialistController.update)
+router.post('/', auth(), SpecialistController.create)
 
 export default router

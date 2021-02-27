@@ -70,21 +70,6 @@ export default {
     return result
   },
 
-  addSpecialist: async (user, params, transaction) => {
-    const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
-    return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
-  },
-
-  findSpecialists: async ({companyId, limit, offset}) => {
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(!company) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    return company.getSpecialists({limit, offset, include: [{model: UserModel, include: {model: FileModel, as: 'avatar', attributes: {exclude: ['avatarId']}}}]})
-  },
-
   addSettings: async (data, {companyId, userId}) => {
     const SMS = privateSMS({
       login: data.login,
