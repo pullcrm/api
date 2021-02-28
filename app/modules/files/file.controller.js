@@ -3,23 +3,50 @@ import validate from "../../utils/validate"
 import joi from "joi"
 
 export default {
-  findMyFiles: async (req, res, next) => {
+  getUserFiles: async (req, res, next) => {
     try {
       const formattedData = {
         offset: req.query.offset,
         limit: req.query.limit,
-        userId: req.userId,
-        companyId: req.companyId
+        group: req.query.group,
+        userId: req.params.id,
+        companyId: req.companyId,
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
         userId: joi.number().required(),
-        companyId: joi.number().optional()
+        companyId: joi.number().required(),
+        group: joi.string()
       }))
 
-      const files = await FileService.findMyFiles(formattedData)
+      const files = await FileService.findFiles(formattedData)
+      res.send(files)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  findMyFiles: async (req, res, next) => {
+    try {
+      const formattedData = {
+        offset: req.query.offset,
+        limit: req.query.limit,
+        userId: req.userId,
+        companyId: req.companyId,
+        group: req.query.group
+      }
+
+      validate(formattedData, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+        userId: joi.number().required(),
+        companyId: joi.number().optional(),
+        group: joi.string()
+      }))
+
+      const files = await FileService.findFiles(formattedData)
       res.send(files)
     } catch(error) {
       next(error)
@@ -29,11 +56,14 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        file: {...req.file, path: req.file.path.replace('uploads', '')}
+        file: {...req.file, path: req.file.path.replace('uploads', '')},
+        group: req.body.group
       }
 
       const params = {
-        userId: req.userId,
+        // Add info who uploaded the file
+        // createdByUserId: req.userId,
+        userId: req.body.userId,
         companyId: req.companyId
       }
 
@@ -45,7 +75,8 @@ export default {
           size: joi.number().integer().max(500000).error(new Error('File shoud be less than 500k'))
         }).unknown().required(),
         userId: joi.number().required(),
-        companyId: joi.number().optional()
+        companyId: joi.number().optional(),
+        group: joi.string().optional()
       }))
 
       const file = await FileService.upload(formattedData, params)

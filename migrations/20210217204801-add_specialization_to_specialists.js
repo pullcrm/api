@@ -5,24 +5,15 @@ module.exports = {
     const transaction = await queryInterface.sequelize.transaction()
     try {
       await queryInterface.addColumn(
-        'procedures',
-        'procedureCategoryId',
+        'specialists',
+        'specialization',
         {
-          type: Sequelize.DataTypes.INTEGER,
+          type: Sequelize.DataTypes.STRING,
+          allowNull: false,
+          defaultValue: ''
         },
         {transaction}
       )
-
-      await queryInterface.addConstraint('procedures', ['procedureCategoryId'], {
-        type: 'foreign key',
-        name: 'procedure_categories_ibfk_2',
-        references: {
-          table: 'procedure_categories',
-          field: 'id',
-        },
-        transaction
-      })
-
       await transaction.commit()
     } catch (err) {
       await transaction.rollback()
@@ -32,7 +23,7 @@ module.exports = {
   async down(queryInterface) {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.removeColumn('procedures', 'procedureCategoryId', {transaction})
+      await queryInterface.removeColumn('specialists', 'specialization', {transaction})
       await transaction.commit()
     } catch (err) {
       await transaction.rollback()

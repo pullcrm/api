@@ -3,8 +3,15 @@ import FileModel from './file.model'
 import UserModel from '../users/user.model'
 
 export default {
-  findMyFiles: async ({userId}) => {
+  findFiles: async ({userId, group}) => {
+    const whereCondition = {}
+
+    if(group) {
+      whereCondition.where = {group}
+    }
+
     return FileModel.findAll({
+      ...whereCondition,
       include: [
         {model: UserModel, where: {id: userId}, attributes: [], required: true}
       ]
@@ -13,7 +20,7 @@ export default {
 
   upload: async (data, {userId, companyId}) => {
     const result = await mysql.transaction(async transaction => {
-      const file = await FileModel.create({...data.file, companyId}, {returning: true, transaction})
+      const file = await FileModel.create({...data.file, companyId, group: data.group}, {returning: true, transaction})
       await file.setUsers([userId], {transaction})
       return file
     })
