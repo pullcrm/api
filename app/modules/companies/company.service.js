@@ -127,7 +127,7 @@ export default {
       throw new ApiException(403, 'You don\'t own this company!')
     }
 
-    const companySettings = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId: company.id}})
+    const companySettings = await CompanySettingsModel.findOne({where: {companyId: company.id}})
 
     if(!companySettings) {
       throw new ApiException(404, 'You don\'t have SMS configuration!')
