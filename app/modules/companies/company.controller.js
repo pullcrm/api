@@ -228,5 +228,33 @@ export default {
       next(error)
     }
   },
+
+  getFinancialAnalytics: async (req, res, next) => {
+    try {
+      const formattedData = {
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        startDate: joi.string(),
+        endDate: joi.string(),
+      }))
+
+      const stats = await CompanyService.getFinancialAnalytics(formattedData, params)
+
+      res.send(stats)
+
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
