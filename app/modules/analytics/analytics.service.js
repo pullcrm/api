@@ -29,13 +29,17 @@ export default {
         group by pr.id
     `, {type: QueryTypes.SELECT})
 
-    const [income] = await mysql.query(`
-        select sum(ap.total) as sum from appointments as ap
+    const [stats] = await mysql.query(`
+        select
+        sum(ap.total) as income,
+        count(ap.id) as count,
+        avg(ap.total) as avg
+        from appointments as ap
         ${whereConditions}
     `, {type: QueryTypes.SELECT})
 
     return {
-      income: income.sum,
+      ...stats,
       procedures
     }
   },
