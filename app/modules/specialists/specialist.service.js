@@ -63,9 +63,12 @@ export default {
     return specialists
   },
 
-  publicIndex: async companyId => {
+  publicIndex: async ({companyId, order, sort}) => {
     const specialists = await SpecialistModel.findAll({
       where: {companyId, status: ALL},
+      order: [
+        [sort, order]
+      ],
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
         model: UserModel,

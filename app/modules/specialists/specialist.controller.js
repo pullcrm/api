@@ -29,15 +29,19 @@ export default {
 
   publicIndex: async (req, res, next) => {
     try {
-      const formattedData = {
-        companyId: req.query.companyId
+      const params = {
+        companyId: req.query.companyId,
+        sort: req.query.sort || 'id',
+        order: req.query.order || 'desc'
       }
 
-      validate(formattedData, joi.object().keys({
-        companyId: joi.number().required()
+      validate(params, joi.object().keys({
+        companyId: joi.number().required(),
+        sort: joi.string(),
+        order: joi.string()
       }))
 
-      const specialists = await SpecialistService.publicIndex(formattedData.companyId)
+      const specialists = await SpecialistService.publicIndex(params)
       res.send(specialists)
     } catch(error) {
       next(error)
