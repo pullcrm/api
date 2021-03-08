@@ -77,7 +77,20 @@ export default {
         where a.Date between '${startDate}' and '${endDate}') calendar
         on calendar.Date = cnt.intrvl
   `, {type: QueryTypes.SELECT})
+    
+    const [stats] = await mysql.query(`
+      select
+        count(ap.id) as count,
+        convert(sum(ap.status = 'COMPLETED'), SIGNED INTEGER) as completed,
+        convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
+        convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
+      from appointments as ap
+      where ap.date between '${startDate}' and '${endDate}'
+    `, {type: QueryTypes.SELECT})
 
-    return appointments
+    return {
+      ...stats,
+      appointments
+    }
   }
 }
