@@ -31,5 +31,34 @@ export default {
       next(error)
     }
   },
+
+  getCalendarAnalytics: async (req, res, next) => {
+    try {
+      const formattedData = {
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+        specialistId: req.query.specialistId
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        startDate: joi.string(),
+        endDate: joi.string(),
+      }))
+
+      const stats = await AnalyticsService.getCalendarAnalytics(formattedData, params)
+
+      res.send(stats)
+
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
