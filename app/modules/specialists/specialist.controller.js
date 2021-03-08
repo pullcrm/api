@@ -139,4 +139,29 @@ export default {
       next(error)
     }
   },
+
+  destroy: async (req, res, next) => {
+    try {
+      const formattedData = {
+        specialistId: req.params.id,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        specialistId: joi.number().required(),
+        userId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      await SpecialistService.destory(formattedData, params)
+
+      res.send({message: 'OK'})
+    } catch (error) {
+      next(error)
+    }
+  },
 }
