@@ -53,6 +53,11 @@ export default {
             },
           ],
         },
+        {
+          model: FileModel,
+          as: "avatar",
+          attributes: {exclude: ["avatarId"]},
+        },
       ],
     })
 
