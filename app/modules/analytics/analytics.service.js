@@ -14,10 +14,17 @@ export default {
     }
 
     const procedures = await mysql.query(`
+      select 
+        procedures.id,
+        procedures.name,
+        procedures.price,
+        coalesce(totals.amount, 0) as amount,
+        coalesce(totals.income, 0) as income,
+        coalesce(totals.offline, 0) as offline,
+        coalesce(totals.online, 0) as online
+      from (
         select
             pr.id,
-            pr.name,
-            pr.price,
             count(ap.id) as amount,
             convert(sum(ap.total), SIGNED INTEGER) as income,
             convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
@@ -27,6 +34,17 @@ export default {
         left join appointments as ap on app.appointmentId = ap.id
         ${whereConditions}
         group by pr.id
+      ) as totals
+      right join (
+        select 
+          pr.id,
+          pr.name,
+          pr.price
+        from procedures as pr
+        where pr.companyId = ${params.companyId}
+      ) as procedures
+      on totals.id = procedures.id
+        
     `, {type: QueryTypes.SELECT})
 
     const [stats] = await mysql.query(`
