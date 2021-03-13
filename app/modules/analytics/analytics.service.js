@@ -45,6 +45,16 @@ export default {
   },
 
   getCalendarAnalytics: async ({startDate, endDate, specialistId}, params) => {
+    let whereConditions = `where ap.companyId = ${params.companyId}`
+  
+    if(startDate && endDate) {
+      whereConditions = whereConditions.concat(' and ', `ap.date between '${startDate}' and '${endDate}'`)
+    }
+
+    if(specialistId) {
+      whereConditions = whereConditions.concat(' and ', `ap.specialistId = '${specialistId}'`)
+    }
+
     const appointments = await mysql.query(`
     SELECT
       calendar.Date as step,
@@ -63,7 +73,7 @@ export default {
           sum(ap.source != 'WIDGET' or ap.source is null) as offline,
           sum(ap.source = 'WIDGET') as online
         FROM appointments as ap
-        WHERE ap.date between '${startDate}' and '${endDate}' GROUP BY intrvl
+        ${whereConditions} GROUP BY intrvl
       ) cnt
       RIGHT JOIN
       (select a.Date
@@ -85,7 +95,7 @@ export default {
         convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
         convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
       from appointments as ap
-      where ap.date between '${startDate}' and '${endDate}'
+      ${whereConditions}
     `, {type: QueryTypes.SELECT})
 
     return {
