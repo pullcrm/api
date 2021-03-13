@@ -29,15 +29,19 @@ export default {
 
   publicIndex: async (req, res, next) => {
     try {
-      const formattedData = {
-        companyId: req.query.companyId
+      const params = {
+        companyId: req.query.companyId,
+        sort: req.query.sort || 'id',
+        order: req.query.order || 'desc'
       }
 
-      validate(formattedData, joi.object().keys({
-        companyId: joi.number().required()
+      validate(params, joi.object().keys({
+        companyId: joi.number().required(),
+        sort: joi.string(),
+        order: joi.string()
       }))
 
-      const specialists = await SpecialistService.publicIndex(formattedData.companyId)
+      const specialists = await SpecialistService.publicIndex(params)
       res.send(specialists)
     } catch(error) {
       next(error)
@@ -135,6 +139,31 @@ export default {
       const user = await UserService.update(userData, specialist.userId)
 
       res.send({...specialist.toJSON(), user: user.toJSON()})
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  destroy: async (req, res, next) => {
+    try {
+      const formattedData = {
+        specialistId: req.params.id,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        specialistId: joi.number().required(),
+        userId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      await SpecialistService.destory(formattedData, params)
+
+      res.send({message: 'OK'})
     } catch (error) {
       next(error)
     }

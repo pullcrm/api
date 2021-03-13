@@ -63,9 +63,12 @@ export default {
     return specialists
   },
 
-  publicIndex: async companyId => {
+  publicIndex: async ({companyId, order, sort}) => {
     const specialists = await SpecialistModel.findAll({
       where: {companyId, status: ALL},
+      order: [
+        [sort, order]
+      ],
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
         model: UserModel,
@@ -98,4 +101,14 @@ export default {
     const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
     return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
   },
+
+  destory: async ({specialistId}, {companyId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId}})
+
+    if(specialist.get('companyId') !== companyId) {
+      throw new ApiException(403, 'You don\'t have such specialist in your company! ')
+    }
+
+    return specialist.destroy({id: specialistId})
+  }
 }
