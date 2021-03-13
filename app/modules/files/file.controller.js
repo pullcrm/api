@@ -84,5 +84,25 @@ export default {
     } catch(error) {
       next(error)
     }
-  }
+  },
+
+  destroy: async (req, res, next) => {
+    try {
+      const params = {
+        fileId: req.params.id,
+        companyId: req.companyId,
+        userId: req.userId
+      }
+
+      validate(params, joi.object().keys({
+        fileId: joi.number().required(),
+        companyId: joi.number().required(),
+        userId: joi.number().required()
+      }))
+
+      res.send(await FileService.destroy(params))
+    } catch (error) {
+      next(error)
+    }
+  },
 }

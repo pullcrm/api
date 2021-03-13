@@ -24,7 +24,7 @@ const storageConfig = multer.diskStorage({
 })
 
 app.use('/api', express.static('uploads'))
-app.use(multer({storage: storageConfig}).single('file'))
+app.post(prefix + '/files', multer({storage: storageConfig}).single('file'))
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
