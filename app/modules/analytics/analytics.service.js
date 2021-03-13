@@ -49,9 +49,9 @@ export default {
 
     const [stats] = await mysql.query(`
         select
-        convert(sum(ap.total), SIGNED INTEGER) as income,
-        count(ap.id) as count,
-        round(avg(ap.total), 2) as avg
+          coalesce(convert(sum(ap.total), SIGNED INTEGER), 0) as income,
+          coalesce(count(ap.id), 0) as count,
+          coalesce(round(avg(ap.total), 2), 0) as avg
         from appointments as ap
         ${whereConditions}
     `, {type: QueryTypes.SELECT})
