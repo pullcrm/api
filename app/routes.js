@@ -15,6 +15,7 @@ import procedurePublicRouter from './modules/procedures/routes/procedure.public'
 import fileRouter from './modules/files/file.route'
 import smsRouter from './modules/sms/sms.route'
 import timeOffRouter from './modules/timeoff/timeoff.route'
+import analyticsRouter from './modules/analytics/analytics.route'
 
 const api = Router()
 
@@ -30,6 +31,7 @@ api.use('/procedures', procedureRouter)
 api.use('/files', fileRouter)
 api.use('/sms', smsRouter)
 api.use('/timeoff', timeOffRouter)
+api.use('/analytics', analyticsRouter)
 
 api.use('/public/specialists', specialistPublicRouter)
 api.use('/public/procedures', procedurePublicRouter)
