@@ -9,7 +9,7 @@ const globalSMS = new SMSClient({
 })
 
 export default {
-  send: async (phone, message) => {
+  send: async ({phone, message}) => {
     return globalSMS.send({
       phones: phone,
       mes: message

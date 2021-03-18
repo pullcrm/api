@@ -8,5 +8,6 @@ router.get('/', auth(), FileController.findMyFiles)
 router.post('/', auth(), FileController.create)
 
 router.get('/:id', auth(), FileController.getUserFiles)
+router.delete('/:id', auth(), FileController.destroy)
 
 export default router

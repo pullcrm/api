@@ -1,3 +1,4 @@
+import sequelize from 'sequelize'
 import SpecialistModel from './specialist.model'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
@@ -12,10 +13,6 @@ import {ALL} from '../../constants/specialists'
 export default {
   findAll: async ({companyId}) => {
     return SpecialistModel.findAll({companyId})
-  },
-
-  create: async data => {
-    return SpecialistModel.create(data)
   },
 
   checkBy: async params => {
@@ -40,9 +37,12 @@ export default {
     return specialist.company
   },
 
-  findSpecialistsByUser: async userId => {
+  index: async ({companyId, order, sort}) => {
     const specialists = await SpecialistModel.findAll({
-      where: {userId},
+      where: {companyId},
+      order: [
+        [sort, order]
+      ],
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
         model: CompanyModel,
@@ -63,9 +63,12 @@ export default {
     return specialists
   },
 
-  findByCompanyId: async companyId => {
+  publicIndex: async ({companyId, order, sort}) => {
     const specialists = await SpecialistModel.findAll({
       where: {companyId, status: ALL},
+      order: [
+        [sort, order]
+      ],
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
         model: UserModel,
@@ -88,5 +91,24 @@ export default {
     }
 
     return specialist.update(data)
+  },
+
+  bulkUpdate: async ({specialists}) => {
+    return SpecialistModel.bulkCreate(specialists, {updateOnDuplicate: ['rate']})
+  },
+
+  create: async (user, params, transaction) => {
+    const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
+    return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
+  },
+
+  destory: async ({specialistId}, {companyId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId}})
+
+    if(specialist.get('companyId') !== companyId) {
+      throw new ApiException(403, 'You don\'t have such specialist in your company! ')
+    }
+
+    return specialist.destroy({id: specialistId})
   }
 }

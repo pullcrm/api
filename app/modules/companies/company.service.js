@@ -8,13 +8,13 @@ import CategoryModel from "../categories/category.model"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
 import CompanySettingsModel from '../companies/models/settings'
-import UserModel from '../users/user.model'
 import {privateSMS} from '../../providers/smsc'
 import {encrypt} from '../../utils/crypto'
 import AppointmentModel from '../appointments/appointment.model'
 import {addDayToDate} from '../../utils/time'
 import exclude from '../../utils/exclude'
 import {COMPLETED} from '../../constants/appointments'
+import ProcedureModel from '../procedures/models/procedure'
 
 export default {
   findOne: async params => {
@@ -68,21 +68,6 @@ export default {
     })
 
     return result
-  },
-
-  addSpecialist: async (user, params, transaction) => {
-    const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
-    return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
-  },
-
-  findSpecialists: async ({companyId, limit, offset}) => {
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(!company) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    return company.getSpecialists({limit, offset, include: [{model: UserModel, include: {model: FileModel, as: 'avatar', attributes: {exclude: ['avatarId']}}}]})
   },
 
   addSettings: async (data, {companyId, userId}) => {
@@ -181,5 +166,9 @@ export default {
       })
 
     return stats
-  }
+  },
+
+  getFinancialAnalytics: async (data, params) => {
+    return sequelize.query("select * from `procedures`", {type: sequelize.QueryTypes.SELECT})
+  },
 }
