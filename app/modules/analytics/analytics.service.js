@@ -52,7 +52,9 @@ export default {
           coalesce(convert(sum(ap.total), SIGNED INTEGER), 0) as income,
           coalesce(count(ap.id), 0) as count,
           coalesce(round(avg(ap.total), 2), 0) as avg
-        from appointments as ap
+        from procedures as pr
+        left join appointment_procedures as app on pr.id = app.procedureId
+        left join appointments as ap on app.appointmentId = ap.id
         ${whereConditions}
     `, {type: QueryTypes.SELECT})
 
