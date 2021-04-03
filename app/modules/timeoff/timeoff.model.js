@@ -16,6 +16,10 @@ const TimeOffSchema = (connection, type) => {
       type: type.DATE,
       allowNull: false,
     },
+    description: {
+      type: type.STRING,
+      allowNull: false,
+    }
   }
   )
 }
