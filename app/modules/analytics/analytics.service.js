@@ -13,49 +13,75 @@ export default {
       whereConditions = whereConditions.concat(' and ', `ap.specialistId = '${specialistId}'`)
     }
 
+    // const procedures = await mysql.query(`
+    //   select 
+    //     procedures.id,
+    //     procedures.name,
+    //     procedures.price,
+    //     coalesce(totals.amount, 0) as amount,
+    //     coalesce(totals.income, 0) as income,
+    //     coalesce(totals.offline, 0) as offline,
+    //     coalesce(totals.online, 0) as online
+    //   from (
+    //     select
+    //         pr.id,
+    //         count(ap.id) as amount,
+    //         convert(sum(ap.total), SIGNED INTEGER) as income,
+    //         convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
+    //         convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
+    //     from procedures as pr
+    //     left join appointment_procedures as app on pr.id = app.procedureId
+    //     left join appointments as ap on app.appointmentId = ap.id
+    //     ${whereConditions}
+    //     group by app.appointmentId
+    //   ) as totals
+    //   right join (
+    //     select 
+    //       pr.id,
+    //       pr.name,
+    //       pr.price
+    //     from procedures as pr
+    //     where pr.companyId = ${params.companyId}
+    //   ) as procedures
+    //   on totals.id = procedures.id
+        
+    // `, {type: QueryTypes.SELECT})
+
     const procedures = await mysql.query(`
-      select 
-        procedures.id,
-        procedures.name,
-        procedures.price,
+    select 
+        totals.groupName as name,
         coalesce(totals.amount, 0) as amount,
-        coalesce(totals.income, 0) as income,
+        coalesce(totals.income, 0) as totalPrice,
         coalesce(totals.offline, 0) as offline,
-        coalesce(totals.online, 0) as online
+        coalesce(totals.online, 0) as online,
+        coalesce(totals.total, 0) as actialIncome
       from (
         select
-            pr.id,
-            count(ap.id) as amount,
-            convert(sum(ap.total), SIGNED INTEGER) as income,
-            convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
-            convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
-        from procedures as pr
-        left join appointment_procedures as app on pr.id = app.procedureId
+          count(pr.id) as amount,
+          convert(sum(ap.total), SIGNED INTEGER) as total,
+          group_concat(pr.name) as groupName,
+          convert(sum(pr.price), SIGNED INTEGER) as income,
+          convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
+          convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
+        from appointment_procedures as app
         left join appointments as ap on app.appointmentId = ap.id
+        left join procedures as pr on app.procedureId = pr.id
         ${whereConditions}
-        group by pr.id
+        group by app.appointmentId
       ) as totals
-      right join (
-        select 
-          pr.id,
-          pr.name,
-          pr.price
-        from procedures as pr
-        where pr.companyId = ${params.companyId}
-      ) as procedures
-      on totals.id = procedures.id
-        
+
     `, {type: QueryTypes.SELECT})
 
     const [stats] = await mysql.query(`
         select
-          coalesce(convert(sum(ap.total), SIGNED INTEGER), 0) as income,
+          coalesce(convert(sum(ap.total), SIGNED INTEGER), 0) as total,
           coalesce(count(ap.id), 0) as count,
           coalesce(round(avg(ap.total), 2), 0) as avg
-        from procedures as pr
-        left join appointment_procedures as app on pr.id = app.procedureId
-        left join appointments as ap on app.appointmentId = ap.id
+        from appointments as ap
+        left join appointment_procedures as app on ap.id = app.appointmentId
+        left join procedures as pr on app.procedureId = pr.id
         ${whereConditions}
+        
     `, {type: QueryTypes.SELECT})
 
     return {
