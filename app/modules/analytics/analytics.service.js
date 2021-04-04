@@ -29,16 +29,16 @@ export default {
         coalesce(count(totals.amount), 0) as amount,
         coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as price,
         coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as total,
-        coalesce(count(totals.offline), 0) as offline,
-        coalesce(count(totals.online), 0) as online
+        convert(sum(totals.online != '0'), SIGNED INTEGER) as online,
+        convert(sum(totals.offline != '0'), SIGNED INTEGER) as offline
       from (
         select
           count(ap.id) as amount,
           sum(ap.total) as total,
           group_concat(pr.name separator " + ") as name,
           sum(pr.price) as price,
-          count(ap.source != 'WIDGET' or ap.source is null) as offline,
-          count(ap.source = 'WIDGET') as online
+          sum(ap.source != 'WIDGET' or ap.source is null) as offline,
+          sum(ap.source = 'WIDGET') as online
         from appointments as ap
         left join appointment_procedures as app on ap.id = app.appointmentId
         left join procedures as pr on app.procedureId = pr.id
