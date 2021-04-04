@@ -1,107 +1,105 @@
-import {QueryTypes} from 'sequelize'
-import {mysql} from '../../config/connections'
+import {QueryTypes} from "sequelize"
+import {mysql} from "../../config/connections"
 
 export default {
-  getFinancialAnalytics: async ({startDate, endDate, specialistId}, params) => {
+  getFinancialAnalytics: async (
+    {startDate, endDate, specialistId},
+    params
+  ) => {
     let whereConditions = `where ap.companyId = ${params.companyId} and ap.status = 'COMPLETED'`
 
-    if(startDate && endDate) {
-      whereConditions = whereConditions.concat(' and ', `ap.date between '${startDate}' and '${endDate}'`)
+    if (startDate && endDate) {
+      whereConditions = whereConditions.concat(
+        " and ",
+        `ap.date between '${startDate}' and '${endDate}'`
+      )
     }
 
-    if(specialistId) {
-      whereConditions = whereConditions.concat(' and ', `ap.specialistId = '${specialistId}'`)
+    if (specialistId) {
+      whereConditions = whereConditions.concat(
+        " and ",
+        `ap.specialistId = '${specialistId}'`
+      )
     }
 
-    // const procedures = await mysql.query(`
-    //   select 
-    //     procedures.id,
-    //     procedures.name,
-    //     procedures.price,
-    //     coalesce(totals.amount, 0) as amount,
-    //     coalesce(totals.income, 0) as income,
-    //     coalesce(totals.offline, 0) as offline,
-    //     coalesce(totals.online, 0) as online
-    //   from (
-    //     select
-    //         pr.id,
-    //         count(ap.id) as amount,
-    //         convert(sum(ap.total), SIGNED INTEGER) as income,
-    //         convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
-    //         convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
-    //     from procedures as pr
-    //     left join appointment_procedures as app on pr.id = app.procedureId
-    //     left join appointments as ap on app.appointmentId = ap.id
-    //     ${whereConditions}
-    //     group by app.appointmentId
-    //   ) as totals
-    //   right join (
-    //     select 
-    //       pr.id,
-    //       pr.name,
-    //       pr.price
-    //     from procedures as pr
-    //     where pr.companyId = ${params.companyId}
-    //   ) as procedures
-    //   on totals.id = procedures.id
-        
-    // `, {type: QueryTypes.SELECT})
-
-    const procedures = await mysql.query(`
+    const procedures = await mysql.query(
+      `
     select 
-        totals.groupName as name,
-        coalesce(totals.amount, 0) as amount,
-        coalesce(totals.income, 0) as totalPrice,
-        coalesce(totals.offline, 0) as offline,
-        coalesce(totals.online, 0) as online,
-        coalesce(totals.total, 0) as actialIncome
+        totals.name as name,
+        coalesce(count(totals.amount), 0) as amount,
+        coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as price,
+        coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as total,
+        coalesce(count(totals.offline), 0) as offline,
+        coalesce(count(totals.online), 0) as online
       from (
         select
-          count(pr.id) as amount,
-          convert(sum(ap.total), SIGNED INTEGER) as total,
-          group_concat(pr.name) as groupName,
-          convert(sum(pr.price), SIGNED INTEGER) as income,
-          convert(sum(ap.source != 'WIDGET' or ap.source is null), SIGNED INTEGER) as offline,
-          convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
-        from appointment_procedures as app
-        left join appointments as ap on app.appointmentId = ap.id
-        left join procedures as pr on app.procedureId = pr.id
-        ${whereConditions}
-        group by app.appointmentId
-      ) as totals
-
-    `, {type: QueryTypes.SELECT})
-
-    const [stats] = await mysql.query(`
-        select
-          coalesce(convert(sum(ap.total), SIGNED INTEGER), 0) as total,
-          coalesce(count(ap.id), 0) as count,
-          coalesce(round(avg(ap.total), 2), 0) as avg
+          count(ap.id) as amount,
+          sum(ap.total) as total,
+          group_concat(pr.name separator " + ") as name,
+          sum(pr.price) as price,
+          count(ap.source != 'WIDGET' or ap.source is null) as offline,
+          count(ap.source = 'WIDGET') as online
         from appointments as ap
         left join appointment_procedures as app on ap.id = app.appointmentId
         left join procedures as pr on app.procedureId = pr.id
         ${whereConditions}
-        
-    `, {type: QueryTypes.SELECT})
+        group by ap.id
+      ) as totals
+        group by totals.name
+
+    `,
+      {type: QueryTypes.SELECT}
+    )
+
+    const [stats] = await mysql.query(
+      `
+      select
+        count(amount) as amount,
+        convert(sum(total), SIGNED INTEGER) as total,
+        convert(sum(price), SIGNED INTEGER) as price
+      from (
+        select
+          count(ap.id) as amount,
+          sum(ap.total) as total,
+          sum(pr.price) as price
+        from appointments as ap
+        left join appointment_procedures as app on ap.id = app.appointmentId
+        left join procedures as pr on app.procedureId = pr.id
+        ${whereConditions}
+        group by ap.id
+      ) as totals
+    `,
+      {type: QueryTypes.SELECT}
+    )
 
     return {
       ...stats,
-      procedures
+      procedures,
     }
   },
 
-  getCalendarAnalytics: async ({startDate, endDate, specialistId}, params) => {
+  getCalendarAnalytics: async (
+    {startDate, endDate, specialistId},
+    params
+  ) => {
     let whereConditions = `where ap.companyId = ${params.companyId}`
-  
-    if(startDate && endDate) {
-      whereConditions = whereConditions.concat(' and ', `ap.date between '${startDate}' and '${endDate}'`)
+
+    if (startDate && endDate) {
+      whereConditions = whereConditions.concat(
+        " and ",
+        `ap.date between '${startDate}' and '${endDate}'`
+      )
     }
 
-    if(specialistId) {
-      whereConditions = whereConditions.concat(' and ', `ap.specialistId = '${specialistId}'`)
+    if (specialistId) {
+      whereConditions = whereConditions.concat(
+        " and ",
+        `ap.specialistId = '${specialistId}'`
+      )
     }
 
-    const appointments = await mysql.query(`
+    const appointments = await mysql.query(
+      `
     SELECT
       calendar.Date as step,
       COALESCE(amount, 0) as amount,
@@ -132,9 +130,12 @@ export default {
         ) a
         where a.Date between '${startDate}' and '${endDate}') calendar
         on calendar.Date = cnt.intrvl
-  `, {type: QueryTypes.SELECT})
-    
-    const [stats] = await mysql.query(`
+  `,
+      {type: QueryTypes.SELECT}
+    )
+
+    const [stats] = await mysql.query(
+      `
       select
         count(ap.id) as count,
         convert(sum(ap.status = 'COMPLETED'), SIGNED INTEGER) as completed,
@@ -142,11 +143,13 @@ export default {
         convert(sum(ap.source = 'WIDGET'), SIGNED INTEGER) as online
       from appointments as ap
       ${whereConditions}
-    `, {type: QueryTypes.SELECT})
+    `,
+      {type: QueryTypes.SELECT}
+    )
 
     return {
       ...stats,
-      appointments
+      appointments,
     }
-  }
+  },
 }
