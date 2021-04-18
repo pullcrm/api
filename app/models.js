@@ -14,6 +14,7 @@ import CompanySettingsModel from "./modules/companies/models/settings"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import ClientModel from "./modules/clients/client.model"
 import ProcedureCategoriesModel from './modules/procedures/models/category'
+import TimeWorkModel from "./modules/timework/timework.model"
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -80,6 +81,8 @@ FileModel.belongsToMany(UserModel, {
   through: 'file_users',
   timestamps: false
 })
+
+TimeWorkModel.belongsTo(CompanyModel, {as: 'company'})
 
 mysql.sync().then(async () => {
   console.debug('Database sync executed correctly')

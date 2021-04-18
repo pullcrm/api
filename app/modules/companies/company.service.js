@@ -14,7 +14,7 @@ import AppointmentModel from '../appointments/appointment.model'
 import {addDayToDate} from '../../utils/time'
 import exclude from '../../utils/exclude'
 import {COMPLETED} from '../../constants/appointments'
-import ProcedureModel from '../procedures/models/procedure'
+import TimeWorkModel from '../timework/timework.model'
 
 export default {
   findOne: async params => {
@@ -43,7 +43,7 @@ export default {
       const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: CategoryModel}], transaction})
       const adminRole = await RoleModel.findOne({where: {name: 'ADMIN'}, raw: true, transaction})
       await SpecialistModel.create({userId: company.userId, companyId: company.id, roleId: adminRole.id}, {transaction})
-
+      await TimeWorkModel.create({companyId: company.id}, {transaction})
       return company
     })
 

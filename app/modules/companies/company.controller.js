@@ -2,10 +2,7 @@ import joi from "joi"
 import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
-import UserService from '../users/user.service'
 import SpecialistService from '../specialists/specialist.service'
-import {mysql} from "../../config/connections"
-import {ALL, HIDE, DASHBOARD} from '../../constants/specialists'
 
 export default {
   index: async (req, res, next) => {
