@@ -13,8 +13,9 @@ import TokenModel from "./modules/auth/models/token"
 import CompanySettingsModel from "./modules/companies/models/settings"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import ClientModel from "./modules/clients/client.model"
-import ProcedureCategoriesModel from './modules/procedures/models/category'
+// import ProcedureCategoriesModel from './modules/procedures/models/category'
 import TimeWorkModel from "./modules/timework/timework.model"
+import TypeModel from "./modules/companies/models/types"
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -33,7 +34,7 @@ UserModel.belongsTo(FileModel, {as: 'avatar'})
 CompanyModel.hasMany(SpecialistModel)
 CompanyModel.hasOne(CompanySettingsModel)
 CompanyModel.belongsTo(CityModel)
-CompanyModel.belongsTo(CategoryModel)
+CompanyModel.belongsTo(TypeModel)
 
 RoleModel.hasMany(SpecialistModel)
 SpecialistModel.belongsTo(RoleModel)
@@ -49,8 +50,9 @@ ProcedureModel.belongsToMany(AppointmentModel,{
   timestamps: false
 })
 
-ProcedureModel.belongsTo(ProcedureCategoriesModel)
-ProcedureCategoriesModel.belongsTo(CompanyModel)
+ProcedureModel.belongsTo(CategoryModel)
+CategoryModel.hasMany(ProcedureModel)
+CategoryModel.belongsTo(CompanyModel)
 
 UserModel.belongsToMany(CompanyModel, {through: ClientModel})
 ClientModel.belongsTo(UserModel)
@@ -79,15 +81,15 @@ mysql.sync().then(async () => {
   console.debug('Database sync executed correctly')
 
   const rolesCount = await RoleModel.count()
-  const categoriesCount = await CategoryModel.count()
+  const typesCount = await TypeModel.count()
   const citiesCount = await CityModel.count()
 
   if(rolesCount === 0) {
     await RoleModel.bulkCreate([{name: ADMIN}, {name: INVITED}, {name: SPECIALIST}])
   }
 
-  if(categoriesCount === 0) {
-    await CategoryModel.bulkCreate([{name: 'Barbershop'}, {name: 'Салон красоты'}])
+  if(typesCount === 0) {
+    await TypeModel.bulkCreate([{name: 'Barbershop'}, {name: 'Салон красоты'}])
   }
 
   if(citiesCount === 0) {

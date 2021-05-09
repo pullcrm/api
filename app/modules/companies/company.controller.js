@@ -47,7 +47,7 @@ export default {
       const formattedData = {
         name: req.body.name,
         cityId: req.body.cityId,
-        categoryId: req.body.categoryId,
+        typeId: req.body.typeId,
         logoId: req.body.logoId,
         userId: req.userId
       }
@@ -55,7 +55,7 @@ export default {
       validate(formattedData, joi.object().keys({
         name: joi.string().required(),
         cityId: joi.number().required(),
-        categoryId: joi.number().required(),
+        typeId: joi.number().required(),
         logoId: joi.number().optional(),
         userId: joi.number().required()
       }))
@@ -73,7 +73,7 @@ export default {
       const formattedData = {
         name: req.body.name,
         cityId: req.body.cityId,
-        categoryId: req.body.categoryId,
+        typeId: req.body.typeId,
         logoId: req.body.logoId,
       }
 
@@ -85,7 +85,7 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         name: joi.string(),
         cityId: joi.number(),
-        categoryId: joi.number(),
+        typeId: joi.number(),
         logoId: joi.number(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
@@ -218,34 +218,6 @@ export default {
       }))
 
       const stats = await CompanyService.getStats(formattedData, params)
-
-      res.send(stats)
-
-    } catch (error) {
-      next(error)
-    }
-  },
-
-  getFinancialAnalytics: async (req, res, next) => {
-    try {
-      const formattedData = {
-        startDate: req.query.startDate,
-        endDate: req.query.endDate,
-      }
-
-      const params = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate({...params}, joi.object().keys({
-        userId: joi.number().required(),
-        companyId: joi.number().required(),
-        startDate: joi.string(),
-        endDate: joi.string(),
-      }))
-
-      const stats = await CompanyService.getFinancialAnalytics(formattedData, params)
 
       res.send(stats)
 

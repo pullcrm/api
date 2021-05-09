@@ -13,6 +13,10 @@ const CategorySchema = (connection, type) => {
       allowNull: false,
       unique: true
     },
+    type: {
+      type: type.STRING,
+      allowNull: false
+    }
   })
 }
 
