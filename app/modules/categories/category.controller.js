@@ -1,41 +1,90 @@
 import CategoryService from './category.service'
 import validate from "../../utils/validate"
 import joi from "joi"
+import {PROCEDURE} from '../../constants/categories'
 
 export default {
+  create: async (req, res, next) => {
+    try {
+      const formattedData = {
+        name: req.body.name,
+        companyId: req.companyId,
+        type: req.body.type
+      }
+
+      validate(formattedData, joi.object().keys({
+        name: joi.string().required(),
+        companyId: joi.number().required(),
+        type: joi.string().required().valid(PROCEDURE)
+      }))
+
+      const category = await CategoryService.create(formattedData)
+      res.send(category)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   index: async (req, res, next) => {
     try {
       const formattedData = {
-        offset: req.query.offset,
-        limit: req.query.limit,
+        offset: +req.query.offset || 0,
+        limit: +req.query.limit || 20,
+        companyId: req.companyId
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
+        companyId: joi.number()
       }))
 
-      const roles = await CategoryService.findAll(formattedData)
-      res.send(roles)
-    } catch(error) {
+      const categories = await CategoryService.find(formattedData)
+      res.send(categories)
+    } catch (error) {
       next(error)
     }
   },
 
-  create: async (req, res, next) => {
+  update: async (req, res, next) => {
     try {
       const formattedData = {
         name: req.body.name,
       }
 
-      validate(formattedData, joi.object().keys({
-        name: joi.string().max(256).required()
+      const params = {
+        categoryId: req.params.id,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        name: joi.string(),
+        categoryId: joi.number().required(),
+        companyId: joi.number().required(),
       }))
 
-      const role = await CategoryService.create(formattedData)
-      res.send(role)
-    } catch(error) {
+      const category = await CategoryService.update(formattedData, params)
+      res.send(category)
+    } catch (error) {
       next(error)
     }
-  }
+  },
+
+  destroy: async (req, res, next) => {
+    try {
+      const params = {
+        categoryId: req.params.id,
+        companyId: req.companyId
+      }
+
+      validate(params, joi.object().keys({
+        categoryId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      res.send(await CategoryService.destroy(params))
+    } catch (error) {
+      next(error)
+    }
+  },
 }

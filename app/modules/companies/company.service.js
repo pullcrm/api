@@ -4,7 +4,7 @@ import CompanyModel from './models/company'
 import SpecialistModel from "../specialists/specialist.model"
 import RoleModel from "../roles/role.model"
 import CityModel from "../cities/city.model"
-import CategoryModel from "../categories/category.model"
+import TypeModel from "./models/types"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
 import CompanySettingsModel from '../companies/models/settings'
@@ -20,7 +20,7 @@ export default {
   findOne: async params => {
     const company = await CompanyModel.findOne({where: params, attributes: {exclude: ['categoryId', 'userId', 'cityId', 'logoId']},
       include: [
-        {model: CategoryModel},
+        {model: TypeModel},
         {model: CityModel},
         {model: CompanySettingsModel},
         {model: FileModel, as: 'logo'}
@@ -40,7 +40,7 @@ export default {
 
   create: async data => {
     const result = await mysql.transaction(async transaction => {
-      const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: CategoryModel}], transaction})
+      const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: TypeModel}], transaction})
       const adminRole = await RoleModel.findOne({where: {name: 'ADMIN'}, raw: true, transaction})
       await SpecialistModel.create({userId: company.userId, companyId: company.id, roleId: adminRole.id}, {transaction})
       await TimeWorkModel.create({companyId: company.id}, {transaction})
@@ -166,9 +166,5 @@ export default {
       })
 
     return stats
-  },
-
-  getFinancialAnalytics: async (data, params) => {
-    return sequelize.query("select * from `procedures`", {type: sequelize.QueryTypes.SELECT})
   },
 }

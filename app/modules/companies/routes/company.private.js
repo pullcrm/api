@@ -13,6 +13,5 @@ router.post('/my/settings', auth(), CompanyController.addSettings)
 router.put('/my/settings', auth(), CompanyController.updateSettings)
 router.delete('/my/settings', auth(), CompanyController.deleteSettings)
 router.get('/my/stats', auth(), CompanyController.getStats)
-router.get('/my/finance', auth(), CompanyController.getFinancialAnalytics)
 
 export default router
