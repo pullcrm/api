@@ -55,18 +55,9 @@ ProcedureCategoriesModel.belongsTo(CompanyModel)
 UserModel.belongsToMany(CompanyModel, {through: ClientModel})
 ClientModel.belongsTo(UserModel)
 
-UserModel.belongsToMany(ProcedureModel,{
-  through: 'user_procedures',
-  timestamps: false
-})
-
-ProcedureModel.belongsToMany(UserModel,{
-  through: 'user_procedures',
-  timestamps: false
-})
-
-ProcedureModel.belongsToMany(SpecialistModel,{
+SpecialistModel.belongsToMany(ProcedureModel,{
   through: 'specialist_procedures',
+  as: 'procedures',
   timestamps: false
 })
 

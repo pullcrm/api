@@ -9,5 +9,7 @@ router.put('/bulk', auth(), SpecialistController.bulkUpdate)
 router.put('/:id', auth(), SpecialistController.update)
 router.delete('/:id', auth(), SpecialistController.destroy)
 router.post('/', auth(), SpecialistController.create)
+router.get('/:id/procedures', auth(), SpecialistController.getProcedures)
+router.put('/:id/procedures', auth(), SpecialistController.updateProcedures)
 
 export default router

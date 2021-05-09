@@ -9,6 +9,7 @@ import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
 import CompanySettingsModel from '../companies/models/settings'
 import {ALL} from '../../constants/specialists'
+import ProcedureModel from '../procedures/models/procedure'
 
 export default {
   findAll: async ({companyId}) => {
@@ -110,5 +111,33 @@ export default {
     }
 
     return specialist.destroy({id: specialistId})
-  }
+  },
+
+  updateProcedures: async (data, params) => {
+    const specialist = await SpecialistModel.findOne({where: {id: params.specialistId, companyId: params.companyId}})
+
+    if(!specialist) {
+      throw new ApiException(404, 'Specialist wasn\'t found')
+    }
+
+    const procedures = await ProcedureModel.findAll({where: {id: data.procedures}})
+
+    if(!procedures.every(P => P.companyId === params.companyId)) {
+      throw new ApiException(404, 'Procedure wasn\'t found')
+    }
+
+    specialist.setProcedures(data.procedures)
+
+    return specialist
+  },
+
+  getProcedures: async ({specialistId, companyId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId, companyId}})
+
+    if (!specialist) {
+      throw new ApiException(403, 'Specialist wasn\'t found')
+    }
+
+    return specialist.getProcedures()
+  },
 }
