@@ -144,6 +144,50 @@ export default {
     }
   },
 
+  updateProcedures: async (req, res, next) => {
+    try {
+      const formattedData = {
+        procedures: req.body.procedures
+      }
+
+      const params = {
+        companyId: req.companyId,
+        specialistId: req.params.id
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        companyId: joi.number().required(),
+        specialistId: joi.number().required(),
+        procedures: joi.array(),
+      }))
+
+      const procedures = await SpecialistService.updateProcedures(formattedData, params)
+
+      res.send(procedures)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getProcedures: async (req, res, next) => {
+    try {
+      const params = {
+        companyId: req.companyId,
+        specialistId: req.params.id
+      }
+
+      validate(params, joi.object().keys({
+        companyId: joi.number().required(),
+        specialistId: joi.number().required(),
+      }))
+
+      const procedures = await SpecialistService.getProcedures(params)
+      res.send(procedures)
+    } catch(error) {
+      next(error)
+    }
+  },
+
   destroy: async (req, res, next) => {
     try {
       const formattedData = {
