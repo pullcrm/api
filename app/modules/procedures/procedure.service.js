@@ -1,28 +1,19 @@
 import ProcedureModel from './models/procedure'
 import ApiException from "../../exceptions/api"
 import CategoryModel from '../categories/category.model'
-import {PROCEDURE} from '../../constants/categories'
 
 export default {
   findAll: async ({companyId, limit, offset}) => {
-    const proceduresWithCategory = await CategoryModel.findAll({
-      where: {companyId, type: PROCEDURE},
+    const procedures = await ProcedureModel.findAll({
+      where: {companyId},
       limit, offset,
-      attributes: {exclude: ['companyId']},
       include: {
-        model: ProcedureModel,
-        required: false
-      }})
-
-    const proceduresWithoutCategory = await ProcedureModel.findAll({
-      where: {companyId, categoryId: null},
+        model: CategoryModel,
+      },
       attributes: {exclude: ['categoryId', 'companyId']},
     })
 
-    return [...proceduresWithCategory, {
-      name: 'Остальные',
-      procedures: proceduresWithoutCategory
-    }]
+    return procedures
   },
 
   create: async data => {
