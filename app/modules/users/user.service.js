@@ -12,11 +12,11 @@ import SMSGlobalService from "../sms/services/sms.global"
 import UserModel from "./user.model"
 import FileModel from "../files/file.model"
 import CompanyModel from "../companies/models/company"
-import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import CompanySettingsModel from "../companies/models/settings"
 import RoleModel from "../roles/role.model"
 import SpecialistModel from "../specialists/specialist.model"
+import TypeModel from "../companies/models/types"
 
 const SMS_CLIENT_SEND_REAL_SMS = process.env.SMS_CLIENT_SEND_REAL_SMS
 
@@ -39,9 +39,9 @@ export default {
             {model: RoleModel},
             {
               model: CompanyModel,
-              attributes: {exclude: ["categoryId", "userId", "cityId"]},
+              attributes: {exclude: ["typeId", "userId", "cityId"]},
               include: [
-                {model: CategoryModel},
+                {model: TypeModel},
                 {model: CityModel},
                 {model: CompanySettingsModel},
                 {

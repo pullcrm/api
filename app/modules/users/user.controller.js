@@ -1,7 +1,7 @@
 import joi from "joi"
 import UserService from './user.service'
 import validate from "../../utils/validate"
-import {REGISTRATION, RESET_PASSWORD} from '../../constants/redis'
+import {FAST_REGISTRATION, REGISTRATION, RESET_PASSWORD} from '../../constants/redis'
 
 export default {
   create: async (req, res, next) => {
@@ -73,7 +73,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         phone: joi.string().required(),
-        type: joi.string().valid(REGISTRATION, RESET_PASSWORD)
+        type: joi.string().valid(REGISTRATION, RESET_PASSWORD, FAST_REGISTRATION)
       }))
 
       res.send(await UserService.sendConfirmationCode(formattedData))
