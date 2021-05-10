@@ -1,15 +1,14 @@
-import sequelize from 'sequelize'
 import SpecialistModel from './specialist.model'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
-import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
 import CompanySettingsModel from '../companies/models/settings'
 import {ALL} from '../../constants/specialists'
 import ProcedureModel from '../procedures/models/procedure'
+import TypeModel from '../companies/models/types'
 
 export default {
   findAll: async ({companyId}) => {
@@ -47,9 +46,9 @@ export default {
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
         model: CompanyModel,
-        attributes: {exclude: ['categoryId', 'userId', 'cityId']},
+        attributes: {exclude: ['typeId', 'userId', 'cityId']},
         include: [
-          {model: CategoryModel},
+          {model: TypeModel},
           {model: CityModel},
           {model: CompanySettingsModel},
           {model: FileModel, as: 'logo'}
