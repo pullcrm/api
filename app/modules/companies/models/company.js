@@ -11,7 +11,35 @@ const CompanySchema = (connection, type) => {
     name: {
       type: type.STRING,
       allowNull: false
-    }
+    },
+    phone: {
+      type: type.STRING,
+      allowNull: true
+    },
+    description: {
+      type: type.STRING,
+      allowNull: true
+    },
+    address: {
+      type: type.STRING,
+      allowNull: true
+    },
+    telegram: {
+      type: type.STRING,
+      allowNull: true
+    },
+    viber: {
+      type: type.STRING,
+      allowNull: true
+    },
+    instagram: {
+      type: type.STRING,
+      allowNull: true
+    },
+    facebook: {
+      type: type.STRING,
+      allowNull: true
+    },
   })
 }
 
