@@ -49,7 +49,14 @@ export default {
         cityId: req.body.cityId,
         typeId: req.body.typeId,
         logoId: req.body.logoId,
-        userId: req.userId
+        userId: req.userId,
+        address: req.body.address,
+        phone: req.body.phone,
+        description: req.body.description,
+        viber: req.body.viber,
+        telegram: req.body.telegram,
+        instagram: req.body.instagram,
+        facebook: req.body.facebook
       }
 
       validate(formattedData, joi.object().keys({
@@ -57,7 +64,14 @@ export default {
         cityId: joi.number().required(),
         typeId: joi.number().required(),
         logoId: joi.number().optional(),
-        userId: joi.number().required()
+        userId: joi.number().required(),
+        address: joi.string(),
+        phone: joi.string(),
+        description: joi.string(),
+        viber: joi.string(),
+        telegram: joi.string(),
+        instagram: joi.string(),
+        facebook: joi.string()
       }))
 
       const company = await CompanyService.create(formattedData)
@@ -75,6 +89,13 @@ export default {
         cityId: req.body.cityId,
         typeId: req.body.typeId,
         logoId: req.body.logoId,
+        address: req.body.address,
+        phone: req.body.phone,
+        description: req.body.description,
+        viber: req.body.viber,
+        telegram: req.body.telegram,
+        instagram: req.body.instagram,
+        facebook: req.body.facebook
       }
 
       const params = {
@@ -89,6 +110,13 @@ export default {
         logoId: joi.number(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
+        address: joi.string(),
+        phone: joi.string(),
+        description: joi.string(),
+        viber: joi.string(),
+        telegram: joi.string(),
+        instagram: joi.string(),
+        facebook: joi.string()
       }))
 
       const company = await CompanyService.update(formattedData, params)
