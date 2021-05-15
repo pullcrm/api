@@ -151,7 +151,9 @@ export default {
         password: req.body.password,
         hasCreationSMS: req.body.hasCreationSMS,
         hasRemindSMS: req.body.hasRemindSMS,
-        remindSMSMinutes: req.body.remindSMSMinutes
+        remindSMSMinutes: req.body.remindSMSMinutes,
+        creationSMSTemplate: req.body.creationSMSTemplate,
+        remindSMSTemplate: req.body.remindSMSTemplate
       }
 
       const params = {
@@ -167,6 +169,8 @@ export default {
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+        creationSMSTemplate: joi.string(),
+        remindSMSTemplate: joi.string()
       }))
 
       const company = await CompanyService.addSettings(formattedData, params)
@@ -182,7 +186,9 @@ export default {
       const formattedData = {
         hasCreationSMS: req.body.hasCreationSMS,
         hasRemindSMS: req.body.hasRemindSMS,
-        remindSMSMinutes: req.body.remindSMSMinutes
+        remindSMSMinutes: req.body.remindSMSMinutes,
+        creationSMSTemplate: req.body.creationSMSTemplate,
+        remindSMSTemplate: req.body.remindSMSTemplate,
       }
 
       const params = {
@@ -196,6 +202,8 @@ export default {
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+        creationSMSTemplate: joi.string(),
+        remindSMSTemplate: joi.string()
       }))
 
       const company = await CompanyService.updateSettings(formattedData, params)

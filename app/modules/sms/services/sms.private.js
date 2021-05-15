@@ -115,8 +115,9 @@ export default {
 
       const message = remindNotifyMessage({
         ...data,
-        procedures: appointment.procedures
-      })
+        procedures: appointment.procedures,
+        specialist: appointment.specialist,
+      }, smsConfiguration.remindSMSTemplate)
 
       await SMS.send({
         id: smsIdentifier,
