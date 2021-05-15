@@ -18,7 +18,7 @@ import TimeWorkModel from '../timework/timework.model'
 
 export default {
   findOne: async params => {
-    const company = await CompanyModel.findOne({where: params, attributes: {exclude: ['categoryId', 'userId', 'cityId', 'logoId']},
+    const company = await CompanyModel.findOne({where: params, attributes: {exclude: ['userId', 'cityId', 'logoId']},
       include: [
         {model: TypeModel},
         {model: CityModel},
@@ -97,6 +97,8 @@ export default {
       hasRemindSMS: data.hasRemindSMS,
       remindSMSMinutes: data.remindSMSMinutes,
       hasCreationSMS: data.hasCreationSMS,
+      creationSMSTemplate: data.creationSMSTemplate,
+      remindSMSTemplate: data.remindSMSTemplate,
       smsToken: smsToken,
       companyId
     })
