@@ -169,4 +169,10 @@ export default {
 
     return stats
   },
+
+  getTypes: async () => {
+    const types = await TypeModel.findAll()
+
+    return types
+  }
 }

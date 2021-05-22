@@ -261,5 +261,15 @@ export default {
       next(error)
     }
   },
+
+  getTypes: async (req, res, next) => {
+    try {
+      const types = await CompanyService.getTypes()
+      res.send(types)
+
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
