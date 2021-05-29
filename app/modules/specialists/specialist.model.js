@@ -27,7 +27,7 @@ const SpecialistSchema = (connection, type) => {
       defaultValue: ''
     },
 
-    rate: {
+    order: {
       type: type.BIGINT,
       allowNull: false,
       defaultValue: 0

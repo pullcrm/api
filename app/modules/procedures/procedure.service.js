@@ -3,10 +3,13 @@ import ApiException from "../../exceptions/api"
 import CategoryModel from '../categories/category.model'
 
 export default {
-  findAll: async ({companyId, limit, offset}) => {
+  findAll: async ({companyId, limit, offset, sort, order}) => {
     const procedures = await ProcedureModel.findAll({
       where: {companyId},
       limit, offset,
+      order: [
+        [sort, order]
+      ],
       include: {
         model: CategoryModel,
       },
@@ -32,6 +35,10 @@ export default {
     }
 
     return procedure.update(data, {plain: true})
+  },
+
+  bulkUpdate: async ({procedures}) => {
+    return ProcedureModel.bulkCreate(procedures, {updateOnDuplicate: ['order']})
   },
 
   destroy: async ({procedureId, companyId}) => {

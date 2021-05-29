@@ -54,9 +54,13 @@ export default {
         specialists: req.body
       }
 
-      //TODO add validation
       validate(formattedData, joi.object().keys({
-        specialists: joi.array()
+        specialists: joi.array().items(
+          joi.object().keys({
+            id: joi.number(),
+            order: joi.number() 
+          })
+        )
       }))
 
       const specialists = await SpecialistService.bulkUpdate(formattedData)

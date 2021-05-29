@@ -95,7 +95,7 @@ export default {
   },
 
   bulkUpdate: async ({specialists}) => {
-    return SpecialistModel.bulkCreate(specialists, {updateOnDuplicate: ['rate']})
+    return SpecialistModel.bulkCreate(specialists, {updateOnDuplicate: ['order']})
   },
 
   create: async (user, params, transaction) => {
