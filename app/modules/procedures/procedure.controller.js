@@ -8,13 +8,17 @@ export default {
       const formattedData = {
         offset: +req.query.offset || 0,
         limit: +req.query.limit || 20,
+        sort: req.query.sort || 'id',
+        order: req.query.order || 'desc',
         companyId: req.companyId
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
-        companyId: joi.number()
+        sort: joi.string(),
+        order: joi.string(),
+        companyId: joi.number(),
       }))
 
       const procedures = await ProceduresService.findAll(formattedData)
@@ -79,6 +83,28 @@ export default {
       const procedure = await ProceduresService.update(formattedData, params)
       res.send(procedure)
     } catch (error) {
+      next(error)
+    }
+  },
+
+  bulkUpdate: async (req, res, next) => {
+    try {
+      const formattedData = {
+        procedures: req.body
+      }
+
+      validate(formattedData, joi.object().keys({
+        procedures: joi.array().items(
+          joi.object().keys({
+            id: joi.number(),
+            order: joi.number() 
+          })
+        )
+      }))
+
+      const procedures = await ProceduresService.bulkUpdate(formattedData)
+      res.send(procedures)
+    } catch(error) {
       next(error)
     }
   },
