@@ -30,13 +30,15 @@ export default {
       const formattedData = {
         offset: +req.query.offset || 0,
         limit: +req.query.limit || 20,
-        companyId: req.companyId
+        companyId: req.companyId,
+        type: req.query.type || 'PROCEDURE'
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
-        companyId: joi.number()
+        companyId: joi.number(),
+        type: joi.string()
       }))
 
       const categories = await CategoryService.find(formattedData)
