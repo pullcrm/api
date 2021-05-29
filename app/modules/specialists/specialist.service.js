@@ -54,6 +54,7 @@ export default {
           {model: FileModel, as: 'logo'}
         ]
       },
+      {model: ProcedureModel, as: 'procedures'},
       {model: RoleModel},
       {model: UserModel, include: {
         model: FileModel,

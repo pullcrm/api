@@ -73,7 +73,7 @@ export default {
         procedureId: joi.number().required(),
         companyId: joi.number().required(),
         description: joi.string().allow(''),
-        categoryId: joi.number(),
+        categoryId: joi.number().allow(null),
       }))
 
       const procedure = await ProceduresService.update(formattedData, params)

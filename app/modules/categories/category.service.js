@@ -6,8 +6,8 @@ export default {
     return CategoryModel.create(data)
   },
 
-  find: async ({companyId, limit, offset}) => {
-    return CategoryModel.findAll({where: {companyId}, limit, offset, attributes: {exclude: ['companyId']}})
+  find: async ({companyId, limit, offset, type}) => {
+    return CategoryModel.findAll({where: {companyId, type}, limit, offset, attributes: {exclude: ['companyId']}})
   },
 
   update: async (data, {categoryId, companyId}) => {
