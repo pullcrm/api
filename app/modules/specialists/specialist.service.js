@@ -110,7 +110,7 @@ export default {
       throw new ApiException(403, 'You don\'t have such specialist in your company! ')
     }
 
-    return specialist.destroy({id: specialistId})
+    return specialist.update({status: "DELETED"})
   },
 
   updateProcedures: async (data, params) => {
