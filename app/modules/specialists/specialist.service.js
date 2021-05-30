@@ -9,6 +9,7 @@ import CompanySettingsModel from '../companies/models/settings'
 import {ALL} from '../../constants/specialists'
 import ProcedureModel from '../procedures/models/procedure'
 import TypeModel from '../companies/models/types'
+import { Op } from 'sequelize'
 
 export default {
   findAll: async ({companyId}) => {
@@ -39,7 +40,7 @@ export default {
 
   index: async ({companyId, order, sort}) => {
     const specialists = await SpecialistModel.findAll({
-      where: {companyId},
+      where: {companyId, [Op.not]: {status: 'DELETED'}},
       order: [
         [sort, order]
       ],
