@@ -12,6 +12,7 @@ import {
   creationNotifyMessage
 } from '../sms.view'
 import decodeSMSCreds from '../../../utils/decodeSMSCreds'
+import SMSHistoryModel from '../sms.model'
 
 export default {
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
@@ -45,6 +46,15 @@ export default {
         phones: appointment.phone || appointment.client.user.phone,
         mes: creationNotifyMessage(appointment)
       })
+
+      SMSHistoryModel.create({
+        type: 'CREATE',
+        companyId: data.companyId,
+        recipient: appointment.phone || appointment.client.user.phone,
+        smsIdentifier: null,
+        message: creationNotifyMessage(appointment),
+        datetime: new Date()
+      })
     }
 
     if(hasRemindSMS) {
@@ -55,6 +65,15 @@ export default {
         mes: remindNotifyMessage(appointment),
         time: sendDateTime.format('DD.MM.YY HH:mm'),
         phones: appointment.phone || appointment.client.user.phone
+      })
+
+      SMSHistoryModel.create({
+        type: 'REMIND',
+        companyId: data.companyId,
+        recipient: appointment.phone || appointment.client.user.phone,
+        smsIdentifier: appointment.smsIdentifier,
+        message: remindNotifyMessage(appointment),
+        datetime: sendDateTime
       })
     }
   },
@@ -125,6 +144,15 @@ export default {
         time: sendDateTime.format('DD.MM.YY HH:mm'),
         phones: phone
       })
+
+      SMSHistoryModel.create({
+        type: 'REMIND',
+        companyId: data.companyId,
+        recipient: phone,
+        smsIdentifier: smsIdentifier,
+        message: message,
+        datetime: sendDateTime
+      })
     }
 
     return smsIdentifier
@@ -175,5 +203,5 @@ export default {
       psw: smsCreds.password,
       login: smsCreds.login
     })
-  }
+  },
 }

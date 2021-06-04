@@ -16,6 +16,7 @@ import ClientModel from "./modules/clients/client.model"
 // import ProcedureCategoriesModel from './modules/procedures/models/category'
 import TimeWorkModel from "./modules/timework/timework.model"
 import TypeModel from "./modules/companies/models/types"
+import SMSHistoryModel from "./modules/sms/sms.model"
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -53,6 +54,7 @@ ProcedureModel.belongsToMany(AppointmentModel,{
 ProcedureModel.belongsTo(CategoryModel)
 CategoryModel.hasMany(ProcedureModel)
 CategoryModel.belongsTo(CompanyModel)
+SMSHistoryModel.belongsTo(CompanyModel)
 
 UserModel.belongsToMany(CompanyModel, {through: ClientModel})
 ClientModel.belongsTo(UserModel)
