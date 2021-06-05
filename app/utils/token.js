@@ -23,7 +23,7 @@ const verifyAccessToken = accessToken => {
       throw new ApiException(401, 'Expired access token')
     }
 
-    throw new ApiException(500, 'Failed to authenticate access token')
+    throw new ApiException(403, 'Failed to authenticate access token')
   }
 }
   
@@ -35,7 +35,7 @@ const verifyRefreshToken = refreshToken => {
       throw new ApiException(401, 'Expired refresh token')
     }
 
-    throw new ApiException(500, 'Failed to authenticate refresh token')
+    throw new ApiException(403, 'Failed to authenticate refresh token')
   }
 }
 

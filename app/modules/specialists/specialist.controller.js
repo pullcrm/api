@@ -4,6 +4,7 @@ import joi from "joi"
 import {mysql} from '../../config/connections'
 import UserService from '../users/user.service'
 import {ALL, DASHBOARD, HIDE} from '../../constants/specialists'
+import { MANAGER, SPECIALIST } from '../../constants/roles'
 
 export default {
   index: async (req, res, next) => {
@@ -106,7 +107,6 @@ export default {
     }
   },
 
-  //TODO only admin can update his employers
   update: async (req, res, next) => {
     try {
       const userData = {
@@ -119,7 +119,11 @@ export default {
       const specialistData = {
         description: req.body.description,
         status: req.body.status,
-        specialization: req.body.specialization
+        specialization: req.body.specialization,
+      }
+
+      const roleData = {
+        role: req.body.role
       }
 
       const params = {
@@ -127,7 +131,7 @@ export default {
         specialistId: req.params.id
       }
 
-      validate({...userData, ...specialistData, ...params}, joi.object().keys({
+      validate({...userData, ...specialistData, ...roleData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
         firstName: joi.string(),
@@ -137,6 +141,7 @@ export default {
         specialization: joi.string().allow(''),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
         email: joi.string().allow(''),
+        role: joi.string().valid(SPECIALIST, MANAGER),
       }))
 
       const specialist = await SpecialistService.update(specialistData, params)
