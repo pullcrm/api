@@ -132,13 +132,17 @@ export default {
       const formattedData = {
         offset: +req.query.offset || 0,
         limit: +req.query.limit || 20,
-        companyId: req.query.companyId
+        companyId: req.query.companyId,
+        sort: req.query.sort || 'id',
+        order: req.query.order || 'desc',
       }
 
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),
-        companyId: joi.number()
+        companyId: joi.number(),
+        sort: joi.string(),
+        order: joi.string(),
       }))
 
       const procedures = await ProceduresService.findAll(formattedData)
