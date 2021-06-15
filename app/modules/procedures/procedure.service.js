@@ -4,6 +4,7 @@ import CategoryModel from '../categories/category.model'
 
 export default {
   findAll: async ({companyId, limit, offset, sort, order}) => {
+    console.log(companyId, limit, offset, sort, order)
     const procedures = await ProcedureModel.findAll({
       where: {companyId},
       limit, offset,

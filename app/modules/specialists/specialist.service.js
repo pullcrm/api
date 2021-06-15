@@ -85,6 +85,34 @@ export default {
     return specialists
   },
 
+  publicFindOne: async ({specialistId}) => {
+    const specialist = await SpecialistModel.findOne({
+      where: {id: specialistId, status: ALL},
+      attributes: {exclude: ['companyId', 'userId', 'roleId']},
+      include: [{
+        model: CompanyModel,
+        attributes: {exclude: ['typeId', 'userId', 'cityId']},
+        include: [
+          {model: TypeModel},
+          {model: CityModel},
+          {model: FileModel, as: 'logo'}
+        ]
+      },
+      {model: ProcedureModel, as: 'procedures'},
+      {model: RoleModel},
+      {model: UserModel, include: {
+        model: FileModel,
+        as: 'avatar'
+      }}]
+    })
+
+    if(!specialist) {
+      throw new ApiException(404, 'Specialist wasn\'t found')
+    }
+    
+    return specialist
+  },
+
   update: async (data, params) => {
     const specialist = await SpecialistModel.findOne({where: {id: params.specialistId, companyId: params.companyId}})
 

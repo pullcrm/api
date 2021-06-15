@@ -48,6 +48,24 @@ export default {
     }
   },
 
+  publicFindOne: async (req, res, next) => {
+    try {
+      const params = {
+        specialistId: req.params.id
+      }
+
+      validate(params, joi.object().keys({
+        specialistId: joi.number().required()
+      }))
+
+      const specialist = await SpecialistService.publicFindOne(params)
+
+      res.send(specialist)
+    } catch(error) {
+      next(error)
+    }
+  },
+
   bulkUpdate: async (req, res, next) => {
     try {
       const formattedData = {
