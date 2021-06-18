@@ -10,6 +10,11 @@ export default {
     return CategoryModel.findAll({where: {companyId, type}, limit, offset, attributes: {exclude: ['companyId']}})
   },
 
+  getProcedureCategories: async ({companyId, limit, offset}) => {
+    return CategoryModel.findAll(
+      {where: {companyId, type: 'PROCEDURE'},limit, offset, attributes: {exclude: ['companyId', 'type']}})
+  },
+
   update: async (data, {categoryId, companyId}) => {
     const category = await CategoryModel.findOne({where: {id: categoryId}})
 
