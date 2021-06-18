@@ -65,13 +65,13 @@ export default {
         typeId: joi.number().required(),
         logoId: joi.number().optional(),
         userId: joi.number().required(),
-        address: joi.string(),
-        phone: joi.string(),
-        description: joi.string(),
-        viber: joi.string(),
-        telegram: joi.string(),
-        instagram: joi.string(),
-        facebook: joi.string()
+        address: joi.string().allow(''),
+        phone: joi.string().allow(''),
+        description: joi.string().allow(''),
+        viber: joi.string().allow(''),
+        telegram: joi.string().allow(''),
+        instagram: joi.string().allow(''),
+        facebook: joi.string().allow(''),
       }))
 
       const company = await CompanyService.create(formattedData)
@@ -110,13 +110,13 @@ export default {
         logoId: joi.number(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
-        address: joi.string(),
-        phone: joi.string(),
-        description: joi.string(),
-        viber: joi.string(),
-        telegram: joi.string(),
-        instagram: joi.string(),
-        facebook: joi.string()
+        address: joi.string().allow(''),
+        phone: joi.string().allow(''),
+        description: joi.string().allow(''),
+        viber: joi.string().allow(''),
+        telegram: joi.string().allow(''),
+        instagram: joi.string().allow(''),
+        facebook: joi.string().allow(''),
       }))
 
       const company = await CompanyService.update(formattedData, params)

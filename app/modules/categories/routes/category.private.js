@@ -1,7 +1,7 @@
 import {Router} from 'express'
-import CategoryController from './category.controller'
-import auth from '../../middlewares/auth'
-import {ADMIN} from '../../constants/roles'
+import CategoryController from '../category.controller'
+import auth from '../../../middlewares/auth'
+import {ADMIN} from '../../../constants/roles'
 
 const router = Router()
 
