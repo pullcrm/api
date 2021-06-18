@@ -48,6 +48,29 @@ export default {
     }
   },
 
+  publicGetProcedureCategories: async (req, res, next) => {
+    try {
+      const formattedData = {
+        offset: +req.query.offset || 0,
+        limit: +req.query.limit || 20,
+        companyId: +req.query.companyId,
+      }
+
+      console.log(formattedData)
+
+      validate(formattedData, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
+        companyId: joi.number(),
+      }))
+
+      const categories = await CategoryService.getProcedureCategories(formattedData)
+      res.send(categories)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   update: async (req, res, next) => {
     try {
       const formattedData = {

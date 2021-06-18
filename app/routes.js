@@ -7,7 +7,7 @@ import roleRouter from './modules/roles/role.route'
 import companyRouter from './modules/companies/routes/company.private'
 import companyPublicRouter from './modules/companies/routes/company.public'
 import cityRouter from './modules/cities/city.route'
-import categoryRouter from './modules/categories/category.route'
+import categoryRouter from './modules/categories/routes/category.private'
 import specialistRouter from './modules/specialists/routes/specialist.private'
 import specialistPublicRouter from './modules/specialists/routes/specialist.public'
 import procedureRouter from './modules/procedures/routes/procedure.private'
@@ -18,6 +18,7 @@ import timeOffRouter from './modules/timeoff/timeoff.route'
 import analyticsRouter from './modules/analytics/analytics.route'
 import timeWorkRouter from './modules/timework/routes/timework.private'
 import timeWorkPublicRouter from './modules/timework/routes/timework.public'
+import categoryPublicRouter from './modules/categories/routes/category.public'
 
 const api = Router()
 
@@ -41,5 +42,6 @@ api.use('/public/procedures', procedurePublicRouter)
 api.use('/public/appointments', appointmentPublicRouter)
 api.use('/public/companies', companyPublicRouter)
 api.use('/public/timework', timeWorkPublicRouter)
+api.use('/public/categories', categoryPublicRouter)
 
 export default api
