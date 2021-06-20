@@ -10,7 +10,10 @@ export default {
   },
 
   findOne: async ({companyId}) => {
-    const timeWork = await TimeWorkModel.findOne({where: {companyId}})
+    const timeWork = await TimeWorkModel.findOne({
+      where: {companyId},
+      attributes: {exclude: ['id', 'companyId', 'createdAt', 'updatedAt']}
+    })
 
     return timeWork
   },
