@@ -107,7 +107,7 @@ export default {
       return null
     }
 
-    if (isAppointmentEdited(appointment, data) === false) {
+    if (!data.startTime || isAppointmentEdited(appointment, data) === false) {
       return smsIdentifier
     }
 
