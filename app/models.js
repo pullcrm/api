@@ -1,5 +1,5 @@
 import {mysql} from "./config/connections"
-import {ADMIN, INVITED, SPECIALIST} from './constants/roles'
+import {ADMIN, INVITED, MANAGER, SPECIALIST} from './constants/roles'
 import UserModel from './modules/users/user.model'
 import CompanyModel from './modules/companies/models/company'
 import SpecialistModel from "./modules/specialists/specialist.model"
@@ -87,7 +87,7 @@ mysql.sync().then(async () => {
   const citiesCount = await CityModel.count()
 
   if(rolesCount === 0) {
-    await RoleModel.bulkCreate([{name: ADMIN}, {name: INVITED}, {name: SPECIALIST}])
+    await RoleModel.bulkCreate([{name: ADMIN}, {name: INVITED}, {name: SPECIALIST}, {name: MANAGER}])
   }
 
   if(typesCount === 0) {

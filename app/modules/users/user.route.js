@@ -4,9 +4,10 @@ import auth from '../../middlewares/auth'
 
 const router = Router()
 router.post('/', UserController.create)
-router.get('/profile', auth(), UserController.profile)
 router.post('/confirmation', UserController.sendConfirmationCode)
-router.get('/search', auth(), UserController.search)
 router.post('/restore', UserController.resetPassword)
+
+router.get('/profile', auth(), UserController.profile)
+router.get('/search', auth(), UserController.search)
 
 export default router
