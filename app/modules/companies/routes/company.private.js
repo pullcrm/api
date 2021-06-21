@@ -6,13 +6,13 @@ import {ADMIN, MANAGER, SPECIALIST} from '../../../constants/roles'
 const router = Router()
 
 router.get('/', auth([ADMIN]), CompanyController.index)
-router.post('/', auth([ADMIN]), CompanyController.create)
-router.put('/:id', auth([ADMIN]), CompanyController.update)
+router.post('/', auth(), CompanyController.create)
+router.put('/:id', auth([ADMIN, MANAGER]), CompanyController.update)
 router.get('/:id', auth([ADMIN, MANAGER, SPECIALIST]), CompanyController.show)
 
-router.post('/my/settings', auth([ADMIN]), CompanyController.addSettings)
-router.put('/my/settings', auth([ADMIN]), CompanyController.updateSettings)
-router.delete('/my/settings', auth([ADMIN]), CompanyController.deleteSettings)
+router.post('/my/settings', auth([ADMIN, MANAGER]), CompanyController.addSettings)
+router.put('/my/settings', auth([ADMIN, MANAGER]), CompanyController.updateSettings)
+router.delete('/my/settings', auth([ADMIN, MANAGER]), CompanyController.deleteSettings)
 router.get('/my/stats', auth([ADMIN]), CompanyController.getStats)
 router.get('/my/types', auth([ADMIN]), CompanyController.getTypes)
 
