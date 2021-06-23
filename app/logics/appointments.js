@@ -1,50 +1,78 @@
 import dayjs from "dayjs"
 import difference from 'lodash/difference'
 
-import {WORKING_HOURS} from '../constants/times'
+import {getWorkingHours} from '../utils/time'
 
 // TODO: Refactor
 export function getAvailableTime (payload) {
   const {
+    from,
+    to,
     duration,
     timeOffs,
     appointments
   } = payload
 
-  let closedTimes = []
+  const workingHours = getWorkingHours(from, to)
 
-  timeOffs.forEach(timeOff => {
-    const startTime = dayjs(timeOff.startDateTime).format('HH:mm')
-    const endTime = dayjs(timeOff.endDateTime).format('HH:mm')
+  return difference(
+    workingHours,
+    [
+      ...getTimeOffsHours(timeOffs),
+      ...getAppointmentsHours(appointments)
+    ]
+  )
+    .filter((time, index, arr) => {
+      const length = (duration / 15) - 1
 
-    const indexStartTime = WORKING_HOURS.indexOf(startTime)
-    const indexEndTime = WORKING_HOURS.indexOf(endTime) + 1
+      const indexEndTime = workingHours.indexOf(time) + length
 
-    closedTimes = [...closedTimes, ...WORKING_HOURS.slice(indexStartTime, indexEndTime)]
-  })
+      if (!arr[index + length]) return false
 
-  appointments.forEach(({startTime, procedures}) => {
-    const proceduresDuration = procedures.reduce((result, procedure) => {
+      return workingHours[indexEndTime] === arr[index + length]
+    })
+}
+
+function getHoursFromInterval (from, to) {
+  const hours = []
+
+  const minutes = (new Date(to) - new Date(from)) / (60 * 1000)
+
+  for (let index = 0; index < minutes / 15; index++) {
+    hours.push(dayjs(from).add(15 * index, 'minute').format('HH:mm'))
+  }
+
+  return hours
+}
+
+function getTimeOffsHours (timeOffs) {
+  return timeOffs.reduce((acc, item) => {
+    return [
+      ...acc,
+      ...getHoursFromInterval(
+        item.startDateTime,
+        item.endDateTime
+      )
+    ]
+  }, [])
+}
+
+function getAppointmentsHours (appointments) {
+  return appointments.reduce((acc, {startTime, procedures}) => {
+    const [hour, minute] = startTime.split(':')
+
+    const duration = procedures.reduce((result, procedure) => {
       return result + procedure.duration
     }, 0)
 
-    const timePoints = proceduresDuration / 15
+    const date = dayjs().set('hour', hour).set('minute', minute).set('second', 0)
 
-    const indexStartTime = WORKING_HOURS.indexOf(startTime.slice(0, 5))
-    const indexEndTime = indexStartTime + timePoints
-
-    closedTimes = [...closedTimes, ...WORKING_HOURS.slice(indexStartTime, indexEndTime)]
-  })
-
-  const times = difference(WORKING_HOURS, [...new Set(closedTimes)]).filter((time, index, arr) => {
-    const timePoints = (duration / 15) - 1
-
-    const indexEndTime = WORKING_HOURS.indexOf(time) + timePoints
-
-    if (!arr[index + timePoints]) return false
-
-    return WORKING_HOURS[indexEndTime] === arr[index + timePoints]
-  })
-
-  return times
+    return [
+      ...acc,
+      ...getHoursFromInterval(
+        date.toDate(),
+        date.add(duration, 'minute').toDate()
+      )
+    ]
+  }, [])
 }
