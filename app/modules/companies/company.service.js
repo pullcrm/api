@@ -7,14 +7,11 @@ import CityModel from "../cities/city.model"
 import TypeModel from "./models/types"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
-import CompanySettingsModel from '../companies/models/settings'
-import {privateSMS} from '../../providers/smsc'
-import {encrypt} from '../../utils/crypto'
 import AppointmentModel from '../appointments/appointment.model'
 import {addDayToDate} from '../../utils/time'
-import exclude from '../../utils/exclude'
 import {COMPLETED} from '../../constants/appointments'
 import TimeWorkModel from '../timework/timework.model'
+import WidgetSettingsModel from '../widget/models/settings.model'
 
 export default {
   findOne: async params => {
@@ -22,7 +19,7 @@ export default {
       include: [
         {model: TypeModel},
         {model: CityModel},
-        {model: CompanySettingsModel},
+        {model: WidgetSettingsModel},
         {model: FileModel, as: 'logo'}
       ]})
 
@@ -68,74 +65,6 @@ export default {
     })
 
     return result
-  },
-
-  addSettings: async (data, {companyId, userId}) => {
-    const SMS = privateSMS({
-      login: data.login,
-      password: data.password
-    })
-
-    const result = await SMS.getBalance()
-
-    if (JSON.parse(result).error) {
-      throw new ApiException(404, 'SMS account wasn\'t found')
-    }
-
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    const smsToken = Buffer.from(JSON.stringify({
-      login: data.login,
-      password: encrypt(data.password)
-    })).toString('hex')
-
-    const setting = await CompanySettingsModel.create({
-      hasRemindSMS: data.hasRemindSMS,
-      remindSMSMinutes: data.remindSMSMinutes,
-      hasCreationSMS: data.hasCreationSMS,
-      creationSMSTemplate: data.creationSMSTemplate,
-      remindSMSTemplate: data.remindSMSTemplate,
-      smsToken: smsToken,
-      companyId
-    })
-
-    return exclude(setting, ['smsToken'])
-  },
-
-  updateSettings: async (data, {companyId, userId}) => {
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-    
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    const companySettings = await CompanySettingsModel.findOne({where: {companyId: company.id}})
-
-    if(!companySettings) {
-      throw new ApiException(404, 'You don\'t have SMS configuration!')
-    }
-
-    return companySettings.update(data)
-  },
-
-  deleteSettings: async ({companyId, userId}) => {
-    const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
-    }
-
-    const companySettings = await CompanySettingsModel.findOne({where: {companyId: company.id}})
-
-    if(!companySettings) {
-      throw new ApiException(404, 'You don\'t have SMS configuration!')
-    }
-
-    return companySettings.destroy({companyId})
   },
 
   getStats: async ({startDate, endDate}, {companyId, userId}) => {
