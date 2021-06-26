@@ -14,6 +14,6 @@ router.post('/my/settings', auth([ADMIN, MANAGER]), CompanyController.addSetting
 router.put('/my/settings', auth([ADMIN, MANAGER]), CompanyController.updateSettings)
 router.delete('/my/settings', auth([ADMIN, MANAGER]), CompanyController.deleteSettings)
 router.get('/my/stats', auth([ADMIN]), CompanyController.getStats)
-router.get('/my/types', auth([ADMIN]), CompanyController.getTypes)
+router.get('/my/types', auth(), CompanyController.getTypes)
 
 export default router
