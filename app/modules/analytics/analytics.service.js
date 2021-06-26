@@ -28,13 +28,13 @@ export default {
         totals.name as name,
         coalesce(count(totals.amount), 0) as amount,
         coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as price,
-        coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as total,
+        coalesce(convert(min(totals.total), SIGNED INTEGER), 0) as total,
         convert(sum(totals.online != '0'), SIGNED INTEGER) as online,
         convert(sum(totals.offline != '0'), SIGNED INTEGER) as offline
       from (
         select
           count(ap.id) as amount,
-          sum(ap.total) as total,
+          min(ap.total) as total,
           group_concat(pr.name separator " + ") as name,
           sum(pr.price) as price,
           sum(ap.source != 'WIDGET' or ap.source is null) as offline,
@@ -54,13 +54,13 @@ export default {
     const [stats] = await mysql.query(
       `
       select
-        count(amount) as amount,
-        convert(sum(total), SIGNED INTEGER) as total,
-        convert(sum(price), SIGNED INTEGER) as price
+        count(totals.amount) as amount,
+        convert(sum(totals.total), SIGNED INTEGER) as total,
+        convert(sum(totals.price), SIGNED INTEGER) as price
       from (
         select
           count(ap.id) as amount,
-          sum(ap.total) as total,
+          min(ap.total) as total,
           sum(pr.price) as price
         from appointments as ap
         left join appointment_procedures as app on ap.id = app.appointmentId
