@@ -23,7 +23,8 @@ export default {
       const formattedData = {
         specialistId: req.body.specialistId,
         startDateTime: req.body.startDateTime,
-        endDateTime: req.body.endDateTime
+        endDateTime: req.body.endDateTime,
+        description: req.body.description
       }
 
       const params = {
@@ -34,7 +35,8 @@ export default {
         specialistId: joi.number().required(),
         startDateTime: joi.string().required(),
         endDateTime: joi.string().required(),
-        userId: joi.number().required()
+        userId: joi.number().required(),
+        description: joi.string().allow('')
       }))
 
       const timeoff = await TimeOffService.create({...formattedData,  ...params})
@@ -49,7 +51,8 @@ export default {
       const formattedData = {
         specialistId: req.body.specialistId,
         startDateTime: req.body.startDateTime,
-        endDateTime: req.body.endDateTime
+        endDateTime: req.body.endDateTime,
+        description: req.body.description
       }
 
       const params = {
@@ -62,7 +65,8 @@ export default {
         startDateTime: joi.string().required(),
         endDateTime: joi.string().required(),
         timeOffId: joi.number().required(),
-        userId: joi.number().required()
+        userId: joi.number().required(),
+        description: joi.string().allow('')
       }))
 
       const roles = await TimeOffService.update(formattedData, params)

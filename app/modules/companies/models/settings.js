@@ -27,6 +27,14 @@ const CompanySettingsSchema = (connection, type) => {
       allowNull: false,
       defaultValue: false,
     },
+    creationSMSTemplate: {
+      type: type.STRING,
+      allowNull: true
+    },
+    remindSMSTemplate: {
+      type: type.STRING,
+      allowNull: true
+    }
   }, {
     defaultScope: {
       attributes: {exclude: ['smsToken']}

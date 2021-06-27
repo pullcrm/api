@@ -10,20 +10,28 @@ const ProcedureSchema = (connection, type) => {
     },
     name: {
       type: type.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: ''
     },
     price: {
       type: type.INTEGER,
       allowNull: false,
+      defaultValue: 0
     },
     duration: {
       type: type.BIGINT,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     description: {
       type: type.STRING,
       allowNull: false,
       defaultValue: ''
+    },
+    order: {
+      type: type.BIGINT,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     hooks: {

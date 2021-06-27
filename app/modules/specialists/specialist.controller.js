@@ -4,6 +4,7 @@ import joi from "joi"
 import {mysql} from '../../config/connections'
 import UserService from '../users/user.service'
 import {ALL, DASHBOARD, HIDE} from '../../constants/specialists'
+import { MANAGER, SPECIALIST } from '../../constants/roles'
 
 export default {
   index: async (req, res, next) => {
@@ -48,15 +49,37 @@ export default {
     }
   },
 
+  publicFindOne: async (req, res, next) => {
+    try {
+      const params = {
+        specialistId: req.params.id
+      }
+
+      validate(params, joi.object().keys({
+        specialistId: joi.number().required()
+      }))
+
+      const specialist = await SpecialistService.publicFindOne(params)
+
+      res.send(specialist)
+    } catch(error) {
+      next(error)
+    }
+  },
+
   bulkUpdate: async (req, res, next) => {
     try {
       const formattedData = {
         specialists: req.body
       }
 
-      //TODO add validation
       validate(formattedData, joi.object().keys({
-        specialists: joi.array()
+        specialists: joi.array().items(
+          joi.object().keys({
+            id: joi.number(),
+            order: joi.number() 
+          })
+        )
       }))
 
       const specialists = await SpecialistService.bulkUpdate(formattedData)
@@ -102,7 +125,6 @@ export default {
     }
   },
 
-  //TODO only admin can update his employers
   update: async (req, res, next) => {
     try {
       const userData = {
@@ -115,7 +137,11 @@ export default {
       const specialistData = {
         description: req.body.description,
         status: req.body.status,
-        specialization: req.body.specialization
+        specialization: req.body.specialization,
+      }
+
+      const roleData = {
+        role: req.body.role
       }
 
       const params = {
@@ -123,7 +149,7 @@ export default {
         specialistId: req.params.id
       }
 
-      validate({...userData, ...specialistData, ...params}, joi.object().keys({
+      validate({...userData, ...specialistData, ...roleData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
         firstName: joi.string(),
@@ -133,6 +159,7 @@ export default {
         specialization: joi.string().allow(''),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
         email: joi.string().allow(''),
+        role: joi.string().valid(SPECIALIST, MANAGER),
       }))
 
       const specialist = await SpecialistService.update(specialistData, params)
@@ -140,6 +167,50 @@ export default {
 
       res.send({...specialist.toJSON(), user: user.toJSON()})
     } catch (error) {
+      next(error)
+    }
+  },
+
+  updateProcedures: async (req, res, next) => {
+    try {
+      const formattedData = {
+        procedures: req.body.procedures
+      }
+
+      const params = {
+        companyId: req.companyId,
+        specialistId: req.params.id
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        companyId: joi.number().required(),
+        specialistId: joi.number().required(),
+        procedures: joi.array(),
+      }))
+
+      const procedures = await SpecialistService.updateProcedures(formattedData, params)
+
+      res.send(procedures)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getProcedures: async (req, res, next) => {
+    try {
+      const params = {
+        companyId: req.companyId,
+        specialistId: req.params.id
+      }
+
+      validate(params, joi.object().keys({
+        companyId: joi.number().required(),
+        specialistId: joi.number().required(),
+      }))
+
+      const procedures = await SpecialistService.getProcedures(params)
+      res.send(procedures)
+    } catch(error) {
       next(error)
     }
   },

@@ -6,10 +6,12 @@ import {getAvailableTime} from '../../logics/appointments'
 
 import validate from '../../utils/validate'
 import {makeRandom} from '../../utils/make-random'
+import {getDayWorkTime} from '../../utils/time'
 
 import ProcedureModel from '../procedures/models/procedure'
 
 import TimeOffService from '../timeoff/timeoff.service'
+import TimeWorkService from '../timework/timework.service'
 import SMSPrivateService from '../sms/services/sms.private'
 import AppointmentService from './appointment.service'
 import { ADMIN_PANEL, WIDGET } from "../../constants/appointmentSources"
@@ -221,12 +223,17 @@ export default {
         duration: joi.number().required()
       }))
 
-      const [timeOffs, appointments] = await Promise.all([
+      const [timeWork, timeOffs, appointments] = await Promise.all([
+        TimeWorkService.findOne(formattedData),
         TimeOffService.findAll(formattedData),
         AppointmentService.fetchBySpecialistId(formattedData)
       ])
 
+      const {from, to} = getDayWorkTime(formattedData.date, timeWork)
+
       const availableTime = getAvailableTime({
+        from,
+        to,
         duration: formattedData.duration,
         timeOffs,
         appointments,
@@ -254,12 +261,21 @@ export default {
         duration: joi.number().required()
       }))
 
-      const [timeOffs, appointments] = await Promise.all([
+      const [timeWork, timeOffs, appointments] = await Promise.all([
+        TimeWorkService.findOne(formattedData),
         TimeOffService.findAll(formattedData),
         AppointmentService.fetchBySpecialistId(formattedData)
       ])
 
+      const {opened, from, to} = getDayWorkTime(formattedData.date, timeWork)
+
+      if (opened === false) {
+        res.send([])
+      }
+
       const availableTime = getAvailableTime({
+        from,
+        to,
         duration: formattedData.duration,
         timeOffs,
         appointments,

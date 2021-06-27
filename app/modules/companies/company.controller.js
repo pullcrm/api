@@ -2,10 +2,7 @@ import joi from "joi"
 import 'dotenv/config'
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
-import UserService from '../users/user.service'
 import SpecialistService from '../specialists/specialist.service'
-import {mysql} from "../../config/connections"
-import {ALL, HIDE, DASHBOARD} from '../../constants/specialists'
 
 export default {
   index: async (req, res, next) => {
@@ -50,17 +47,31 @@ export default {
       const formattedData = {
         name: req.body.name,
         cityId: req.body.cityId,
-        categoryId: req.body.categoryId,
+        typeId: req.body.typeId,
         logoId: req.body.logoId,
-        userId: req.userId
+        userId: req.userId,
+        address: req.body.address,
+        phone: req.body.phone,
+        description: req.body.description,
+        viber: req.body.viber,
+        telegram: req.body.telegram,
+        instagram: req.body.instagram,
+        facebook: req.body.facebook
       }
 
       validate(formattedData, joi.object().keys({
         name: joi.string().required(),
         cityId: joi.number().required(),
-        categoryId: joi.number().required(),
+        typeId: joi.number().required(),
         logoId: joi.number().optional(),
-        userId: joi.number().required()
+        userId: joi.number().required(),
+        address: joi.string().allow(''),
+        phone: joi.string().allow(''),
+        description: joi.string().allow(''),
+        viber: joi.string().allow(''),
+        telegram: joi.string().allow(''),
+        instagram: joi.string().allow(''),
+        facebook: joi.string().allow(''),
       }))
 
       const company = await CompanyService.create(formattedData)
@@ -76,8 +87,15 @@ export default {
       const formattedData = {
         name: req.body.name,
         cityId: req.body.cityId,
-        categoryId: req.body.categoryId,
+        typeId: req.body.typeId,
         logoId: req.body.logoId,
+        address: req.body.address,
+        phone: req.body.phone,
+        description: req.body.description,
+        viber: req.body.viber,
+        telegram: req.body.telegram,
+        instagram: req.body.instagram,
+        facebook: req.body.facebook
       }
 
       const params = {
@@ -88,10 +106,17 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         name: joi.string(),
         cityId: joi.number(),
-        categoryId: joi.number(),
+        typeId: joi.number(),
         logoId: joi.number(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
+        address: joi.string().allow(''),
+        phone: joi.string().allow(''),
+        description: joi.string().allow(''),
+        viber: joi.string().allow(''),
+        telegram: joi.string().allow(''),
+        instagram: joi.string().allow(''),
+        facebook: joi.string().allow(''),
       }))
 
       const company = await CompanyService.update(formattedData, params)
@@ -126,7 +151,9 @@ export default {
         password: req.body.password,
         hasCreationSMS: req.body.hasCreationSMS,
         hasRemindSMS: req.body.hasRemindSMS,
-        remindSMSMinutes: req.body.remindSMSMinutes
+        remindSMSMinutes: req.body.remindSMSMinutes,
+        creationSMSTemplate: req.body.creationSMSTemplate,
+        remindSMSTemplate: req.body.remindSMSTemplate
       }
 
       const params = {
@@ -142,6 +169,8 @@ export default {
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+        creationSMSTemplate: joi.string(),
+        remindSMSTemplate: joi.string()
       }))
 
       const company = await CompanyService.addSettings(formattedData, params)
@@ -157,7 +186,9 @@ export default {
       const formattedData = {
         hasCreationSMS: req.body.hasCreationSMS,
         hasRemindSMS: req.body.hasRemindSMS,
-        remindSMSMinutes: req.body.remindSMSMinutes
+        remindSMSMinutes: req.body.remindSMSMinutes,
+        creationSMSTemplate: req.body.creationSMSTemplate,
+        remindSMSTemplate: req.body.remindSMSTemplate,
       }
 
       const params = {
@@ -171,6 +202,8 @@ export default {
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+        creationSMSTemplate: joi.string(),
+        remindSMSTemplate: joi.string()
       }))
 
       const company = await CompanyService.updateSettings(formattedData, params)
@@ -229,28 +262,10 @@ export default {
     }
   },
 
-  getFinancialAnalytics: async (req, res, next) => {
+  getTypes: async (req, res, next) => {
     try {
-      const formattedData = {
-        startDate: req.query.startDate,
-        endDate: req.query.endDate,
-      }
-
-      const params = {
-        userId: req.userId,
-        companyId: req.companyId
-      }
-
-      validate({...params}, joi.object().keys({
-        userId: joi.number().required(),
-        companyId: joi.number().required(),
-        startDate: joi.string(),
-        endDate: joi.string(),
-      }))
-
-      const stats = await CompanyService.getFinancialAnalytics(formattedData, params)
-
-      res.send(stats)
+      const types = await CompanyService.getTypes()
+      res.send(types)
 
     } catch (error) {
       next(error)

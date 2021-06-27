@@ -1,10 +1,23 @@
 import ProcedureModel from './models/procedure'
-import ProcedureCategoriesModel from './models/category'
 import ApiException from "../../exceptions/api"
+import CategoryModel from '../categories/category.model'
 
 export default {
-  findAll: async ({companyId, limit, offset}) => {
-    return ProcedureModel.findAll({where: {companyId}, limit, offset, attributes: {exclude: ['companyId']}}, {raw: true})
+  findAll: async ({companyId, limit, offset, sort, order}) => {
+    console.log(companyId, limit, offset, sort, order)
+    const procedures = await ProcedureModel.findAll({
+      where: {companyId},
+      limit, offset,
+      order: [
+        [sort, order]
+      ],
+      include: {
+        model: CategoryModel,
+      },
+      attributes: {exclude: ['categoryId', 'companyId']},
+    })
+
+    return procedures
   },
 
   create: async data => {
@@ -25,6 +38,10 @@ export default {
     return procedure.update(data, {plain: true})
   },
 
+  bulkUpdate: async ({procedures}) => {
+    return ProcedureModel.bulkCreate(procedures, {updateOnDuplicate: ['order']})
+  },
+
   destroy: async ({procedureId, companyId}) => {
     const procedure = await ProcedureModel.findOne({where: {id: procedureId}})
 
@@ -37,43 +54,6 @@ export default {
     }
 
     await procedure.destroy()
-    return {destroy: 'OK'}
-  },
-
-  createCategory: async data => {
-    return ProcedureCategoriesModel.create(data)
-  },
-
-  findCategories: async ({companyId, limit, offset}) => {
-    return ProcedureCategoriesModel.findAll({where: {companyId}, limit, offset, attributes: {exclude: ['companyId']}})
-  },
-
-  updateCategory: async (data, {categoryId, companyId}) => {
-    const category = await ProcedureCategoriesModel.findOne({where: {id: categoryId}})
-
-    if(!category) {
-      throw new ApiException(404, 'Category wasn\'t found')
-    }
-
-    if(category.get('companyId') !== companyId) {
-      throw new ApiException(403, 'That is not your category')
-    }
-
-    return category.update(data, {plain: true})
-  },
-
-  destroyCategory: async ({categoryId, companyId}) => {
-    const category = await ProcedureCategoriesModel.findOne({where: {id: categoryId}})
-
-    if(!category) {
-      throw new ApiException(404, 'Category wasn\'t found')
-    }
-
-    if(category.get('companyId') !== companyId) {
-      throw new ApiException(403, 'That is not your category')
-    }
-
-    await category.destroy()
     return {destroy: 'OK'}
   },
 }

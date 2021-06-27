@@ -1,14 +1,15 @@
-import sequelize from 'sequelize'
 import SpecialistModel from './specialist.model'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
-import CategoryModel from "../categories/category.model"
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
 import CompanySettingsModel from '../companies/models/settings'
 import {ALL} from '../../constants/specialists'
+import ProcedureModel from '../procedures/models/procedure'
+import TypeModel from '../companies/models/types'
+import { Op } from 'sequelize'
 
 export default {
   findAll: async ({companyId}) => {
@@ -39,21 +40,22 @@ export default {
 
   index: async ({companyId, order, sort}) => {
     const specialists = await SpecialistModel.findAll({
-      where: {companyId},
+      where: {companyId, [Op.not]: {status: 'DELETED'}},
       order: [
         [sort, order]
       ],
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
         model: CompanyModel,
-        attributes: {exclude: ['categoryId', 'userId', 'cityId']},
+        attributes: {exclude: ['typeId', 'userId', 'cityId']},
         include: [
-          {model: CategoryModel},
+          {model: TypeModel},
           {model: CityModel},
           {model: CompanySettingsModel},
           {model: FileModel, as: 'logo'}
         ]
       },
+      {model: ProcedureModel, as: 'procedures'},
       {model: RoleModel},
       {model: UserModel, include: {
         model: FileModel,
@@ -83,6 +85,34 @@ export default {
     return specialists
   },
 
+  publicFindOne: async ({specialistId}) => {
+    const specialist = await SpecialistModel.findOne({
+      where: {id: specialistId, status: ALL},
+      attributes: {exclude: ['companyId', 'userId', 'roleId']},
+      include: [{
+        model: CompanyModel,
+        attributes: {exclude: ['typeId', 'userId', 'cityId']},
+        include: [
+          {model: TypeModel},
+          {model: CityModel},
+          {model: FileModel, as: 'logo'}
+        ]
+      },
+      {model: ProcedureModel, as: 'procedures'},
+      {model: RoleModel},
+      {model: UserModel, include: {
+        model: FileModel,
+        as: 'avatar'
+      }}]
+    })
+
+    if(!specialist) {
+      throw new ApiException(404, 'Specialist wasn\'t found')
+    }
+    
+    return specialist
+  },
+
   update: async (data, params) => {
     const specialist = await SpecialistModel.findOne({where: {id: params.specialistId, companyId: params.companyId}})
 
@@ -94,7 +124,7 @@ export default {
   },
 
   bulkUpdate: async ({specialists}) => {
-    return SpecialistModel.bulkCreate(specialists, {updateOnDuplicate: ['rate']})
+    return SpecialistModel.bulkCreate(specialists, {updateOnDuplicate: ['order']})
   },
 
   create: async (user, params, transaction) => {
@@ -109,6 +139,34 @@ export default {
       throw new ApiException(403, 'You don\'t have such specialist in your company! ')
     }
 
-    return specialist.destroy({id: specialistId})
-  }
+    return specialist.update({status: "DELETED"})
+  },
+
+  updateProcedures: async (data, params) => {
+    const specialist = await SpecialistModel.findOne({where: {id: params.specialistId, companyId: params.companyId}})
+
+    if(!specialist) {
+      throw new ApiException(404, 'Specialist wasn\'t found')
+    }
+
+    const procedures = await ProcedureModel.findAll({where: {id: data.procedures}})
+
+    if(!procedures.every(P => P.companyId === params.companyId)) {
+      throw new ApiException(404, 'Procedure wasn\'t found')
+    }
+
+    specialist.setProcedures(data.procedures)
+
+    return specialist
+  },
+
+  getProcedures: async ({specialistId, companyId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId, companyId}})
+
+    if (!specialist) {
+      throw new ApiException(403, 'Specialist wasn\'t found')
+    }
+
+    return specialist.getProcedures()
+  },
 }
