@@ -9,7 +9,7 @@ const auth = (accessRoles) => (req, res, next) => {
       return next()
     }
 
-    const authorization = req.headers.authorization
+    const authorization = req.headers.authorization2
 
     if (!authorization) {
       throw new ApiException(403, 'Authorization header isn\'t provided')
