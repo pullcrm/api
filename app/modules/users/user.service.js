@@ -1,22 +1,18 @@
 import {RESET_PASSWORD, REGISTRATION} from "../../constants/redis"
-
 import {makeRandom} from "../../utils/make-random"
-
 import ApiException from "../../exceptions/api"
-
 import {client as redis} from "../../providers/redis"
-
 import TokenService from "../auth/services/token"
 import SMSGlobalService from "../sms/services/sms.global"
-
 import UserModel from "./user.model"
 import FileModel from "../files/file.model"
 import CompanyModel from "../companies/models/company"
 import CityModel from "../cities/city.model"
-import CompanySettingsModel from "../companies/models/settings"
+import WidgetSettingsModel from "../widget/models/settings.model"
 import RoleModel from "../roles/role.model"
 import SpecialistModel from "../specialists/specialist.model"
 import TypeModel from "../companies/models/types"
+import SMSSettingsModel from "../sms/models/settings.model"
 
 const SMS_CLIENT_SEND_REAL_SMS = process.env.SMS_CLIENT_SEND_REAL_SMS
 
@@ -43,7 +39,8 @@ export default {
               include: [
                 {model: TypeModel},
                 {model: CityModel},
-                {model: CompanySettingsModel},
+                {model: WidgetSettingsModel},
+                {model: SMSSettingsModel},
                 {
                   model: FileModel,
                   as: "logo",

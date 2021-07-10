@@ -46,31 +46,7 @@ export default {
     }
   },
 
-  removeSms: async (req, res, next) => {
-    try {
-      const params = {
-        id: req.body.id,
-        psw: req.body.password,
-        login: req.body.login,
-        phone: req.body.phone
-      }
-
-      validate(params, joi.object().keys({
-        id: joi.string().required(),
-        psw: joi.string().required(),
-        login: joi.string().required(),
-        phone: joi.string().required()
-      }))
-
-      const result = await SMSPrivateService.removeSms(params)
-
-      res.send(result)
-    } catch (error) {
-      next(error)
-    }
-  },
-
-  sendSms: async (req, res, next) => {
+  send: async (req, res, next) => {
     try {
       const params = {
         id: req.body.id,
@@ -90,11 +66,101 @@ export default {
         phones: joi.string().required()
       }))
 
-      const result = await SMSPrivateService.sendSms(params)
+      const result = await SMSPrivateService.send(params)
 
       res.send(result)
     } catch (error) {
       next(error)
     }
-  }
+  },
+
+  addSettings: async (req, res, next) => {
+    try {
+      const formattedData = {
+        login: req.body.login,
+        password: req.body.password,
+        hasCreationSMS: req.body.hasCreationSMS,
+        hasRemindSMS: req.body.hasRemindSMS,
+        remindSMSMinutes: req.body.remindSMSMinutes,
+        creationSMSTemplate: req.body.creationSMSTemplate,
+        remindSMSTemplate: req.body.remindSMSTemplate
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        login: joi.string().required(),
+        password: joi.string().required(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        hasCreationSMS: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+        creationSMSTemplate: joi.string(),
+        remindSMSTemplate: joi.string()
+      }))
+
+      const company = await SMSPrivateService.addSettings(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  updateSettings: async (req, res, next) => {
+    try {
+      const formattedData = {
+        hasCreationSMS: req.body.hasCreationSMS,
+        hasRemindSMS: req.body.hasRemindSMS,
+        remindSMSMinutes: req.body.remindSMSMinutes,
+        creationSMSTemplate: req.body.creationSMSTemplate,
+        remindSMSTemplate: req.body.remindSMSTemplate,
+      }
+
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        hasCreationSMS: joi.boolean(),
+        hasRemindSMS: joi.boolean(),
+        remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
+        creationSMSTemplate: joi.string(),
+        remindSMSTemplate: joi.string()
+      }))
+
+      const company = await SMSPrivateService.updateSettings(formattedData, params)
+
+      res.send(company)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  deleteSettings: async (req, res, next) => {
+    try {
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required()
+      }))
+
+      await SMSPrivateService.deleteSettings(params)
+
+      res.send({message: 'OK'})
+    } catch (error) {
+      next(error)
+    }
+  },
 }
