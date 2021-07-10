@@ -28,6 +28,9 @@ export default {
   profile: async ({userId}) => {
     const user = await UserModel.findOne({
       where: {id: userId},
+      order: [
+        [SpecialistModel, 'id', 'desc']
+      ],
       include: [
         {
           model: SpecialistModel,

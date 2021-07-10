@@ -46,30 +46,6 @@ export default {
     }
   },
 
-  destroy: async (req, res, next) => {
-    try {
-      const params = {
-        id: req.body.id,
-        psw: req.body.password,
-        login: req.body.login,
-        phone: req.body.phone
-      }
-
-      validate(params, joi.object().keys({
-        id: joi.string().required(),
-        psw: joi.string().required(),
-        login: joi.string().required(),
-        phone: joi.string().required()
-      }))
-
-      const result = await SMSPrivateService.destroy(params)
-
-      res.send(result)
-    } catch (error) {
-      next(error)
-    }
-  },
-
   send: async (req, res, next) => {
     try {
       const params = {
