@@ -333,9 +333,9 @@ export default {
         smsIdentifier
       })
 
-      const res = await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
-      res.send(res)
+      res.send(appointment)
     } catch(error) {
       next(error)
     }
