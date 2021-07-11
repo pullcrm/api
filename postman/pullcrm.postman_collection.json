@@ -92,34 +92,6 @@
 					"response": []
 				},
 				{
-					"name": "Send Confirmation SMS",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"phone\": \"0660646333\",\n\t\"type\": \"REGISTRATION\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/users/confirmation",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"confirmation"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Reset password",
 					"request": {
 						"method": "POST",
@@ -207,6 +179,32 @@
 									"key": "endDate",
 									"value": "\"2021-01-29\""
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Types",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/companies/my/types",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"my",
+								"types"
 							]
 						}
 					},
@@ -305,113 +303,6 @@
 					"response": []
 				},
 				{
-					"name": "Get Specialists",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization2",
-								"value": "Baerer {{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/companies/my/specialists?offset=0&limit=2",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"companies",
-								"my",
-								"specialists"
-							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "2"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Specialist",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization2",
-								"type": "text",
-								"value": "Baerer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"33322\",\n\t\"lastName\": \"Huiv2232an424\",\n    \"description\": \"\",\n    \"status\": \"DASHBOARD\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/companies/my/specialists/1",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"companies",
-								"my",
-								"specialists",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Add Specialist",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization2",
-								"type": "text",
-								"value": "Baerer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"firstName\": \"Bogdan\",\n\t\"lastName\": \"Tsarik\",\n\t\"phone\": \"0660646333\",\n\t\"password\": \"1111\",\n\t\"code\": \"6333\"\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/companies/my/specialists",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"companies",
-								"my",
-								"specialists"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Add Settings",
 					"request": {
 						"method": "POST",
@@ -424,7 +315,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"hasRemindSMS\": true,\n    \"remindSMSMinutes\": 60,\n    \"hasCreationSMS\": false,\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\"\n}\n",
+							"raw": "{\n    \"hasRemindSMS\": true,\n    \"remindSMSMinutes\": 60,\n    \"hasCreationSMS\": false,\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\",\n    \"creationSMSTemplate\": \"awdawda awdawdawd\",\n    \"remindSMSTemplate\": \"grdg 3r34 fseffsefsef\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -528,7 +419,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"phone\": \"0958323358\",\n\t\"password\": \"2222\"\n}",
+							"raw": "{\n\t\"phone\": \"8888888888\",\n\t\"password\": \"1111\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -561,7 +452,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU5ODEwMTA5NCwiZXhwIjoxNjAwNjkzMDk0fQ.NkXkvntn4-DAQWohsMyfy4Zrq0Xy2bGrNLo8XlGMmLI\",\n\t\"companyId\": 1,\n\t\"userId\": 1,\n\t\"role\": \"ADMIN\"\n}\n",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE2MjU5MzMyODUsImV4cCI6MTYyODUyNTI4NX0.VhjdXRFnXqHUFq_bSiw5snaYR6H1S493K0sNiXTRLYY\",\n\t\"companyId\": 8,\n\t\"userId\": 11,\n\t\"role\": \"ADMIN\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -663,7 +554,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"specialistId\": 1,\n    \"clientId\": 1,\n    \"companyId\": 1,\n    \"procedures\": [1],\n    \"date\": \"2021-01-30\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"hasRemindSMS\": true,\n    \"hasCreationSMS\": false\n}",
+							"raw": "{\n\t\"specialistId\": 1,\n    \"phone\": \"0958323358\",\n    \"companyId\": 1,\n    \"procedures\": [12, 13],\n    \"date\": \"2022-06-30\",\n    \"startTime\": \"20:00:00\",\n    \"total\": 520,\n    \"description\": \"\",\n    \"hasRemindSMS\": false,\n    \"hasCreationSMS\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -730,7 +621,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"startTime\": \"23:50:00\"\n}",
+							"raw": "{\n\t\"status\": \"COMPLETED\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -738,14 +629,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/appointments/46",
+							"raw": "{{host}}/api/appointments/197",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"appointments",
-								"46"
+								"197"
 							]
 						}
 					},
@@ -843,35 +734,6 @@
 							"path": [
 								"api",
 								"roles"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Specialists",
-			"item": [
-				{
-					"name": "My Specialists",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization2",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/specialists",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"specialists"
 							]
 						}
 					},
@@ -1002,6 +864,136 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Send Confirmation SMS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"phone\": \"0660646333\",\n\t\"type\": \"REGISTRATION\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/confirmation",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"confirmation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Settings",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hasRemindSMS\": true,\n    \"remindSMSMinutes\": 60,\n    \"hasCreationSMS\": false,\n    \"login\": \"barbershoplondon55@gmail.com\",\n    \"password\": \"nedide05\",\n    \"creationSMSTemplate\": \"awdawda awdawdawd\",\n    \"remindSMSTemplate\": \"grdg 3r34 fseffsefsef\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms/settings",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hasRemindSMS\": true,\n    \"remindSMSMinutes\": 120,\n    \"hasCreationSMS\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms/settings",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Settings",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hasRemindSMS\": false,\n    \"remindSMSMinutes\": 120,\n    \"hasCreationSMS\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sms/settings",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sms",
+								"settings"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1009,7 +1001,41 @@
 			"name": "Categories",
 			"item": [
 				{
-					"name": "Index",
+					"name": "Destroy Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Обьортованіє\",\n\t\"price\": 500,\n\t\"duration\": 1400000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/procedures/62",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"procedures",
+								"62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1020,20 +1046,64 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/categories",
+							"raw": "{{host}}/api/categories?offset=0&limit=5",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"categories"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Create",
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"д6ва\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/categories/8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1045,7 +1115,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"SPA\"\n}",
+							"raw": "{\n\t\"name\": \"Ліцо14\",\n    \"type\": \"PROCEDURE\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1117,7 +1187,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Пілінг2\",\n\t\"price\": 400,\n\t\"duration\": 2700000\n}",
+							"raw": "{\n\t\"name\": \"Пілінг2\",\n\t\"price\": 400,\n\t\"duration\": 2700000,\n    \"categoryId\": 5\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1150,7 +1220,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Обьортованіє\",\n\t\"price\": 500,\n\t\"duration\": 2500000\n}",
+							"raw": "{\n\t\"name\": \"Обьортованіє666\",\n\t\"price\": 500,\n\t\"duration\": 2500000,\n    \"categoryId\": 16\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1158,14 +1228,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/procedures/63",
+							"raw": "{{host}}/api/procedures/30",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"procedures",
-								"63"
+								"30"
 							]
 						}
 					},
@@ -1206,53 +1276,19 @@
 					"response": []
 				},
 				{
-					"name": "Create Category",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization2",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Ліцо\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/procedures/categories",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"procedures",
-								"categories"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Category",
+					"name": "Bulk update",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization2",
 								"type": "text",
-								"value": "Bearer {{token}}"
+								"value": "Baerer {{token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"два\"\n}",
+							"raw": "[\n    {\n        \"id\": 2,\n        \"order\": 1 \n    },\n    {\n        \"id\": 3,\n        \"order\": 2\n    }\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1260,84 +1296,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/procedures/categories/1",
+							"raw": "{{host}}/api/procedures/bulk",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"procedures",
-								"categories",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Categories",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization2",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/procedures/categories?offset=0&limit=5",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"procedures",
-								"categories"
-							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "0"
-								},
-								{
-									"key": "limit",
-									"value": "5"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Destroy Category",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization2",
-								"type": "text",
-								"value": "Bearer {{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Обьортованіє\",\n\t\"price\": 500,\n\t\"duration\": 1400000\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/api/procedures/62",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"procedures",
-								"62"
+								"bulk"
 							]
 						}
 					},
@@ -1382,6 +1348,46 @@
 							"path": [
 								"api",
 								"files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/inum/Downloads/Group 16.png"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/files/29",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"files",
+								"29"
 							]
 						}
 					},
@@ -1447,7 +1453,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"employeeId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\"\n}",
+							"raw": "{\n    \"specialistId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\",\n    \"description\": \"Обед\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1470,7 +1476,7 @@
 				{
 					"name": "Update",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization2",
@@ -1480,7 +1486,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"employeeId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\"\n}",
+							"raw": "{\n    \"specialistId\": 1,\n    \"startDateTime\": \"2020-10-25 09:00:00\",\n    \"endDateTime\": \"2020-10-25 14:00:00\",\n    \"description\": \"Обід\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1488,13 +1494,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/timeoff",
+							"raw": "{{host}}/api/timeoff/71",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
-								"timeoff"
+								"timeoff",
+								"71"
 							]
 						}
 					},
@@ -1582,7 +1589,83 @@
 			]
 		},
 		{
+			"name": "TimeWork",
+			"item": [
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"monday\": \"false;09:00;21:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/timework",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"timework"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Widget",
+			"item": [
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/widget",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"widget"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Public",
 			"item": [
 				{
 					"name": "Get Specialists",
@@ -1674,6 +1757,40 @@
 					"response": []
 				},
 				{
+					"name": "Get Specialist",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/specialists?sort=order&order=asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "order"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Appointment",
 					"request": {
 						"method": "POST",
@@ -1702,6 +1819,443 @@
 								"api",
 								"public",
 								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/public/categories?offset=0&limit=5&companyId=8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "companyId",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Timework",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/public/timework/8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"timework",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Widget Settings",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/public/widget/8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"widget",
+								"8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Specialists",
+			"item": [
+				{
+					"name": "Add Specialist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"firstName\": \"Bogdan\",\n\t\"lastName\": \"Tsarik\",\n\t\"phone\": \"0660646333\",\n\t\"password\": \"1111\",\n\t\"code\": \"6333\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/specialists",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Specialist",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"firstName\": \"Боба2\",\n    \"lastName\": \"Валера2\",\n    \"specialization\": \"строїтель2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/specialists/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Default Procedures",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"procedures\": [14]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/specialists/17/procedures",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists",
+								"17",
+								"procedures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Default Procedures",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"procedures\": [14]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/specialists/17/procedures",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists",
+								"17",
+								"procedures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"firstName\": \"Боба2\",\n    \"lastName\": \"Валера2\",\n    \"specialization\": \"строїтель2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/specialists/17",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"id\": 1,\n        \"rate\": 1 \n    },\n    {\n        \"id\": 2,\n        \"rate\": 2\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/specialists/bulk",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specialists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Baerer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/specialists?sort=order&order=asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"specialists"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "order"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "Finance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/analytics/finance?endDate=2021-06-30&startDate=2021-06-01",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"analytics",
+								"finance"
+							],
+							"query": [
+								{
+									"key": "endDate",
+									"value": "2021-06-30"
+								},
+								{
+									"key": "startDate",
+									"value": "2021-06-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calendar",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization2",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/analytics/calendar?startDate=2021-02-20&endDate=2021-02-22",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"analytics",
+								"calendar"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2021-02-20"
+								},
+								{
+									"key": "endDate",
+									"value": "2021-02-22"
+								}
 							]
 						}
 					},
