@@ -36,7 +36,8 @@ export default {
         duration: req.body.duration,
         companyId: req.companyId,
         description: req.body.description,
-        categoryId: req.body.categoryId
+        categoryId: req.body.categoryId,
+        specialistIds: req.body.specialistIds,
       }
 
       validate(formattedData, joi.object().keys({
@@ -46,6 +47,7 @@ export default {
         companyId: joi.number().required(),
         description: joi.string().allow(''),
         categoryId: joi.number().allow(null),
+        specialistIds: joi.array(),
       }))
 
       const procedure = await ProceduresService.create(formattedData)
@@ -63,6 +65,7 @@ export default {
         duration: req.body.duration,
         description: req.body.description,
         categoryId: req.body.categoryId,
+        specialistIds: req.body.specialistIds,
       }
 
       const params = {
@@ -78,6 +81,7 @@ export default {
         companyId: joi.number().required(),
         description: joi.string().allow(''),
         categoryId: joi.number().allow(null),
+        specialistIds: joi.array(),
       }))
 
       const procedure = await ProceduresService.update(formattedData, params)

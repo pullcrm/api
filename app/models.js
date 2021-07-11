@@ -66,6 +66,12 @@ SpecialistModel.belongsToMany(ProcedureModel,{
   timestamps: false
 })
 
+ProcedureModel.belongsToMany(SpecialistModel,{
+  through: 'specialist_procedures',
+  as: 'specialists',
+  timestamps: false
+})
+
 CompanyModel.hasMany(ProcedureModel)
 CompanyModel.belongsTo(FileModel, {as: 'logo'})
 
