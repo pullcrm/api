@@ -13,7 +13,7 @@ import {
 } from '../sms.view'
 import decodeSMSCreds from '../../../utils/decodeSMSCreds'
 import SMSHistoryModel from '../models/history.model'
-import { encrypt } from '../../../utils/crypto'
+import {encrypt} from '../../../utils/crypto'
 import CompanyModel from '../../companies/models/company'
 import exclude from '../../../utils/exclude'
 
@@ -47,7 +47,7 @@ export default {
     if(hasCreationSMS) {
       await SMS.send({
         phones: appointment.phone || appointment.client.user.phone,
-        mes: creationNotifyMessage(appointment)
+        mes: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate)
       })
 
       SMSHistoryModel.create({
@@ -65,7 +65,7 @@ export default {
 
       await SMS.send({
         id: appointment.smsIdentifier,
-        mes: remindNotifyMessage(appointment),
+        mes: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
         time: sendDateTime.format('DD.MM.YY HH:mm'),
         phones: appointment.phone || appointment.client.user.phone
       })
