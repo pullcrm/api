@@ -1,6 +1,7 @@
 import ProcedureModel from './models/procedure'
 import ApiException from "../../exceptions/api"
 import CategoryModel from '../categories/category.model'
+import { mysql } from '../../config/connections'
 
 export default {
   findAll: async ({companyId, limit, offset, sort, order}) => {
@@ -20,7 +21,14 @@ export default {
   },
 
   create: async data => {
-    return ProcedureModel.create(data)
+    const result = await mysql.transaction(async transaction => {
+      const procedure = await ProcedureModel.create(data, {transaction})
+      await procedure.setSpecialists(data.specialistIds, {transaction})
+
+      return procedure
+    })
+
+    return result
   },
 
   update: async (data, {procedureId, companyId}) => {
@@ -34,7 +42,17 @@ export default {
       throw new ApiException(403, 'That is not your procedure')
     }
 
-    return procedure.update(data, {plain: true})
+    const result = await mysql.transaction(async transaction => {
+      await procedure.update(data, {transaction})
+
+      if(data.specialistIds && Array.isArray(data.specialistIds)) {
+        await procedure.setSpecialists(data.specialistIds, {transaction})
+      }
+
+      return procedure
+    })
+
+    return result
   },
 
   bulkUpdate: async ({procedures}) => {
