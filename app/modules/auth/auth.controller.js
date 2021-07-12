@@ -61,8 +61,9 @@ export default {
       await SpecialistService.checkBy({companyId, roleId: role.id, userId})
 
       const accessToken = generateAccessToken(userId, companyId, roleName)
+      const newRefreshToken = generateRefreshToken(userId)
 
-      res.status(200).send({accessToken})
+      res.status(200).send({accessToken, refreshToken: newRefreshToken})
     } catch (error) {
       next(error)
     }
