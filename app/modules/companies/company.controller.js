@@ -74,9 +74,11 @@ export default {
         facebook: joi.string().allow(''),
       }))
 
-      const company = await CompanyService.create(formattedData)
+      throw Error('Error my')
 
-      res.send(company)
+      // const company = await CompanyService.create(formattedData)
+
+      // res.send(company)
     } catch (error) {
       next(error)
     }
