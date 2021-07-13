@@ -41,6 +41,7 @@ export default {
       const adminRole = await RoleModel.findOne({where: {name: 'ADMIN'}, raw: true, transaction})
       await SpecialistModel.create({userId: company.userId, companyId: company.id, roleId: adminRole.id}, {transaction})
       await TimeWorkModel.create({companyId: company.id}, {transaction})
+      await WidgetSettingsModel.create({companyId: company.id}, {transaction})
       return company
     })
 
