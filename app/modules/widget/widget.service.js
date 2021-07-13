@@ -2,12 +2,10 @@ import WidgeSettingstModel from './models/settings.model'
 
 export default {
   update: async (data, {companyId}) => {
-    return WidgeSettingstModel
-      .findOne({where: {companyId}})
-      .then(workTime => workTime
-        ? workTime.update(data)
-        : WidgeSettingstModel.create({...data, companyId}))
+    const widgetSettings = await WidgeSettingstModel.findOne({where: {companyId}})
+    return widgetSettings.update(data)
   },
+
   findOne: async ({companyId}) => {
     const settings = await WidgeSettingstModel.findOne({
       where: {companyId},

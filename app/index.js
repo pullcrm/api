@@ -6,12 +6,25 @@ import mkdirp from 'mkdirp'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
+import * as Sentry from "@sentry/node"
+import * as Tracing from "@sentry/tracing"
 import {errorsHandler} from './middlewares/errors'
 import './models'
 
 const port = process.env.PORT || '3000'
 const prefix = '/api'
 const app = express()
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.SENTRY_ENV,
+  integrations: [
+    new Sentry.Integrations.Http({tracing: true}),
+    new Tracing.Integrations.Express({app}),
+  ],
+
+  tracesSampleRate: 1.0,
+})
 
 const storageConfig = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,6 +43,9 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
+app.use(Sentry.Handlers.requestHandler())
+app.use(Sentry.Handlers.tracingHandler())
+
 app.use((req, res, next) => {
   const allowedOrigins = ['http://localhost:8080', 'http://127.0.0.1:8000', 'http://pullcrm.com']
   const origin = req.headers.origin
@@ -46,6 +62,8 @@ app.use((req, res, next) => {
 })
 
 app.use(prefix, api)
+
+app.use(Sentry.Handlers.errorHandler())
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {

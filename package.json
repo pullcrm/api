@@ -14,6 +14,8 @@
     "eslint:fix": "eslint ./ --fix"
   },
   "dependencies": {
+    "@sentry/node": "^6.9.0",
+    "@sentry/tracing": "^6.9.0",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "dayjs": "^1.9.6",
