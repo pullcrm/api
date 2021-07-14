@@ -76,7 +76,7 @@ export default {
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
         model: UserModel,
-        attributes: ['firstName', 'lastName'],
+        attributes: ['fullName'],
         include: {
           model: FileModel,
           as: 'avatar'
