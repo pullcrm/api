@@ -11,29 +11,17 @@ const UserSchema = (connection, type) => {
       primaryKey: true,
       autoIncrement: true
     },
-    firstName: {
-      type: type.STRING(50),
+    fullName: {
+      type: type.STRING(250),
       allowNull: true,
 
       validate: {
         len: {
           args: [0, 50],
-          msg: 'First Name should be in a range between 0 and 50.'
+          msg: 'Fullname should be in a range between 0 and 250.'
         }
       }
     },
-    lastName: {
-      type: type.STRING(100),
-      allowNull: true,
-
-      validate: {
-        len: {
-          args: [0, 100],
-          msg: 'First Name should be in a range between 0 and 100.'
-        }
-      }
-    },
-
     phone: {
       type: type.STRING(10),
       allowNull: false,

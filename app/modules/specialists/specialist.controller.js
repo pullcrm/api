@@ -92,8 +92,7 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        fullName: req.body.fullName,
         phone: req.body.phone,
         avatarId: req.body.avatarId,
         code: req.body.code,
@@ -106,8 +105,7 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         code: joi.string().max(4).required(),
-        firstName: joi.string().required(),
-        lastName: joi.string().required(),
+        fullName: joi.string().required(),
         phone: joi.string().required(),
         avatarId: joi.number().optional()
       }))
@@ -128,8 +126,7 @@ export default {
   update: async (req, res, next) => {
     try {
       const userData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        fullName: req.body.fullName,
         avatarId: req.body.avatarId,
         email: req.body.email,
       }
@@ -152,8 +149,7 @@ export default {
       validate({...userData, ...specialistData, ...roleData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
-        firstName: joi.string(),
-        lastName: joi.string(),
+        fullName: joi.string(),
         avatarId: joi.number(),
         description: joi.string().allow(''),
         specialization: joi.string().allow(''),

@@ -7,8 +7,7 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        fullName: req.body.fullName,
         phone: req.body.phone,
         password: req.body.password,
         code: req.body.code,
@@ -16,8 +15,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        firstName: joi.string().required(),
-        lastName: joi.string().required(),
+        fullName: joi.string().required(),
         phone: joi.string().required(),
         password: joi.string().required(),
         code: joi.string().max(4).required(),
