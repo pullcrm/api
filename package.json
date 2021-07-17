@@ -20,7 +20,6 @@
     "body-parser": "^1.19.0",
     "dayjs": "^1.9.6",
     "dotenv": "^8.2.0",
-    "epochta-client": "^0.0.1",
     "epochta-client-pullcrm": "^0.0.1",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
