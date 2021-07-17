@@ -77,13 +77,14 @@ export default {
   addSettings: async (req, res, next) => {
     try {
       const formattedData = {
-        login: req.body.login,
-        password: req.body.password,
+        publicKey: req.body.publicKey,
+        privateKey: req.body.privateKey,
         hasCreationSMS: req.body.hasCreationSMS,
         hasRemindSMS: req.body.hasRemindSMS,
         remindSMSMinutes: req.body.remindSMSMinutes,
         creationSMSTemplate: req.body.creationSMSTemplate,
-        remindSMSTemplate: req.body.remindSMSTemplate
+        remindSMSTemplate: req.body.remindSMSTemplate,
+        companyName: req.body.companyName
       }
 
       const params = {
@@ -92,15 +93,16 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        login: joi.string().required(),
-        password: joi.string().required(),
+        publicKey: joi.string().required(),
+        privateKey: joi.string().required(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
         creationSMSTemplate: joi.string(),
-        remindSMSTemplate: joi.string()
+        remindSMSTemplate: joi.string(),
+        companyName: joi.string()
       }))
 
       const company = await SMSPrivateService.addSettings(formattedData, params)
@@ -119,6 +121,7 @@ export default {
         remindSMSMinutes: req.body.remindSMSMinutes,
         creationSMSTemplate: req.body.creationSMSTemplate,
         remindSMSTemplate: req.body.remindSMSTemplate,
+        companyName: req.body.companyName
       }
 
       const params = {
@@ -133,7 +136,8 @@ export default {
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
         creationSMSTemplate: joi.string(),
-        remindSMSTemplate: joi.string()
+        remindSMSTemplate: joi.string(),
+        companyName: joi.string()
       }))
 
       const company = await SMSPrivateService.updateSettings(formattedData, params)
