@@ -1932,6 +1932,13 @@ end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
+epochta-client-pullcrm@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/epochta-client-pullcrm/-/epochta-client-pullcrm-0.0.1.tgz#5867fb66f1ba0944b1508335f1c861c255bf3376"
+  integrity sha512-ofK/O0NbZfeUCrb+6ch2oGVzl2dkmM16INpTyfc7PsfsboIA9Q04iLD3Leg242ir4jpRGLWTe2dyLdSBmzRFqw==
+  dependencies:
+    request "2.81.0"
+
 epochta-client@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/epochta-client/-/epochta-client-0.0.1.tgz#9ce62ae820cc117fd7689c63fc7c18b7c9a43be6"

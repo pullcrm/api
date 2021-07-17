@@ -1,7 +1,6 @@
 import ApiException from '../../../exceptions/api'
 import privateSMS from '../../../providers/epochta/privateClient'
 import {setTime} from '../../../utils/time'
-import {makeRandom} from '../../../utils/make-random'
 import SMSSettingsModel from '../../sms/models/settings.model'
 import appointmentService from '../../appointments/appointment.service'
 

@@ -9,7 +9,7 @@ const SMSSettingsSchema = (connection, type) => {
       autoIncrement: true
     },
     smsToken: {
-      type: type.TEXT('long'),
+      type: type.STRING(400),
       allowNull: false
     },
     hasRemindSMS: {
