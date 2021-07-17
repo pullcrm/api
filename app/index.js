@@ -10,6 +10,8 @@ import * as Sentry from "@sentry/node"
 import * as Tracing from "@sentry/tracing"
 import {errorsHandler} from './middlewares/errors'
 import './models'
+import path from 'path'
+import ApiException from './exceptions/api'
 
 const port = process.env.PORT || '3000'
 const prefix = '/api'
@@ -33,11 +35,23 @@ const storageConfig = multer.diskStorage({
     mkdirp(dir, err => cb(err, dir))
   },
 
-  filename: (req, file, cb) => cb(null, file.originalname)
+  filename: (req, file, cb) => cb(null, file.originalname),
 })
 
 app.use('/api', express.static('uploads'))
-app.post(prefix + '/files', multer({storage: storageConfig}).single('file'))
+
+app.post(prefix + '/files', multer({
+  storage: storageConfig,
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase()
+
+    if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+      return cb(new ApiException(400, 'Only images are allowed'))
+    }
+
+    cb(null, true)
+  },
+}).single('file'))
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
