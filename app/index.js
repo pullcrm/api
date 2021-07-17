@@ -51,9 +51,6 @@ app.post(prefix + '/files', multer({
 
     cb(null, true)
   },
-  // limits:{
-  //   fileSize: 1024 * 1024 * 2
-  // }
 }).single('file'))
 
 app.use(logger('dev'))
