@@ -56,8 +56,6 @@ export default {
         companyId: +req.query.companyId,
       }
 
-      console.log(formattedData)
-
       validate(formattedData, joi.object().keys({
         offset: joi.number(),
         limit: joi.number(),

@@ -95,13 +95,8 @@ export default {
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const smsIdentifier = formattedData.hasRemindSMS ? makeRandom(4) : null
 
-      const appointment = await AppointmentService.create({
-        ...formattedData,
-        smsIdentifier
-      })
-
+      const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
@@ -150,7 +145,6 @@ export default {
       }))
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
-
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 
       res.send(newAppointment)
