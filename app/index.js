@@ -12,6 +12,8 @@ import {errorsHandler} from './middlewares/errors'
 import './models'
 import path from 'path'
 import ApiException from './exceptions/api'
+import sharp from 'sharp'
+import fs from 'fs'
 
 const port = process.env.PORT || '3000'
 const prefix = '/api'
@@ -51,7 +53,23 @@ app.post(prefix + '/files', multer({
 
     cb(null, true)
   },
-}).single('file'))
+}).single('file'), async (req, res, next) => {
+  try {
+    const img = await sharp(req.file.path)
+      .resize(300)
+      .jpeg()
+      .toFile(path.resolve(req.file.destination, req.file.filename))
+
+    req.file = {...req.file, ...img}
+      
+    // fs.unlinkSync(req.file.path)
+  } catch(err) {
+    console.log(err)
+    next(new ApiException(400, 'File is damaged, try another'))
+  }
+
+  next()
+})
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
