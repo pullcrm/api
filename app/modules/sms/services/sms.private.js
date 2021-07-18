@@ -241,7 +241,7 @@ export default {
       publicKey: data.publicKey,
       privateKey: encrypt(data.privateKey)
     })).toString('hex')
-
+    console.log(data.companyName)
     const settings = await SMSSettingsModel.create({
       hasRemindSMS: data.hasRemindSMS,
       remindSMSMinutes: data.remindSMSMinutes,
