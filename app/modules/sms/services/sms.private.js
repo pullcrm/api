@@ -145,7 +145,7 @@ export default {
       const smsResponse = await SMS.sendSMS({
         sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
         text: message,
-        datetime: sendDateTime.format('DD.MM.YY HH:mm'),
+        datetime: sendDateTime.format('YYYY-MM-DD HH:mm:ss'),
         phone: addUAFormat(phone)
       })
 
