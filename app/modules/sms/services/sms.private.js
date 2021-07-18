@@ -42,9 +42,9 @@ export default {
     }
 
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
-    const SMS = privateSMS(smsCreds)
-
+    
     if(hasCreationSMS) {
+      const SMS = privateSMS(smsCreds)
       const smsResponse = await SMS.sendSMS({
         sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
         phone: addUAFormat(appointment.phone || appointment.client.user.phone),
@@ -62,15 +62,16 @@ export default {
     }
 
     if(hasRemindSMS) {
+      const SMS = privateSMS(smsCreds)
       const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
 
       const smsResponse = await SMS.sendSMS({
         sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
         text: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
-        datetime: sendDateTime.format('DD.MM.YY HH:mm'),
+        datetime: sendDateTime.format('YYYY-MM-DD HH:mm:ss'),
         phone: addUAFormat(appointment.phone || appointment.client.user.phone)
       })
-
+      
       if(smsResponse.id) {
         await appointment.update({smsIdentifier: smsResponse.id})
       }
