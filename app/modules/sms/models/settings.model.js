@@ -34,6 +34,10 @@ const SMSSettingsSchema = (connection, type) => {
     remindSMSTemplate: {
       type: type.STRING,
       allowNull: true
+    },
+    companyName: {
+      type: type.STRING,
+      allowNull: true
     }
   }, {
     defaultScope: {
