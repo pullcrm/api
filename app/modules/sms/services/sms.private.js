@@ -1,8 +1,7 @@
 import ApiException from '../../../exceptions/api'
-import {privateSMS} from '../../../providers/smsc'
+import privateSMS from '../../../providers/epochta/privateClient'
 import {setTime} from '../../../utils/time'
-import {makeRandom} from '../../../utils/make-random'
-import CompanySettingsModel from '../../companies/models/settings'
+import SMSSettingsModel from '../../sms/models/settings.model'
 import appointmentService from '../../appointments/appointment.service'
 
 import {
@@ -12,7 +11,11 @@ import {
   creationNotifyMessage
 } from '../sms.view'
 import decodeSMSCreds from '../../../utils/decodeSMSCreds'
-import SMSHistoryModel from '../sms.model'
+import SMSHistoryModel from '../models/history.model'
+import {encrypt} from '../../../utils/crypto'
+import CompanyModel from '../../companies/models/company'
+import exclude from '../../../utils/exclude'
+import {addUAFormat} from '../../../utils/phone'
 
 export default {
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
@@ -32,47 +35,53 @@ export default {
       return
     }
 
-    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       throw new ApiException(404, 'You don\'t have sms configuration!')
     }
 
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
-    const SMS = privateSMS(smsCreds)
-
+    
     if(hasCreationSMS) {
-      await SMS.send({
-        phones: appointment.phone || appointment.client.user.phone,
-        mes: creationNotifyMessage(appointment)
+      const SMS = privateSMS(smsCreds)
+      const smsResponse = await SMS.sendSMS({
+        sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
+        phone: addUAFormat(appointment.phone || appointment.client.user.phone),
+        text: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate)
       })
 
       SMSHistoryModel.create({
         type: 'CREATE',
         companyId: data.companyId,
         recipient: appointment.phone || appointment.client.user.phone,
-        smsIdentifier: null,
-        message: creationNotifyMessage(appointment),
+        smsIdentifier: smsResponse.id,
+        message: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate),
         datetime: new Date()
       })
     }
 
     if(hasRemindSMS) {
+      const SMS = privateSMS(smsCreds)
       const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
 
-      await SMS.send({
-        id: appointment.smsIdentifier,
-        mes: remindNotifyMessage(appointment),
-        time: sendDateTime.format('DD.MM.YY HH:mm'),
-        phones: appointment.phone || appointment.client.user.phone
+      const smsResponse = await SMS.sendSMS({
+        sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
+        text: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
+        datetime: sendDateTime.format('YYYY-MM-DD HH:mm:ss'),
+        phone: addUAFormat(appointment.phone || appointment.client.user.phone)
       })
+      
+      if(smsResponse.id) {
+        await appointment.update({smsIdentifier: smsResponse.id})
+      }
 
       SMSHistoryModel.create({
         type: 'REMIND',
         companyId: data.companyId,
         recipient: appointment.phone || appointment.client.user.phone,
-        smsIdentifier: appointment.smsIdentifier,
-        message: remindNotifyMessage(appointment),
+        smsIdentifier: smsResponse.id,
+        message: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
         datetime: sendDateTime
       })
     }
@@ -87,7 +96,7 @@ export default {
 
     let smsIdentifier = appointment.smsIdentifier
 
-    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       return smsIdentifier
@@ -99,15 +108,14 @@ export default {
     const phone = appointment.phone || appointment.client.user.phone
 
     if (data.isQueue) {
-      await smsIdentifier && SMS.remove({
-        id: smsIdentifier,
-        phone
+      await smsIdentifier && SMS.cancelCampaign({
+        id: smsIdentifier
       })
 
       return null
     }
 
-    if (!data.startTime || isAppointmentEdited(appointment, data) === false) {
+    if (!data.startTime || !isAppointmentEdited(appointment, data)) {
       return smsIdentifier
     }
 
@@ -118,18 +126,14 @@ export default {
     }
 
     if (smsIdentifier) {
-      // remove old sms
-      await SMS.remove({
-        id: smsIdentifier,
-        phone
+      await SMS.cancelCampaign({
+        id: smsIdentifier
       })
 
       smsIdentifier = null
     }
 
     if(data.hasRemindSMS) {
-      smsIdentifier = makeRandom(4)
-
       const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
 
       const message = remindNotifyMessage({
@@ -138,12 +142,16 @@ export default {
         specialist: appointment.specialist,
       }, smsConfiguration.remindSMSTemplate)
 
-      await SMS.send({
-        id: smsIdentifier,
-        mes: message,
-        time: sendDateTime.format('DD.MM.YY HH:mm'),
-        phones: phone
+      const smsResponse = await SMS.sendSMS({
+        sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
+        text: message,
+        datetime: sendDateTime.format('YYYY-MM-DD HH:mm:ss'),
+        phone: addUAFormat(phone)
       })
+
+      if(smsResponse.id) {
+        smsIdentifier = smsResponse.id
+      }
 
       SMSHistoryModel.create({
         type: 'REMIND',
@@ -159,7 +167,7 @@ export default {
   },
 
   send: async ({phone, message, id, time}, companyId) => {
-    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId}})
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       throw new ApiException(404, 'SMS Config was not found')
@@ -167,7 +175,7 @@ export default {
 
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
 
-    return privateSMS(smsCreds).send({
+    return privateSMS(smsCreds).sendSMS({
       id,
       time,
       phones: phone,
@@ -176,19 +184,24 @@ export default {
   },
 
   balance: async ({companyId}) => {
-    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId}})
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
     if(!smsConfiguration || !smsConfiguration.smsToken) {
       throw new ApiException(404, 'SMS Configuretion was not found')
     }
 
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
+    const currency = 'UAH'
+    const response = await privateSMS(smsCreds).getUserBalance({currency})
 
-    return privateSMS(smsCreds).getBalance(smsCreds)
+    return {
+      balance: response.balance_currency,
+      currency
+    }
   },
 
-  status: async ({phone, smsIdentifier}, companyId) => {
-    const smsConfiguration = await CompanySettingsModel.scope('withSMSToken').findOne({where: {companyId}})
+  status: async ({smsIdentifier}, companyId) => {
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
     if(!smsConfiguration) {
       throw new ApiException(404, 'SMS Config was not found')
@@ -196,12 +209,82 @@ export default {
 
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
     
-    return privateSMS(smsCreds).getStatus({
-      phone,
-      all: 1,
+    const response = await privateSMS(smsCreds).getCampaignDeliveryStats({
       id : smsIdentifier,
-      psw: smsCreds.password,
-      login: smsCreds.login
     })
+
+    return {
+      status: response.status[0],
+      phone: response.phone[0]
+    }
+  },
+
+  addSettings: async (data, {companyId, userId}) => {
+    const SMS = privateSMS({
+      publicKey: data.publicKey,
+      privateKey: data.privateKey,
+    })
+
+    try {
+      await SMS.getUserBalance({currency: 'UAH'})
+    } catch(error) {
+      throw new ApiException(404, 'SMS account wasn\'t found')
+    }
+
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const smsToken = Buffer.from(JSON.stringify({
+      publicKey: data.publicKey,
+      privateKey: encrypt(data.privateKey)
+    })).toString('hex')
+
+    const settings = await SMSSettingsModel.create({
+      hasRemindSMS: data.hasRemindSMS,
+      remindSMSMinutes: data.remindSMSMinutes,
+      hasCreationSMS: data.hasCreationSMS,
+      creationSMSTemplate: data.creationSMSTemplate,
+      remindSMSTemplate: data.remindSMSTemplate,
+      companyName: data.companyName,
+      smsToken: smsToken,
+      companyId
+    })
+
+    return exclude(settings, ['smsToken'])
+  },
+
+  updateSettings: async (data, {companyId, userId}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+    
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const settings = await SMSSettingsModel.findOne({where: {companyId: company.id}})
+
+    if(!settings) {
+      throw new ApiException(404, 'You don\'t have SMS settings!')
+    }
+
+    return settings.update(data)
+  },
+
+  deleteSettings: async ({companyId, userId}) => {
+    const company = await CompanyModel.findOne({where: {id: companyId}})
+
+    if(company.get('userId') !== userId) {
+      throw new ApiException(403, 'You don\'t own this company!')
+    }
+
+    const settings = await SMSSettingsModel.findOne({where: {companyId: company.id}})
+
+    if(!settings) {
+      throw new ApiException(404, 'You don\'t have SMS settings!')
+    }
+
+    return settings.destroy({companyId})
   },
 }

@@ -19,6 +19,8 @@ import analyticsRouter from './modules/analytics/analytics.route'
 import timeWorkRouter from './modules/timework/routes/timework.private'
 import timeWorkPublicRouter from './modules/timework/routes/timework.public'
 import categoryPublicRouter from './modules/categories/routes/category.public'
+import widgetRouter from './modules/widget/routes/widget.private'
+import widgetPublicRouter from './modules/widget/routes/widget.public'
 
 const api = Router()
 
@@ -36,6 +38,7 @@ api.use('/sms', smsRouter)
 api.use('/timeoff', timeOffRouter)
 api.use('/analytics', analyticsRouter)
 api.use('/timework', timeWorkRouter)
+api.use('/widget', widgetRouter)
 
 api.use('/public/specialists', specialistPublicRouter)
 api.use('/public/procedures', procedurePublicRouter)
@@ -43,5 +46,6 @@ api.use('/public/appointments', appointmentPublicRouter)
 api.use('/public/companies', companyPublicRouter)
 api.use('/public/timework', timeWorkPublicRouter)
 api.use('/public/categories', categoryPublicRouter)
+api.use('/public/widget', widgetPublicRouter)
 
 export default api

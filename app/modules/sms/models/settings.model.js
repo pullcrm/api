@@ -1,15 +1,15 @@
 import {mysql} from "../../../config/connections"
 import {Sequelize} from "sequelize"
 
-const CompanySettingsSchema = (connection, type) => {
-  return connection.define('company_settings', {
+const SMSSettingsSchema = (connection, type) => {
+  return connection.define('sms_settings', {
     id: {
       type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },
     smsToken: {
-      type: type.STRING,
+      type: type.STRING(400),
       allowNull: false
     },
     hasRemindSMS: {
@@ -34,6 +34,10 @@ const CompanySettingsSchema = (connection, type) => {
     remindSMSTemplate: {
       type: type.STRING,
       allowNull: true
+    },
+    companyName: {
+      type: type.STRING,
+      allowNull: true
     }
   }, {
     defaultScope: {
@@ -53,5 +57,5 @@ const CompanySettingsSchema = (connection, type) => {
   })
 }
 
-const CompanySettingsModel = CompanySettingsSchema(mysql, Sequelize)
-export default CompanySettingsModel
+const SMSSettingsModel = SMSSettingsSchema(mysql, Sequelize)
+export default SMSSettingsModel

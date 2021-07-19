@@ -10,13 +10,13 @@ import CityModel from "./modules/cities/city.model"
 import CategoryModel from "./modules/categories/category.model"
 import FileModel from './modules/files/file.model'
 import TokenModel from "./modules/auth/models/token"
-import CompanySettingsModel from "./modules/companies/models/settings"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import ClientModel from "./modules/clients/client.model"
-// import ProcedureCategoriesModel from './modules/procedures/models/category'
 import TimeWorkModel from "./modules/timework/timework.model"
 import TypeModel from "./modules/companies/models/types"
-import SMSHistoryModel from "./modules/sms/sms.model"
+import SMSHistoryModel from "./modules/sms/models/history.model"
+import SMSSettingsModel from "./modules/sms/models/settings.model"
+import WidgetSettingsModel from "./modules/widget/models/settings.model"
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -33,7 +33,8 @@ UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
 
 CompanyModel.hasMany(SpecialistModel)
-CompanyModel.hasOne(CompanySettingsModel)
+CompanyModel.hasOne(SMSSettingsModel)
+CompanyModel.hasOne(WidgetSettingsModel)
 CompanyModel.belongsTo(CityModel)
 CompanyModel.belongsTo(TypeModel)
 
@@ -62,6 +63,12 @@ ClientModel.belongsTo(UserModel)
 SpecialistModel.belongsToMany(ProcedureModel,{
   through: 'specialist_procedures',
   as: 'procedures',
+  timestamps: false
+})
+
+ProcedureModel.belongsToMany(SpecialistModel,{
+  through: 'specialist_procedures',
+  as: 'specialists',
   timestamps: false
 })
 

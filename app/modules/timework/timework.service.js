@@ -2,11 +2,8 @@ import TimeWorkModel from './timework.model'
 
 export default {
   update: async (data, {companyId}) => {
-    return TimeWorkModel
-      .findOne({where: {companyId}})
-      .then(workTime => workTime
-        ? workTime.update(data)
-        : TimeWorkModel.create({...data, companyId}))
+    const workTime = await TimeWorkModel.findOne({where: {companyId}})
+    return workTime.update(data) 
   },
 
   findOne: async ({companyId}) => {

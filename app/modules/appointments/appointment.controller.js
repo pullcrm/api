@@ -14,7 +14,7 @@ import TimeOffService from '../timeoff/timeoff.service'
 import TimeWorkService from '../timework/timework.service'
 import SMSPrivateService from '../sms/services/sms.private'
 import AppointmentService from './appointment.service'
-import { ADMIN_PANEL, WIDGET } from "../../constants/appointmentSources"
+import {ADMIN_PANEL, WIDGET} from "../../constants/appointmentSources"
 
 export default {
   index: async (req, res, next) => {
@@ -95,13 +95,8 @@ export default {
       }))
 
       // await TimeOffService.checkTime(formattedData)
-      const smsIdentifier = formattedData.hasRemindSMS ? makeRandom(4) : null
 
-      const appointment = await AppointmentService.create({
-        ...formattedData,
-        smsIdentifier
-      })
-
+      const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
@@ -150,7 +145,6 @@ export default {
       }))
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
-
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 
       res.send(newAppointment)

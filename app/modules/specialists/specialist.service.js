@@ -5,11 +5,12 @@ import UserModel from '../users/user.model'
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
 import ApiException from '../../exceptions/api'
-import CompanySettingsModel from '../companies/models/settings'
+import WidgetSettingsModel from '../widget/models/settings.model'
+import SMSSettingsModel from '../sms/models/settings.model'
 import {ALL} from '../../constants/specialists'
 import ProcedureModel from '../procedures/models/procedure'
 import TypeModel from '../companies/models/types'
-import { Op } from 'sequelize'
+import {Op} from 'sequelize'
 
 export default {
   findAll: async ({companyId}) => {
@@ -51,7 +52,8 @@ export default {
         include: [
           {model: TypeModel},
           {model: CityModel},
-          {model: CompanySettingsModel},
+          {model: WidgetSettingsModel},
+          {model: SMSSettingsModel},
           {model: FileModel, as: 'logo'}
         ]
       },
@@ -74,7 +76,7 @@ export default {
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
         model: UserModel,
-        attributes: ['firstName', 'lastName'],
+        attributes: ['fullName'],
         include: {
           model: FileModel,
           as: 'avatar'

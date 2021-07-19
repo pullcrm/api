@@ -9,13 +9,13 @@ export function creationNotifyMessage (payload, template) {
 
   if(template) {
     return template.toString()
-      .replace('%specialist%', specialist.user.firstName)
+      .replace('%specialist%', specialist.user.fullName)
       .replace('%date%', dayjs(date).format('DD.MM'))
       .replace('%time%', startTime.slice(0, 5))
       .replace('%procedures%', proceduresText)
   }
   
-  return `Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Сотрудник ${specialist.user.firstName}`
+  return `Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Сотрудник ${specialist.user.fullName}`
 }
   
 export function remindNotifyMessage ({procedures, date, startTime, specialist}, template) {
@@ -23,7 +23,7 @@ export function remindNotifyMessage ({procedures, date, startTime, specialist}, 
 
   if(template) {
     return template.toString()
-      .replace('%specialist%', specialist?.user?.firstName)
+      .replace('%specialist%', specialist?.user?.fullName)
       .replace('%date%', dayjs(date).format('DD.MM'))
       .replace('%time%', startTime.slice(0, 5))
       .replace('%procedures%', proceduresText)
