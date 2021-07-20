@@ -320,13 +320,7 @@ export default {
         hasCreationSMS: joi.boolean(),
       }))
 
-      const smsIdentifier = makeRandom(4)
-
-      const appointment = await AppointmentService.create({
-        ...formattedData,
-        smsIdentifier
-      })
-
+      const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
