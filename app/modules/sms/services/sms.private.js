@@ -42,7 +42,7 @@ export default {
     }
 
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
-    
+
     if(hasCreationSMS) {
       const SMS = privateSMS(smsCreds)
       const smsResponse = await SMS.sendSMS({
