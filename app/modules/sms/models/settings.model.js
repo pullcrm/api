@@ -9,7 +9,7 @@ const SMSSettingsSchema = (connection, type) => {
       autoIncrement: true
     },
     smsToken: {
-      type: type.STRING,
+      type: type.STRING(400),
       allowNull: false
     },
     hasRemindSMS: {
@@ -32,6 +32,10 @@ const SMSSettingsSchema = (connection, type) => {
       allowNull: true
     },
     remindSMSTemplate: {
+      type: type.STRING,
+      allowNull: true
+    },
+    companyName: {
       type: type.STRING,
       allowNull: true
     }

@@ -26,8 +26,17 @@ Sentry.init({
     new Sentry.Integrations.Http({tracing: true}),
     new Tracing.Integrations.Express({app}),
   ],
-
   tracesSampleRate: 1.0,
+  ignoreErrors: [
+    'TypeError: Failed to fetch',
+    'TypeError: NetworkError when attempting to fetch resource.',
+    'TypeError: Cancelled',
+    'TypeError: cancelado',
+  ],
+  debug: false,
+  initialScope: {
+    level: 'info'
+  }
 })
 
 const storageConfig = multer.diskStorage({
