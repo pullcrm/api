@@ -30,49 +30,54 @@ const setFileName = (width, filename) => `${width}x${filename}`
 const resize = async (file, sizes) => {
   return await Promise.all(sizes.map(S => {
     return sharp(file.path)
-      // .toFormat('jpeg')
       .resize(S)
-      // .jpeg({
-      //   quality: 100,
-      //   mozjpeg: true
-      // })
       .toFile(
         path.resolve(file.destination, setFileName(S, file.filename))
       )
   }))
 }
 
-const setWidth = (customWidth, width) => customWidth ? [customWidth] : width
+const setWidth = (customWidth, width) => customWidth ? customWidth : width
 
 export const uploadImages = multer({
   storage: imageStorage,
   fileFilter: imageFilter,
 }).array('files', 20)
 
-export const uploadImage = multer({
-  storage: imageStorage,
-  fileFilter: imageFilter,
-}).single('file')
-
 export const resizeImages = async (req, res, next) => {
   try {
     for (const i in req.files){
       const file = req.files[i]
       const {width} = await sharp(file.path).metadata()
+      const customWidths = typeof req.body.widths === 'string' && req.body.widths.split(',').map(W => +W)
+      const originalPath = file.path
+      let producedFile
 
+      if(customWidths && customWidths.some(W => W > width)) {
+        next(new ApiException(400, 'Original width is smaller than custom width!'))
+      }
+      
       if(width >= 1600) {
-        await resize(file, [1600, 800, 160])
+        const sizes = setWidth(customWidths, [1600, 800, 160]) 
+        producedFile = await resize(file, sizes)
+        file.sizes = sizes
       }
-
+  
       if(width >= 800 && width < 1600) {
-        await resize(file, [800, 160])
+        const sizes = setWidth(customWidths, [800, 160]) 
+        producedFile = await resize(file, sizes)
+        file.sizes = sizes
       }
-
+  
       if(width < 800) {
-        await resize(file, [160])
+        const sizes = setWidth(customWidths, [160]) 
+        producedFile = await resize(file, sizes)
+        file.sizes = sizes
       }
-    
-      fs.unlinkSync(file.path)
+
+      if(producedFile) {
+        fs.unlinkSync(originalPath)
+      }
     }
     
     next()
@@ -82,44 +87,3 @@ export const resizeImages = async (req, res, next) => {
   }
 }
 
-export const resizeImage = async (req, res, next) => {
-  try {
-    const file = req.file
-    const {width} = await sharp(file.path).metadata()
-    const customWidth = +req.body.width
-    const originalPath = file.path
-    let producedFile
-
-    if(customWidth && customWidth > width) [
-      next(new ApiException(400, 'Original width is smaller than custom width!'))
-    ]
-    
-    if(width >= 1600) {
-      const sizes = [1600, 800, 160]
-      producedFile = await resize(file, setWidth(customWidth, sizes))
-      file.sizes = sizes
-    }
-
-    if(width >= 800 && width < 1600) {
-      const sizes = [800, 160]
-      producedFile = await resize(file, setWidth(customWidth, sizes))
-      file.sizes = sizes
-    }
-
-    if(width < 800) {
-      const sizes = [160]
-      producedFile = await resize(file, setWidth(customWidth, sizes))
-      file.sizes = sizes
-    }
-
-    if(producedFile) {
-      fs.unlinkSync(originalPath)
-      file.size = producedFile[0].size
-    }
-
-    next()
-  } catch(error) {
-    console.log(error)
-    next(new ApiException(400, 'File is damaged, try another'))
-  }
-}

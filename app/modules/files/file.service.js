@@ -24,26 +24,30 @@ export default {
     })
   },
 
-  create: async (data, {userId, companyId, uploadBy}) => {
-    const specialist = await SpecialistModel.findOne({where: {userId, companyId}})
+  createMultiple: async (files, {userId, companyId, uploadBy}) => {
+    const uploadPromises = files.map(async data => {
+      const specialist = await SpecialistModel.findOne({where: {userId, companyId}})
 
-    if(!specialist) {
-      fs.rmdirSync('uploads' + data.file.destination, {recursive: true})
-      throw new ApiException(404, 'You don\'t have such specialist')
-    }
+      if(!specialist) {
+        fs.rmdirSync('uploads' + data.file.destination, {recursive: true})
+        throw new ApiException(404, 'You don\'t have such specialist')
+      }
+  
+      const result = await mysql.transaction(async transaction => {
+        const file = await FileModel.create({
+          ...data.file,
+          companyId,
+          uploadBy,
+          group: data.group,
+        }, {returning: true, transaction})
+        await file.setUsers([userId], {transaction})
+        return file
+      })
 
-    const result = await mysql.transaction(async transaction => {
-      const file = await FileModel.create({
-        ...data.file,
-        companyId,
-        uploadBy,
-        group: data.group,
-      }, {returning: true, transaction})
-      await file.setUsers([userId], {transaction})
-      return file
+      return result
     })
 
-    return  result 
+    return  Promise.all(uploadPromises) 
   },
 
   //TODO add condition who can delete the file
