@@ -4,6 +4,7 @@ import {mysql} from '../../config/connections'
 import FileModel from './file.model'
 import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
+import SpecialistModel from '../specialists/specialist.model'
 
 const unlinkAsync = promisify(fs.rmdir)
 
@@ -23,9 +24,21 @@ export default {
     })
   },
 
-  upload: async (data, {userId, companyId}) => {
+  create: async (data, {userId, companyId, uploadBy}) => {
+    const specialist = await SpecialistModel.findOne({where: {userId, companyId}})
+
+    if(!specialist) {
+      fs.rmdirSync('uploads' + data.file.destination, {recursive: true})
+      throw new ApiException(404, 'You don\'t have such specialist')
+    }
+
     const result = await mysql.transaction(async transaction => {
-      const file = await FileModel.create({...data.file, companyId, group: data.group}, {returning: true, transaction})
+      const file = await FileModel.create({
+        ...data.file,
+        companyId,
+        uploadBy,
+        group: data.group,
+      }, {returning: true, transaction})
       await file.setUsers([userId], {transaction})
       return file
     })

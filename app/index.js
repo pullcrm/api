@@ -1,8 +1,6 @@
 import http from 'http'
 import bodyParser from 'body-parser'
 import express from 'express'
-import multer from 'multer'
-import mkdirp from 'mkdirp'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
@@ -10,10 +8,6 @@ import * as Sentry from "@sentry/node"
 import * as Tracing from "@sentry/tracing"
 import {errorsHandler} from './middlewares/errors'
 import './models'
-import path from 'path'
-import ApiException from './exceptions/api'
-import sharp from 'sharp'
-import fs from 'fs'
 
 const port = process.env.PORT || '3000'
 const prefix = '/api'
@@ -39,50 +33,11 @@ Sentry.init({
   }
 })
 
-const storageConfig = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = 'uploads/' + Date.now()
-
-    mkdirp(dir, err => cb(err, dir))
-  },
-
-  filename: (req, file, cb) => cb(null, file.originalname),
-})
-
 app.use('/api', express.static('uploads'))
-
-app.post(prefix + '/files', multer({
-  storage: storageConfig,
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase()
-
-    if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
-      return cb(new ApiException(400, 'Only images are allowed'))
-    }
-
-    cb(null, true)
-  },
-}).single('file'), async (req, res, next) => {
-  try {
-    const img = await sharp(req.file.path)
-      .resize(300)
-      .jpeg()
-      .toFile(path.resolve(req.file.destination, req.file.filename))
-
-    req.file = {...req.file, ...img}
-      
-    // fs.unlinkSync(req.file.path)
-  } catch(err) {
-    console.log(err)
-    next(new ApiException(400, 'File is damaged, try another'))
-  }
-
-  next()
-})
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())

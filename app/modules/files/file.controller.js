@@ -1,6 +1,7 @@
 import FileService from './file.service'
 import validate from "../../utils/validate"
 import joi from "joi"
+import specialistService from '../specialists/specialist.service'
 
 export default {
   getUserFiles: async (req, res, next) => {
@@ -56,13 +57,18 @@ export default {
   create: async (req, res, next) => {
     try {
       const formattedData = {
-        file: {...req.file, path: req.file.path.replace('uploads', '')},
+        file: {
+          ...req.file,
+          sizes: req.file.sizes.join(','),
+          path: `${req.file.destination.replace('uploads', '')}/${req.file.sizes[0]}x${req.file.filename}`,
+          destination: req.file.destination.replace('uploads', '')
+        },
+       
         group: req.body.group
       }
 
       const params = {
-        // Add info who uploaded the file
-        // createdByUserId: req.userId,
+        uploadBy: req.userId,
         userId: req.body.userId,
         companyId: req.companyId
       }
@@ -72,14 +78,15 @@ export default {
           filename: joi.string().required(),
           mimetype: joi.string().required(),
           path: joi.string().required(),
-          size: joi.number().integer().max(500000).error(new Error('File shoud be less than 500k'))
+          size: joi.number().integer().max(500000).error(new Error(`Resized file shoud be less than 500k, but it ${req.file.size/1000}k`))
         }).unknown().required(),
+        uploadBy: joi.number().required(),
         userId: joi.number().required(),
         companyId: joi.number().optional(),
         group: joi.string().optional()
       }))
 
-      const file = await FileService.upload(formattedData, params)
+      const file = await FileService.create(formattedData, params)
       res.send(file)
     } catch(error) {
       next(error)
