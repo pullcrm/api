@@ -264,7 +264,7 @@ export default {
       const {opened, from, to} = getDayWorkTime(formattedData.date, timeWork)
 
       if (opened === false) {
-        res.send([])
+        return res.send([])
       }
 
       const availableTime = getAvailableTime({
@@ -275,7 +275,7 @@ export default {
         appointments,
       })
 
-      res.send(availableTime)
+      return res.send(availableTime)
     } catch(error) {
       next(error)
     }
