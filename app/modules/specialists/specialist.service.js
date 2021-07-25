@@ -11,7 +11,6 @@ import {ALL} from '../../constants/specialists'
 import ProcedureModel from '../procedures/models/procedure'
 import TypeModel from '../companies/models/types'
 import {Op} from 'sequelize'
-import sequelize from 'sequelize'
 
 export default {
   findAll: async ({companyId}) => {
