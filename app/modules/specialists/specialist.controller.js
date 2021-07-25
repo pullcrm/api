@@ -4,7 +4,7 @@ import joi from "joi"
 import {mysql} from '../../config/connections'
 import UserService from '../users/user.service'
 import {ALL, DASHBOARD, HIDE} from '../../constants/specialists'
-import { MANAGER, SPECIALIST } from '../../constants/roles'
+import { ADMIN, MANAGER, SPECIALIST } from '../../constants/roles'
 
 export default {
   index: async (req, res, next) => {
@@ -155,10 +155,10 @@ export default {
         specialization: joi.string().allow(''),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
         email: joi.string().allow(''),
-        role: joi.string().valid(SPECIALIST, MANAGER),
+        role: joi.string().valid(SPECIALIST, MANAGER, ADMIN),
       }))
 
-      const specialist = await SpecialistService.update(specialistData, params)
+      const specialist = await SpecialistService.update({...specialistData, ...roleData}, params)
       const user = await UserService.update(userData, specialist.userId)
 
       res.send({...specialist.toJSON(), user: user.toJSON()})

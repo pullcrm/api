@@ -124,6 +124,11 @@ export default {
       throw new ApiException(404, 'Specialist wasn\'t found')
     }
 
+    if(data.role) {
+      const specialistsRole = await RoleModel.findOne({where: {name: data.role}, raw: true})
+      data.roleId = specialistsRole.id
+    }
+
     return specialist.update(data)
   },
 
