@@ -1,7 +1,7 @@
 import ProcedureModel from './models/procedure'
 import ApiException from "../../exceptions/api"
 import CategoryModel from '../categories/category.model'
-import { mysql } from '../../config/connections'
+import {mysql} from '../../config/connections'
 
 export default {
   findAll: async ({companyId, limit, offset, sort, order}) => {
@@ -9,7 +9,8 @@ export default {
       where: {companyId},
       limit, offset,
       order: [
-        [sort, order]
+        [sort, order],
+        ['id', order]
       ],
       include: {
         model: CategoryModel,
