@@ -30,6 +30,21 @@ const FileSchema = (connection, type) => {
         type: type.STRING,
         allowNull: true,
       },
+      sizes: {
+        type: type.STRING,
+        allowNull: true,
+        get() {
+          const sizes = this.getDataValue("sizes")
+          return sizes && sizes.split(',')
+        },
+      },
+      destination: {
+        type: type.STRING,
+        allowNull: true,
+      },
+      uploadBy: {
+        type: type.BIGINT
+      }
     },
   )
 }
