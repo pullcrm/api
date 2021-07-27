@@ -1,15 +1,10 @@
 import joi from "joi"
 
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
-
 import {getAvailableTime} from '../../logics/appointments'
-
 import validate from '../../utils/validate'
-import {makeRandom} from '../../utils/make-random'
 import {getDayWorkTime} from '../../utils/time'
-
 import ProcedureModel from '../procedures/models/procedure'
-
 import TimeOffService from '../timeoff/timeoff.service'
 import TimeWorkService from '../timework/timework.service'
 import SMSPrivateService from '../sms/services/sms.private'
@@ -94,7 +89,7 @@ export default {
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
-      // await TimeOffService.checkTime(formattedData)
+      await TimeOffService.checkForAvailableTime(formattedData)
 
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
