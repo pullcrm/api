@@ -1,7 +1,13 @@
-import {Op} from 'sequelize'
-import TimeOffModel from './timeoff.model'
+import {Op, QueryTypes} from "sequelize"
+import TimeOffModel from "./timeoff.model"
 import ApiException from "../../exceptions/api"
-import {addDayToDate} from '../../utils/time'
+import {addDayToDate} from "../../utils/time"
+import ProcedureModel from "../procedures/models/procedure"
+import AppointmentModel from "../appointments/appointment.model"
+import dayjs from "dayjs"
+import isEmpty from "lodash/isEmpty"
+import sequelize from "sequelize"
+import {mysql} from "../../config/connections"
 
 export default {
   create: async data => {
@@ -11,8 +17,8 @@ export default {
   update: async (data, {timeOffId}) => {
     const timeOff = await TimeOffModel.findOne({where: {id: timeOffId}})
 
-    if(!timeOff) {
-      throw new ApiException(404, 'Time wasn\'t found')
+    if (!timeOff) {
+      throw new ApiException(404, "Time wasn't found")
     }
 
     return timeOff.update(data, {returning: true})
@@ -20,20 +26,20 @@ export default {
 
   findAll: async ({specialistId, date}) => {
     const endDate = addDayToDate(date)
-  
+
     const where = {
       [Op.or]: [
         {
           startDateTime: {
-            [Op.between]: [date, endDate]
-          }
+            [Op.between]: [date, endDate],
+          },
         },
         {
           endDateTime: {
-            [Op.between]: [date, endDate]
-          }
-        }
-      ]
+            [Op.between]: [date, endDate],
+          },
+        },
+      ],
     }
 
     if (specialistId) {
@@ -45,55 +51,74 @@ export default {
     return timeOff
   },
 
-  checkTime: async appointment => {
-    const times = await TimeOffModel.findAll({where: {specialistId: appointment.specialistId,
-      date: {
-        [Op.gt]: appointment.date,
-        [Op.lt]: addDayToDate(appointment.date)
-      }
-    }, raw: true})
+  checkForAvailableTime: async appointment => {
+    const procedures = await ProcedureModel.findAll({
+      where: {id: appointment.procedures},
+    })
 
-    // const apStartTime = appointment.startTime
-    // const totalDuration = appointment.procedures.reduce((result, procedure) => {
-    //   return result + procedure.duration
-    // }, 0)
-    // const apEndTime = 
-    
-    // times.map(
-    //   T => {
-    //     const startTime = T.startTime
-    //     const endTime = T.endTime
-    //     const currentDate = new Date()   
+    const duration = procedures.reduce((result, procedure) => {
+      return result + procedure.duration
+    }, 0)
 
-    //     let startDate = new Date(currentDate.getTime())
-    //     startDate.setHours(startTime.split(":")[0])
-    //     startDate.setMinutes(startTime.split(":")[1])
-    //     startDate.setSeconds(startTime.split(":")[2])
+    const endTime = dayjs(appointment.startTime, "HH:mm:ss")
+      .add(duration, "minutes")
+      .format("HH:mm:ss")
 
-    //     let endDate = new Date(currentDate.getTime())
-    //     endDate.setHours(endTime.split(":")[0])
-    //     endDate.setMinutes(endTime.split(":")[1])
-    //     endDate.setSeconds(endTime.split(":")[2])
+    const oldAppointment = await mysql.query(`
+      select
+        ap.id, ap.date, ap.startTime, pr.duration
+      from appointments as ap
+      left join appointment_procedures as app on ap.id = app.appointmentId
+      left join procedures as pr on app.procedureId = pr.id
+      where (ap.date = '${appointment.date}') and (
+        ap.startTime > '${appointment.startTime}' and ap.startTime < '${endTime}' or
+        (ap.startTime + interval pr.duration minute) > '${appointment.startTime}' and
+        (ap.startTime + interval pr.duration minute) < '${endTime}')
+    `, {type: QueryTypes.SELECT})
 
-    //     valid = startDate < appointment.startTime && endDate > appointment.endTime
+    if (!isEmpty(oldAppointment)) {
+      throw new ApiException(400, "There is an appointment for this time")
+    }
 
-    //     console.log(Date(T.startTime) > Date(appointment.startTime))
-    //   }
-    // )
+    const startTimeOff = `${appointment.date} ${appointment.startTime}`
+    const endTimeOff = `${appointment.date} ${endTime}`
 
-    // console.log(times)
-  
-    return times
+    const timeOffs = await TimeOffModel.findAll({
+      where: {
+        specialistId: appointment.specialistId,
+        [Op.or]: [
+          {
+            startDateTime: {
+              [Op.gt]: startTimeOff,
+              [Op.lt]: endTimeOff,
+            },
+          },
+          {
+            endDateTime: {
+              [Op.gt]: startTimeOff,
+              [Op.lt]: endTimeOff,
+            },
+          },
+        ],
+      },
+      raw: true,
+    })
+
+    if (!isEmpty(timeOffs)) {
+      throw new ApiException(400, "Specialist is on break for this time")
+    }
+
+    return timeOffs
   },
 
   destroy: async ({timeOffId}) => {
     const timeOff = await TimeOffModel.findOne({where: {id: timeOffId}})
 
-    if(!timeOff) {
-      throw new ApiException(404, 'TimeOff wasn\'t found')
+    if (!timeOff) {
+      throw new ApiException(404, "TimeOff wasn't found")
     }
 
     await timeOff.destroy()
-    return {destroy: 'OK'}
+    return {destroy: "OK"}
   },
 }

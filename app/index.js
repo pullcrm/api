@@ -8,6 +8,10 @@ import * as Sentry from "@sentry/node"
 import * as Tracing from "@sentry/tracing"
 import {errorsHandler} from './middlewares/errors'
 import './models'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+
+dayjs.extend(customParseFormat)
 
 const port = process.env.PORT || '3000'
 const prefix = '/api'
