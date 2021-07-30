@@ -102,7 +102,7 @@ export default {
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
         creationSMSTemplate: joi.string(),
         remindSMSTemplate: joi.string(),
-        companyName: joi.string()
+        companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
       const company = await SMSPrivateService.addSettings(formattedData, params)
@@ -137,7 +137,7 @@ export default {
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
         creationSMSTemplate: joi.string(),
         remindSMSTemplate: joi.string(),
-        companyName: joi.string()
+        companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
       const company = await SMSPrivateService.updateSettings(formattedData, params)

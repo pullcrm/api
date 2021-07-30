@@ -1,12 +1,10 @@
 import {Op, QueryTypes} from "sequelize"
+import dayjs from "dayjs"
+import isEmpty from "lodash/isEmpty"
 import TimeOffModel from "./timeoff.model"
 import ApiException from "../../exceptions/api"
 import {addDayToDate} from "../../utils/time"
 import ProcedureModel from "../procedures/models/procedure"
-import AppointmentModel from "../appointments/appointment.model"
-import dayjs from "dayjs"
-import isEmpty from "lodash/isEmpty"
-import sequelize from "sequelize"
 import {mysql} from "../../config/connections"
 
 export default {
