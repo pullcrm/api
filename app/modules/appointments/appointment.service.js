@@ -106,20 +106,6 @@ export default {
     return {destroy: 'OK'}
   },
 
-  changeSMSIdentifier: async ({smsIdentifier}, {appointmentId, companyId}) => {
-    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
-
-    if(!appointment) {
-      throw new ApiException(404, 'Appointment wasn\'t found')
-    }
-
-    if(appointment.get('companyId') !== companyId) {
-      throw new ApiException(403, 'That is not your appointment')
-    }
-
-    await appointment.update({smsIdentifier})
-  },
-
   fetchBySpecialistId: async ({date, companyId, excludeId, specialistId}) => {
     const baseCondition = {
       isQueue: false,

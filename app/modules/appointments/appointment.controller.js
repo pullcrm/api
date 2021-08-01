@@ -92,7 +92,8 @@ export default {
       await TimeOffService.checkForAvailableTime(formattedData)
 
       const appointment = await AppointmentService.create(formattedData)
-      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+
+      await SMSPrivateService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
@@ -139,10 +140,23 @@ export default {
         hasRemindSMS: joi.boolean().allow(null),
       }))
 
-      const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
-      const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
+      /**
+       * - Update appointment
+       * - Remove old remind sms
+       * - Create new remind sms
+       */
 
-      res.send(newAppointment)
+      const appointment = await AppointmentService.update(formattedData, params.appointmentId)
+
+      await SMSPrivateService.removeSmsRemember(formattedData, params.appointmentId)
+
+      await SMSPrivateService.createAppointment({
+        ...formattedData,
+        appointmentId: params.id,
+        hasCreationSMS: false
+      })
+
+      res.send(appointment)
     } catch (error) {
       next(error)
     }
@@ -150,42 +164,20 @@ export default {
 
   destroy: async (req, res, next) => {
     try {
-      const params = {
+      const formattedData = {
         appointmentId: req.params.id,
         companyId: req.companyId
       }
 
-      validate(params, joi.object().keys({
+      validate(formattedData, joi.object().keys({
         appointmentId: joi.number().required(),
         companyId: joi.number().required()
       }))
 
-      res.send(await AppointmentService.destroy(params))
-    } catch (error) {
-      next(error)
-    }
-  },
-
-  changeSMSIdentifier: async (req, res, next) => {
-    try {
-      const data = {
-        smsIdentifier: req.body.smsIdentifier,
-      }
-
-      const params = {
-        appointmentId: req.params.id,
-        companyId: req.companyId
-      }
-
-      validate({...data, ...params}, joi.object().keys({
-        smsIdentifier: joi.string().allow(null),
-        appointmentId: joi.number().required(),
-        companyId: joi.number().required()
-      }))
-
-      const appointment = await AppointmentService.changeSMSIdentifier(data, params)
-
-      res.send(appointment)
+      await SMSPrivateService.removeSmsRemember(formattedData, formattedData.appointmentId)
+      await AppointmentService.destroy(formattedData)
+  
+      res.send({result: true})
     } catch (error) {
       next(error)
     }
@@ -294,8 +286,6 @@ export default {
         source: WIDGET,
         status: IN_PROGRESS,
         isQueue: false,
-        hasRemindSMS: req.body.hasRemindSMS,
-        hasCreationSMS: req.body.hasCreationSMS,
       }
 
       validate(formattedData, joi.object().keys({
@@ -311,12 +301,12 @@ export default {
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
-        hasRemindSMS: joi.boolean(),
-        hasCreationSMS: joi.boolean(),
       }))
 
+      // TODO: Add `checkForAvailableTime`
       const appointment = await AppointmentService.create(formattedData)
-      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+
+      await SMSPrivateService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {

@@ -32,17 +32,12 @@ export function remindNotifyMessage ({procedures, date, startTime, specialist}, 
   return `Напоминание о записи! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} у вас ${proceduresText}`
 }
 
-export function isTimeExpired (dateTime) {
-  // dateTime as dayjs
-  return dateTime.diff(new Date()) < 0
-}
+export function isTimeExpired ({date, startTime}) {
+  const dateTime = setTime(date, startTime)
 
-export function isAppointmentEdited (oldAppointment, newAppointment) {
-  const newDateTime = setTime(newAppointment.date, newAppointment.startTime).format('DD.MM.YY HH:mm')
-  const oldDateTime = !oldAppointment.isQueue && setTime(oldAppointment.date, oldAppointment.startTime).format('DD.MM.YY HH:mm')
+  if (dateTime.diff(new Date()) < 0) {
+    return true
+  }
 
-  return (
-    newDateTime !== oldDateTime ||
-    newAppointment.hasRemindSMS !== Boolean(oldAppointment.smsIdentifier)
-  )
+  return false
 }
