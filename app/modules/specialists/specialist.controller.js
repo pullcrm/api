@@ -106,7 +106,7 @@ export default {
         companyId: joi.number().required(),
         code: joi.string().max(4).required(),
         fullName: joi.string().required(),
-        phone: joi.string().required(),
+        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         avatarId: joi.number().optional()
       }))
 

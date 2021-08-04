@@ -16,7 +16,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         fullName: joi.string().required(),
-        phone: joi.string().required(),
+        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         password: joi.string().required(),
         code: joi.string().max(4).required(),
         avatarId: joi.number().optional()
@@ -70,7 +70,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        phone: joi.string().required(),
+        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         type: joi.string().valid(REGISTRATION, RESET_PASSWORD, FAST_REGISTRATION)
       }))
 
@@ -89,7 +89,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        phone: joi.string().max(10).required(),
+        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         newPassword: joi.string().max(256).required(),
         code: joi.string().max(4).required(),
       }))
