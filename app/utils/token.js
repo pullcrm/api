@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import ApiException from '../exceptions/api'
+import {makeRandom} from './make-random'
 
 const accessTokenExpiring = '7d'
 const refreshTokenExpiring = '10d'
@@ -12,7 +13,8 @@ const generateAccessToken = (userId, companyId = 0, role = '-') => {
 }
 
 const generateRefreshToken = userId => {
-  return jwt.sign({userId}, refreshSecret, {expiresIn: refreshTokenExpiring})
+  const jti = makeRandom(8)
+  return jwt.sign({userId, jti}, refreshSecret, {expiresIn: refreshTokenExpiring})
 }
 
 const verifyAccessToken = accessToken => {
