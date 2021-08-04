@@ -12,6 +12,7 @@ import {addDayToDate} from '../../utils/time'
 import {COMPLETED} from '../../constants/appointments'
 import TimeWorkModel from '../timework/timework.model'
 import WidgetSettingsModel from '../widget/models/settings.model'
+import SMSSettingsModel from '../sms/models/settings.model'
 
 export default {
   findOne: async params => {
@@ -20,6 +21,7 @@ export default {
         {model: TypeModel},
         {model: CityModel},
         {model: WidgetSettingsModel},
+        {model: SMSSettingsModel},
         {model: FileModel, as: 'logo'}
       ]})
 
