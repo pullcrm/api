@@ -16,7 +16,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        phone: joi.string().max(10).required(),
+        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         password: joi.string().max(256).required()
       }))
 
