@@ -11,7 +11,7 @@ const WidgetSettingsSchema = (connection, type) => {
     isActive: {
       type: type.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: false
     },
     isQueue: {
       type: type.BOOLEAN,
