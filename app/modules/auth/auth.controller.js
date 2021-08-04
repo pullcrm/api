@@ -63,6 +63,9 @@ export default {
       const accessToken = generateAccessToken(userId, companyId, roleName)
       const newRefreshToken = generateRefreshToken(userId)
 
+      await TokenService.create(newRefreshToken, userId)
+      await TokenService.leaveFiveTokens(userId)
+
       res.status(200).send({accessToken, refreshToken: newRefreshToken})
     } catch (error) {
       next(error)
