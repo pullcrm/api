@@ -8,7 +8,6 @@ import TypeModel from "./models/types"
 import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
 import AppointmentModel from '../appointments/appointment.model'
-import {addDayToDate} from '../../utils/time'
 import {COMPLETED} from '../../constants/appointments'
 import TimeWorkModel from '../timework/timework.model'
 import WidgetSettingsModel from '../widget/models/settings.model'
@@ -83,11 +82,11 @@ export default {
     }
 
     if(startDate) {
-      whereConditions.date = {...whereConditions.date, [sequelize.Op.gt]: startDate,}
+      whereConditions.date = {...whereConditions.date, [sequelize.Op.gte]: startDate,}
     }
 
     if(endDate) {
-      whereConditions.date = {...whereConditions.date, [sequelize.Op.lt]: addDayToDate(endDate),}
+      whereConditions.date = {...whereConditions.date, [sequelize.Op.lte]: endDate,}
     }
 
     const [stats] = await AppointmentModel.findAll(

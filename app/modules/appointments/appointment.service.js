@@ -3,7 +3,6 @@ import {mysql} from '../../config/connections'
 import ProcedureModel from '../procedures/models/procedure'
 import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
-import {addDayToDate} from '../../utils/time'
 import {Op} from 'sequelize'
 import ClientModel from '../clients/client.model'
 import SpecialistModel from '../specialists/specialist.model'
@@ -16,8 +15,7 @@ export default {
     }
 
     baseCondition.date = {
-      [Op.gt]: date,
-      [Op.lt]: addDayToDate(date)
+      [Op.between]: [date, date]
     }
 
     return AppointmentModel.findAll({
@@ -134,8 +132,7 @@ export default {
     }
 
     baseCondition.date = {
-      [Op.gt]: date,
-      [Op.lt]: addDayToDate(date)
+      [Op.between]: [date, date]
     }
 
     return AppointmentModel.findAll({
