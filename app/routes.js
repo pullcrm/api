@@ -22,6 +22,8 @@ import categoryPublicRouter from './modules/categories/routes/category.public'
 import widgetRouter from './modules/widget/routes/widget.private'
 import widgetPublicRouter from './modules/widget/routes/widget.public'
 
+import testsRouter from './modules/tests/tests.route'
+
 const api = Router()
 
 api.use('/', authRouter)
@@ -47,5 +49,8 @@ api.use('/public/companies', companyPublicRouter)
 api.use('/public/timework', timeWorkPublicRouter)
 api.use('/public/categories', categoryPublicRouter)
 api.use('/public/widget', widgetPublicRouter)
+
+/*TODO remove it in future*/
+api.use('/tests', testsRouter)
 
 export default api
