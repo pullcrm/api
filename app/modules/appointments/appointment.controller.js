@@ -315,6 +315,7 @@ export default {
         hasCreationSMS: joi.boolean(),
       }))
 
+      await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 

@@ -69,7 +69,7 @@ export default {
       left join appointment_procedures as app on ap.id = app.appointmentId
       left join procedures as pr on app.procedureId = pr.id
       where (ap.date = '${appointment.date}') and (
-        ap.startTime > '${appointment.startTime}' and ap.startTime < '${endTime}' or
+        ap.startTime >= '${appointment.startTime}' and ap.startTime <= '${endTime}' or
         (ap.startTime + interval pr.duration minute) > '${appointment.startTime}' and
         (ap.startTime + interval pr.duration minute) < '${endTime}')
     `, {type: QueryTypes.SELECT})
