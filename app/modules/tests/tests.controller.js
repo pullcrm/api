@@ -7,7 +7,7 @@ export default {
         return res.send()
       }
 
-      const user = await UserModel.findOne({where: {phone: '0999999999'}}) 
+      const user = await UserModel.findOne({where: {phone: '0111111111'}}) 
 
       if(!user) {
         return res.send({isDestroyed: false})
