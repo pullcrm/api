@@ -61,7 +61,7 @@ export default {
     const endTime = dayjs(appointment.startTime, "HH:mm:ss")
       .add(duration, "minutes")
       .format("HH:mm:ss")
-    console.log(endTime)
+
     const oldAppointment = await mysql.query(`
       select
         ap.id, ap.date, ap.startTime, pr.duration
