@@ -61,7 +61,7 @@ export default {
     const endTime = dayjs(appointment.startTime, "HH:mm:ss")
       .add(duration, "minutes")
       .format("HH:mm:ss")
-
+    console.log(endTime)
     const oldAppointment = await mysql.query(`
       select
         ap.id, ap.date, ap.startTime, pr.duration
@@ -69,7 +69,7 @@ export default {
       left join appointment_procedures as app on ap.id = app.appointmentId
       left join procedures as pr on app.procedureId = pr.id
       where (ap.date = '${appointment.date}') and (
-        ap.startTime > '${appointment.startTime}' and ap.startTime < '${endTime}' or
+        ap.startTime >= '${appointment.startTime}' and ap.startTime <= '${endTime}' or
         (ap.startTime + interval pr.duration minute) > '${appointment.startTime}' and
         (ap.startTime + interval pr.duration minute) < '${endTime}')
     `, {type: QueryTypes.SELECT})
