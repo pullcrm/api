@@ -52,7 +52,7 @@ ProcedureModel.belongsToMany(AppointmentModel,{
   timestamps: false
 })
 
-ProcedureModel.belongsTo(CategoryModel)
+ProcedureModel.belongsTo(CategoryModel, {onDelete: 'cascade'})
 CategoryModel.hasMany(ProcedureModel)
 CategoryModel.belongsTo(CompanyModel)
 SMSHistoryModel.belongsTo(CompanyModel)
