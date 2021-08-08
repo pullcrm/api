@@ -17,7 +17,16 @@ const CategorySchema = (connection, type) => {
       type: type.STRING,
       allowNull: false
     }
-  })
+  },
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ['name', 'companyId']
+      }
+    ]
+  }
+  )
 }
 
 const CategoryModel = CategorySchema(mysql, Sequelize)
