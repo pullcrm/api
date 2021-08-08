@@ -49,7 +49,7 @@ export default {
     }
   },
 
-  publicFindOne: async (req, res, next) => {
+  show: async (req, res, next) => {
     try {
       const params = {
         specialistId: req.params.id
@@ -59,7 +59,26 @@ export default {
         specialistId: joi.number().required()
       }))
 
-      const specialist = await SpecialistService.publicFindOne(params)
+      const specialist = await SpecialistService.findOne(params)
+
+      res.send(specialist)
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  publicFindOne: async (req, res, next) => {
+    try {
+      const params = {
+        specialistId: req.params.id,
+        status: ALL
+      }
+
+      validate(params, joi.object().keys({
+        specialistId: joi.number().required()
+      }))
+
+      const specialist = await SpecialistService.findOne(params)
 
       res.send(specialist)
     } catch(error) {

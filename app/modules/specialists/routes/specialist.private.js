@@ -6,6 +6,7 @@ import {ADMIN, MANAGER, SPECIALIST} from '../../../constants/roles'
 const router = Router()
 
 router.get('/', auth([ADMIN, MANAGER]), SpecialistController.index)
+router.get('/:id', auth([ADMIN, MANAGER, SPECIALIST]), SpecialistController.show)
 router.put('/bulk', auth([ADMIN, MANAGER]), SpecialistController.bulkUpdate)
 router.put('/:id', auth([ADMIN, MANAGER, SPECIALIST]), SpecialistController.update)
 router.delete('/:id', auth([ADMIN]), SpecialistController.destroy)
