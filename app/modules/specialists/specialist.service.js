@@ -43,7 +43,8 @@ export default {
     const specialists = await SpecialistModel.findAll({
       where: {companyId, [Op.not]: {status: 'DELETED'}},
       order: [
-        [sort, order]
+        [sort, order],
+        ['id', order]
       ],
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
@@ -71,7 +72,8 @@ export default {
     const specialists = await SpecialistModel.findAll({
       where: {companyId, status: ALL},
       order: [
-        [sort, order]
+        [sort, order],
+        ['id', order]
       ],
       attributes: {exclude: ['companyId', 'userId', 'roleId', 'status']},
       include: [{
@@ -120,6 +122,11 @@ export default {
 
     if(!specialist) {
       throw new ApiException(404, 'Specialist wasn\'t found')
+    }
+
+    if(data.role) {
+      const specialistsRole = await RoleModel.findOne({where: {name: data.role}, raw: true})
+      data.roleId = specialistsRole.id
     }
 
     return specialist.update(data)

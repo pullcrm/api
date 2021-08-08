@@ -16,7 +16,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        phone: joi.string().max(10).required(),
+        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         password: joi.string().max(256).required()
       }))
 
@@ -62,6 +62,9 @@ export default {
 
       const accessToken = generateAccessToken(userId, companyId, roleName)
       const newRefreshToken = generateRefreshToken(userId)
+
+      await TokenService.create(newRefreshToken, userId)
+      await TokenService.leaveFiveTokens(userId)
 
       res.status(200).send({accessToken, refreshToken: newRefreshToken})
     } catch (error) {
