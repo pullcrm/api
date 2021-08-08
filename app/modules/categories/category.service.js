@@ -40,7 +40,7 @@ export default {
       throw new ApiException(403, 'That is not your category')
     }
 
-    await category.destroy()
+    await category.destroy({cascade: true})
     return {destroy: 'OK'}
   },
 }
