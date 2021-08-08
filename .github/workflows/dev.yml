@@ -14,28 +14,28 @@ jobs:
     runs-on: ubuntu-latest
     env:
       #JWT AUTH
-      SECRET_FOR_JWT: test
-      SECRET_REFRESH_FOR_JWT: test
+      SECRET_FOR_JWT: '{{ secrets.SECRET_FOR_JWT_DEV }}'
+      SECRET_REFRESH_FOR_JWT: '{{ secrets.SECRET_REFRESH_FOR_JWT_DEV }}'
 
       #DB
-      DB_DIALECT: test
-      DB_HOST: test
-      DB_PORT: test
-      DB_NAME: test
-      DB_USER: test
-      DB_PASSWORD: test
+      DB_DIALECT: '{{ secrets.DB_DIALECT_DEV }}'
+      DB_HOST: '{{ secrets.DB_HOST_DEV }}'
+      DB_PORT: '{{ secrets.DB_PORT_DEV }}'
+      DB_NAME: '{{ secrets.DB_NAME_DEV }}'
+      DB_USER: '{{ secrets.DB_USER_DEV }}'
+      DB_PASSWORD: '{{ secrets.DB_PASSWORD_DEV }}'
 
       #PORT
-      PORT: 3000
+      PORT: '{{ secrets.PORT_DEV }}'
 
       #SERVER
-      HOST: https://dev.pullcrm.com
+      HOST: '{{ secrets.HOST_DEV }}'
 
       #SMS CLIENT
-      SMS_COMPANY_NAME: pullcrm
-      SMS_PUBLIC_KEY: test
-      SMS_PRIVATE_KEY: test
-      SMS_CLIENT_SEND_REAL_SMS: false
+      SMS_COMPANY_NAME: '{{ secrets.SMS_COMPANY_NAME_DEV }}'
+      SMS_PUBLIC_KEY: '{{ secrets.SMS_PUBLIC_KEY_DEV }}'
+      SMS_PRIVATE_KEY: '{{ secrets.SMS_PRIVATE_KEY_DEV }}'
+      SMS_CLIENT_SEND_REAL_SMS: '{{ secrets.SMS_CLIENT_SEND_REAL_SMS_DEV }}'
 
     strategy:
       matrix:
@@ -95,5 +95,5 @@ jobs:
     - name: Upload the dist folder to the server
       run: rsync -r ./dist ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/backend/release-${{ github.sha }}'
 
-    - name: Link the release folder on the server
-      run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/backend/release && ln -s /var/www/pullcrm.dev/backend/release-${{ github.sha }} /var/www/pullcrm.dev/backend/release'
+#     - name: Link the release folder on the server
+#       run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/backend/release && ln -s /var/www/pullcrm.dev/backend/release-${{ github.sha }} /var/www/pullcrm.dev/backend/release'
