@@ -89,9 +89,17 @@ export default {
     return specialists
   },
 
-  publicFindOne: async ({specialistId}) => {
+  findOne: async ({specialistId, status}) => {
+    const baseCondition = {
+      id: specialistId
+    }
+
+    if(status) {
+      baseCondition.status = status
+    }
+
     const specialist = await SpecialistModel.findOne({
-      where: {id: specialistId, status: ALL},
+      where: baseCondition,
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
         model: CompanyModel,
