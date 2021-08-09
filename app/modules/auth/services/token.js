@@ -22,7 +22,6 @@ export default {
   },
 
   checkRefreshToken: async (refreshToken, userId) => {
-    console.log("CHECK REFRESH", refreshToken, userId)
     const hasToken = await TokenModel.findOne({where: {refreshToken, userId, device: 'web'}})
 
     if (!hasToken) {
