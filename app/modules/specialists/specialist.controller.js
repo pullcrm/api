@@ -75,7 +75,8 @@ export default {
       }
 
       validate(params, joi.object().keys({
-        specialistId: joi.number().required()
+        specialistId: joi.number().required(),
+        status: joi.string().required()
       }))
 
       const specialist = await SpecialistService.findOne(params)
