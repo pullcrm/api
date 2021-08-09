@@ -17,7 +17,7 @@ module.exports = {
           table: 'categories',
           field: 'id',
         },
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         transaction
       })
 

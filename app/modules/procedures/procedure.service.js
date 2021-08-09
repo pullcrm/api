@@ -24,7 +24,10 @@ export default {
   create: async data => {
     const result = await mysql.transaction(async transaction => {
       const procedure = await ProcedureModel.create(data, {transaction})
-      await procedure.setSpecialists(data.specialistIds, {transaction})
+
+      if(data.specialistIds) {
+        await procedure.setSpecialists(data.specialistIds, {transaction})
+      }
 
       return procedure
     })
