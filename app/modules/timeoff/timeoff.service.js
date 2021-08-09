@@ -62,6 +62,7 @@ export default {
       .add(duration, "minutes")
       .format("HH:mm:ss")
 
+    // Need to check specialistId
     const oldAppointment = await mysql.query(`
       select
         ap.id, ap.date, ap.startTime, pr.duration
