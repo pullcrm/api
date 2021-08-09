@@ -62,14 +62,13 @@ export default {
       .add(duration, "minutes")
       .format("HH:mm:ss")
 
-    // Need to check specialistId
     const oldAppointment = await mysql.query(`
       select
         ap.id, ap.date, ap.startTime, pr.duration
       from appointments as ap
       left join appointment_procedures as app on ap.id = app.appointmentId
       left join procedures as pr on app.procedureId = pr.id
-      where (ap.date = '${appointment.date}') and (
+      where (ap.date = '${appointment.date}' and ap.specialistId = '${appointment.specialistId}') and (
         ap.startTime >= '${appointment.startTime}' and ap.startTime <= '${endTime}' or
         (ap.startTime + interval pr.duration minute) > '${appointment.startTime}' and
         (ap.startTime + interval pr.duration minute) < '${endTime}')
