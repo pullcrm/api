@@ -89,7 +89,7 @@ export default {
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
-      await TimeOffService.checkForAvailableTime(formattedData)
+      // await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
@@ -314,7 +314,7 @@ export default {
         hasCreationSMS: joi.boolean(),
       }))
 
-      await TimeOffService.checkForAvailableTime(formattedData)
+      // await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
