@@ -105,7 +105,13 @@ export default {
     const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
     const SMS = privateSMS(smsCreds)
 
-    const phone = appointment.phone || appointment.client.user.phone
+    // TODO: Refactor to https://github.com/uramen/pullcrm/pull/75
+    const phone = appointment.phone
+    // const phone = appointment.phone || appointment.client.user.phone
+
+    if (!phone || phone.length < 10) {
+      return null
+    }
 
     if (data.isQueue) {
       await smsIdentifier && SMS.cancelCampaign({
