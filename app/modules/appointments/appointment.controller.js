@@ -89,7 +89,7 @@ export default {
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
-      // await TimeOffService.checkForAvailableTime(formattedData)
+      await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
@@ -137,6 +137,8 @@ export default {
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         hasRemindSMS: joi.boolean().allow(null),
       }))
+
+      await TimeOffService.checkForAvailableTime({...formattedData, ...params})
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
@@ -314,7 +316,7 @@ export default {
         hasCreationSMS: joi.boolean(),
       }))
 
-      // await TimeOffService.checkForAvailableTime(formattedData)
+      await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
