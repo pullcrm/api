@@ -71,7 +71,8 @@ export default {
       where (ap.date = '${appointment.date}' and ap.specialistId = '${appointment.specialistId}') and (
         ap.startTime >= '${appointment.startTime}' and ap.startTime <= '${endTime}' or
         (ap.startTime + interval pr.duration minute) > '${appointment.startTime}' and
-        (ap.startTime + interval pr.duration minute) < '${endTime}')
+        (ap.startTime + interval pr.duration minute) < '${endTime}') and
+        (ap.id != ${appointment.appointmentId || null})
     `, {type: QueryTypes.SELECT})
 
     if (!isEmpty(oldAppointment)) {
