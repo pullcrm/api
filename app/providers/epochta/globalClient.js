@@ -1,15 +1,16 @@
-import epocthaAPI from 'epochta-client-pullcrm'
+const SMSAPI = require("e-pochta-sms-api").SMSAPI
+const Stat = require("e-pochta-sms-api").Stat
 
 const SMS_PUBLIC_KEY = process.env.SMS_PUBLIC_KEY
 const SMS_PRIVATE_KEY = process.env.SMS_PRIVATE_KEY
 
-const keys = {
+const gatewayOptions = {
   publicKey: SMS_PUBLIC_KEY,
   privateKey: SMS_PRIVATE_KEY,
+  url: "http://api.myatompark.com/sms/3.0/"
 }
 
-console.log('GLOBAL CLIENT KEYS', keys)
+const gateway = new SMSAPI(gatewayOptions)
+const stat = new Stat(gateway)
 
-const client = epocthaAPI(keys)
-
-export default client
+export default stat
