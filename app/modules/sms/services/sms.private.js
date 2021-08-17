@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import ApiException from '../../../exceptions/api'
 import privateSMS from '../../../providers/epochta/privateClient'
 import {setTime} from '../../../utils/time'
@@ -19,71 +21,75 @@ import {addUAFormat} from '../../../utils/phone'
 
 export default {
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
-    if (data.isQueue) {
-      return
-    }
-
-    if (!hasRemindSMS && !hasCreationSMS) {
-      return
-    }
-
-    const appointment = await appointmentService.find(appointmentId)
-
-    const startDateTime = setTime(appointment.date, appointment.startTime)
-
-    if (isTimeExpired(startDateTime)) {
-      return
-    }
-
-    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
-
-    if(!smsConfiguration || !smsConfiguration.smsToken) {
-      throw new ApiException(404, 'You don\'t have sms configuration!')
-    }
-
-    const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
-
-    if(hasCreationSMS) {
-      const SMS = privateSMS(smsCreds)
-      const smsResponse = await SMS.sendSMS({
-        sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
-        phone: addUAFormat(appointment.phone || appointment.client.user.phone),
-        text: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate)
-      })
-
-      SMSHistoryModel.create({
-        type: 'CREATE',
-        companyId: data.companyId,
-        recipient: appointment.phone || appointment.client.user.phone,
-        smsIdentifier: smsResponse.id,
-        message: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate),
-        datetime: new Date()
-      })
-    }
-
-    if(hasRemindSMS) {
-      const SMS = privateSMS(smsCreds)
-      const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
-
-      const smsResponse = await SMS.sendSMS({
-        sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
-        text: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
-        datetime: sendDateTime.format('YYYY-MM-DD HH:mm:ss'),
-        phone: addUAFormat(appointment.phone || appointment.client.user.phone)
-      })
-      
-      if(smsResponse.id) {
-        await appointment.update({smsIdentifier: smsResponse.id})
+    try {
+      if (data.isQueue) {
+        return
       }
-
-      SMSHistoryModel.create({
-        type: 'REMIND',
-        companyId: data.companyId,
-        recipient: appointment.phone || appointment.client.user.phone,
-        smsIdentifier: smsResponse.id,
-        message: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
-        datetime: sendDateTime
-      })
+  
+      if (!hasRemindSMS && !hasCreationSMS) {
+        return
+      }
+  
+      const appointment = await appointmentService.find(appointmentId)
+  
+      const startDateTime = setTime(appointment.date, appointment.startTime)
+  
+      if (isTimeExpired(startDateTime)) {
+        return
+      }
+  
+      const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
+  
+      if(!smsConfiguration || !smsConfiguration.smsToken) {
+        throw new ApiException(404, 'You don\'t have sms configuration!')
+      }
+  
+      const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
+  
+      if(hasCreationSMS) {
+        const SMS = privateSMS(smsCreds)
+        const smsResponse = await SMS.sendSMS({
+          sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
+          phone: addUAFormat(appointment.phone || appointment.client.user.phone),
+          text: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate)
+        })
+  
+        SMSHistoryModel.create({
+          type: 'CREATE',
+          companyId: data.companyId,
+          recipient: appointment.phone || appointment.client.user.phone,
+          smsIdentifier: smsResponse.id,
+          message: creationNotifyMessage(appointment, smsConfiguration.creationSMSTemplate),
+          datetime: new Date()
+        })
+      }
+  
+      if(hasRemindSMS) {
+        const SMS = privateSMS(smsCreds)
+        const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
+  
+        const smsResponse = await SMS.sendSMS({
+          sender: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
+          text: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
+          datetime: sendDateTime.format('YYYY-MM-DD HH:mm:ss'),
+          phone: addUAFormat(appointment.phone || appointment.client.user.phone)
+        })
+        
+        if(smsResponse.id) {
+          await appointment.update({smsIdentifier: smsResponse.id})
+        }
+  
+        SMSHistoryModel.create({
+          type: 'REMIND',
+          companyId: data.companyId,
+          recipient: appointment.phone || appointment.client.user.phone,
+          smsIdentifier: smsResponse.id,
+          message: remindNotifyMessage(appointment, smsConfiguration.remindSMSTemplate),
+          datetime: sendDateTime
+        })
+      }
+    } catch (err) {
+      Sentry.captureException(err)
     }
   },
 

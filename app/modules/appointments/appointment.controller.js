@@ -140,6 +140,8 @@ export default {
         hasRemindSMS: joi.boolean().allow(null),
       }))
 
+      await TimeOffService.checkForAvailableTime({...formattedData, ...params})
+
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 

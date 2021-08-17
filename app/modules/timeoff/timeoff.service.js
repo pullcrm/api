@@ -62,19 +62,23 @@ export default {
       .add(duration, "minutes")
       .format("HH:mm:ss")
 
-    const oldAppointment = await mysql.query(`
+    let items = await mysql.query(`
       select
         ap.id, ap.date, ap.startTime, pr.duration
       from appointments as ap
       left join appointment_procedures as app on ap.id = app.appointmentId
       left join procedures as pr on app.procedureId = pr.id
       where (ap.date = '${appointment.date}' and ap.specialistId = '${appointment.specialistId}') and (
-        ap.startTime >= '${appointment.startTime}' and ap.startTime <= '${endTime}' or
+        ap.startTime >= '${appointment.startTime}' and ap.startTime < '${endTime}' or
         (ap.startTime + interval pr.duration minute) > '${appointment.startTime}' and
         (ap.startTime + interval pr.duration minute) < '${endTime}')
     `, {type: QueryTypes.SELECT})
 
-    if (!isEmpty(oldAppointment)) {
+    if (appointment.appointmentId) {
+      items = items.filter(item => item.id !== Number(appointment.appointmentId))
+    }
+
+    if (!isEmpty(items)) {
       throw new ApiException(400, "There is an appointment for this time")
     }
 
