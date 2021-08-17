@@ -149,6 +149,31 @@ export default {
     }
   },
 
+  updateStatus: async (req, res, next) => {
+    try {
+      const formattedData = {
+        status: req.body.status,
+        companyId: req.companyId, // Not need to send
+      }
+
+      const params = {
+        appointmentId: req.params.id,
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        appointmentId: joi.number(),
+        companyId: joi.number().required(),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+      }))
+
+      const newAppointment = await AppointmentService.update(formattedData, params.appointmentId)
+
+      res.send(newAppointment)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   destroy: async (req, res, next) => {
     try {
       const params = {
