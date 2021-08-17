@@ -75,7 +75,10 @@ export default {
         specialistId: joi.number(),
         clientId: joi.number(),
         fullName: joi.string(),
-        phone: joi.string().pattern(/^0\d+$/).length(10),
+        phone: joi.string().pattern(/^0\d+$/).length(10)
+        .messages({
+          'string.length': '2000:Phone must belong 10 characters '
+        }),
         companyId: joi.number(),
         procedures: joi.array(),
         date: joi.date().required(),
@@ -89,7 +92,7 @@ export default {
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
-      // await TimeOffService.checkForAvailableTime(formattedData)
+      await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
@@ -314,7 +317,7 @@ export default {
         hasCreationSMS: joi.boolean(),
       }))
 
-      // await TimeOffService.checkForAvailableTime(formattedData)
+      await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
