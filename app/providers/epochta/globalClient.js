@@ -8,6 +8,8 @@ const keys = {
   privateKey: SMS_PRIVATE_KEY,
 }
 
+console.log('GLOBAL CLIENT KEYS', keys)
+
 const client = epocthaAPI(keys)
 
 export default client
