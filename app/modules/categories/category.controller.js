@@ -13,7 +13,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        name: joi.string().required(),
+        name: joi.string().required().max(255),
         companyId: joi.number().required(),
         type: joi.string().required().valid(PROCEDURE)
       }))
@@ -81,7 +81,7 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        name: joi.string(),
+        name: joi.string().max(255),
         categoryId: joi.number().required(),
         companyId: joi.number().required(),
       }))

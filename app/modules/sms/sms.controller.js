@@ -100,8 +100,8 @@ export default {
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
-        creationSMSTemplate: joi.string(),
-        remindSMSTemplate: joi.string(),
+        creationSMSTemplate: joi.string().max(402),
+        remindSMSTemplate: joi.string().max(402),
         companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
@@ -135,8 +135,8 @@ export default {
         hasCreationSMS: joi.boolean(),
         hasRemindSMS: joi.boolean(),
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
-        creationSMSTemplate: joi.string(),
-        remindSMSTemplate: joi.string(),
+        creationSMSTemplate: joi.string().max(402),
+        remindSMSTemplate: joi.string().max(402),
         companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
