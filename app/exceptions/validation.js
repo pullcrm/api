@@ -1,8 +1,8 @@
 export default class ValidationException extends Error {
-  constructor (code, message) {
+  constructor (fieldName, message) {
     super()
     this.message = message
-    this.code = code
+    this.fieldName = fieldName
     this.status = 200
   }
 }

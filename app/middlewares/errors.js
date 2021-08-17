@@ -7,7 +7,6 @@ import ValidationException from "../exceptions/validation"
 export const errorsHandler = (err, res) => {
   let message = err.message
   let status = err.status || 500
-  const code = err.code
 
   if(err.name === 'SequelizeUniqueConstraintError') {
     message = Array.isArray(err.errors) && err.errors.map(E => E.message).join(';\n')
@@ -15,9 +14,11 @@ export const errorsHandler = (err, res) => {
   }
 
   if (err instanceof ValidationException) {
+    const fieldName = err.fieldName
+
     return res.status(status).send({
       error: {
-        code,
+        fieldName,
         message
       }
     })

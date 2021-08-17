@@ -75,9 +75,8 @@ export default {
         specialistId: joi.number(),
         clientId: joi.number(),
         fullName: joi.string(),
-        phone: joi.string().pattern(/^0\d+$/).length(10)
-        .messages({
-          'string.length': '2000:Phone must belong 10 characters '
+        phone: joi.string().pattern(/^0\d+$/).length(10).message({
+          'string.length': 'Номер телефона должен иметь 10 символов'
         }),
         companyId: joi.number(),
         procedures: joi.array(),

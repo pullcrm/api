@@ -4,9 +4,9 @@ export default (data, schema) => {
   const validator = schema.validate(data)
 
   if(validator.error) {
-    const code = Number(validator.error.message.split(':')[0])
-    const message = validator.error.message.split(':')[1]
-
-    throw new ValidationException(code, message)
+    console.log(validator.error.details[0])
+    const message = validator.error.message
+    const fieldName = validator.error.details[0].context.key
+    throw new ValidationException(fieldName, message)
   }
 }
