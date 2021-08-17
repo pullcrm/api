@@ -1,5 +1,5 @@
-const SMSAPI = require("e-pochta-sms-api").SMSAPI
-const Stat = require("e-pochta-sms-api").Stat
+const SMSAPI = require("epochta-pullcrm").SMSAPI
+const Stat = require("epochta-pullcrm").Stat
 
 const SMS_PUBLIC_KEY = process.env.SMS_PUBLIC_KEY
 const SMS_PRIVATE_KEY = process.env.SMS_PRIVATE_KEY
