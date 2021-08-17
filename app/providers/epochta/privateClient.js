@@ -7,7 +7,5 @@ export default keys => {
     url: "http://api.myatompark.com/sms/3.0/"
   })
 
-  console.log(new Stat(gateway))
-
   return new Stat(gateway)
 }
