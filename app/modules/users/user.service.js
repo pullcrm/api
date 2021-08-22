@@ -91,7 +91,7 @@ export default {
 
     return SMSGlobalService.send({
       phone,
-      message: `Код PullCRM: ${code}`,
+      message: `Код: ${code}`,
     })
   },
 
