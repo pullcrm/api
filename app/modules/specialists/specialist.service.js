@@ -4,6 +4,7 @@ import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
+import CategoryModel from "../categories/category.model"
 import ApiException from '../../exceptions/api'
 import WidgetSettingsModel from '../widget/models/settings.model'
 import SMSSettingsModel from '../sms/models/settings.model'
@@ -58,7 +59,16 @@ export default {
           {model: FileModel, as: 'logo'}
         ]
       },
-      {model: ProcedureModel, as: 'procedures'},
+      {model: ProcedureModel,
+        as: 'procedures',
+        attributes: {
+          exclude: ['companyId', 'categoryId']
+        },
+        include: {
+          model: CategoryModel,
+          as: 'category'
+        }
+      },
       {model: RoleModel},
       {model: UserModel, include: {
         model: FileModel,
@@ -110,7 +120,17 @@ export default {
           {model: FileModel, as: 'logo'}
         ]
       },
-      {model: ProcedureModel, as: 'procedures'},
+      {
+        model: ProcedureModel,
+        as: 'procedures',
+        attributes: {
+          exclude: ['companyId', 'categoryId']
+        },
+        include: {
+          model: CategoryModel,
+          as: 'category'
+        }
+      },
       {model: RoleModel},
       {model: UserModel, include: {
         model: FileModel,
