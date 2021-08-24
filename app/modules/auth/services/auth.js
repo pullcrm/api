@@ -3,7 +3,7 @@ import UserModel from '../../users/user.model'
 import RoleModel from "../../roles/role.model"
 import SpecialistModel from "../../specialists/specialist.model"
 import TokenModel from '../models/token'
-import ApiException from '../../../exceptions/api'
+import ValidationException from '../../../exceptions/validation'
 
 export default {
   findBy: async params => {
@@ -29,7 +29,7 @@ export default {
       })
 
     if(!user) {
-      throw new ApiException(400, 'Invalid password or email')
+      throw new ValidationException('*', 'Введен неверный логин или пароль')
     }
 
     return user
@@ -39,7 +39,7 @@ export default {
     const passwordIsValid = bCrypt.compareSync(firstPassword, secondPassword)
 
     if (!passwordIsValid) {
-      throw new ApiException(400, 'Invalid password or email')
+      throw new ValidationException('*', 'Введен неверный логин или пароль')
     }
   },
 }

@@ -17,7 +17,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         phone: joi.string().pattern(/^0\d+$/).length(10).required(),
-        password: joi.string().max(256).required()
+        password: joi.string().max(255).required()
       }))
 
       const user = await AuthService.findBy({phone: formattedData.phone})

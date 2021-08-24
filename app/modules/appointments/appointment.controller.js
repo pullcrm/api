@@ -74,14 +74,14 @@ export default {
       validate(formattedData, joi.object().keys({
         specialistId: joi.number(),
         clientId: joi.number(),
-        fullName: joi.string(),
+        fullName: joi.string().length(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date().required(),
+        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         hasRemindSMS: joi.boolean(),
@@ -124,14 +124,14 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number(),
         clientId: joi.number(),
-        fullName: joi.string(),
+        fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date(),
+        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD'),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
@@ -232,7 +232,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        date: joi.string(),
+        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD'),
         userId: joi.number().required(),
         companyId: joi.number().required(),
         excludeId: joi.number().allow(null),
@@ -272,7 +272,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        date: joi.string(),
+        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD'),
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
         duration: joi.number().required()
@@ -328,14 +328,14 @@ export default {
 
       validate(formattedData, joi.object().keys({
         specialistId: joi.number(),
-        fullName: joi.string(),
+        fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/),
+        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD').required(),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).required(),
         total: joi.number(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),

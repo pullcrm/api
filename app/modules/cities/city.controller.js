@@ -29,7 +29,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        name: joi.string().max(256).required()
+        name: joi.string().max(255).required()
       }))
 
       const role = await CityService.create(formattedData)
