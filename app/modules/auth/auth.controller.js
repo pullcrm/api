@@ -72,8 +72,14 @@ export default {
     }
   },
 
-  logout: (req, res) => {
-    //TODO need deactivate tokens that not expired
-    res.json({logout: true})
+  logout: async (req, res, next) => {
+    try {
+      const userId = req.userId
+      await TokenService.deactivateRefreshTokens(userId)
+  
+      res.json({logout: true})
+    } catch(error) {
+      next(error)
+    }
   }
 }
