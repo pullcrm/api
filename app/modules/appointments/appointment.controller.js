@@ -186,7 +186,9 @@ export default {
         companyId: joi.number().required()
       }))
 
-      res.send(await AppointmentService.destroy(params))
+      const result = await AppointmentService.destroy(params)
+
+      res.send(result)
     } catch (error) {
       next(error)
     }

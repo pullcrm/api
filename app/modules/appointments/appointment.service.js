@@ -6,6 +6,7 @@ import ApiException from '../../exceptions/api'
 import {Op} from 'sequelize'
 import ClientModel from '../clients/client.model'
 import SpecialistModel from '../specialists/specialist.model'
+import SMSPrivateService from '../sms/services/sms.private'
 
 export default {
   findAll: async ({date, companyId}) => {
@@ -91,6 +92,7 @@ export default {
 
   destroy: async ({appointmentId, companyId}) => {
     const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
+    const smsIdentifier = appointment.smsIdentifier
 
     if(!appointment) {
       throw new ApiException(404, 'Appointment wasn\'t found')
@@ -98,6 +100,10 @@ export default {
 
     if(appointment.get('companyId') !== companyId) {
       throw new ApiException(403, 'That is not your appointment')
+    }
+
+    if(smsIdentifier) {
+      await SMSPrivateService.destroySMS({smsIdentifier}, companyId)
     }
 
     await appointment.destroy({cascade: true})

@@ -212,6 +212,21 @@ export default {
     }
   },
 
+  destroySMS: async ({smsIdentifier}, companyId) => {
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
+
+    if(!smsConfiguration || !smsConfiguration.smsToken) {
+      throw new ApiException(404, 'SMS Configuretion was not found')
+    }
+  
+    const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
+    const SMS = privateSMS(smsCreds)
+
+    return SMS.cancelCampaign({
+      id: smsIdentifier
+    })
+  },
+
   status: async ({smsIdentifier}, companyId) => {
     const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
