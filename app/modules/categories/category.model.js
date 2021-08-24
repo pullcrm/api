@@ -11,10 +11,6 @@ const CategorySchema = (connection, type) => {
     name: {
       type: type.STRING,
       allowNull: false,
-      unique: {
-        args: 'phone',
-        msg: 'Такая категория уже существует'
-      }
     },
     type: {
       type: type.STRING,
