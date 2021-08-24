@@ -18,6 +18,7 @@ import {encrypt} from '../../../utils/crypto'
 import CompanyModel from '../../companies/models/company'
 import exclude from '../../../utils/exclude'
 import {addUAFormat} from '../../../utils/phone'
+import ValidationException from '../../../exceptions/validation'
 
 export default {
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
@@ -240,7 +241,7 @@ export default {
     try {
       await SMS.getUserBalance({currency: 'UAH'})
     } catch(error) {
-      throw new ApiException(404, 'SMS account wasn\'t found')
+      throw new ValidationException('*', 'СМС акаунт небыл найден')
     }
 
     const company = await CompanyModel.findOne({where: {id: companyId}})
