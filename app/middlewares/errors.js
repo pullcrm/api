@@ -2,6 +2,7 @@
 // import {INTERNAL_SERVER_ERROR} from 'http-status'
 // import {ERROR_HAPPEN} from '../constants/messages'
 
+import {ValidationErrorItem} from "sequelize"
 import ValidationException from "../exceptions/validation"
 
 export const errorsHandler = (err, res) => {
@@ -24,7 +25,18 @@ export const errorsHandler = (err, res) => {
     })
   }
 
-  console.log(err)
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    console.log(err.errors[0])
+    const fieldName = err.errors[0].path
+
+    return res.status(status).send({
+      error: {
+        fieldName,
+        message
+      }
+    })
+  }
+
   return res.status(status).send({
     message,
     status

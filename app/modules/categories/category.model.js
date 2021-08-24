@@ -11,7 +11,10 @@ const CategorySchema = (connection, type) => {
     name: {
       type: type.STRING,
       allowNull: false,
-      unique: true
+      unique: {
+        args: 'phone',
+        msg: 'Такая категория уже существует'
+      }
     },
     type: {
       type: type.STRING,
@@ -22,7 +25,7 @@ const CategorySchema = (connection, type) => {
     indexes: [
       {
         unique: true,
-        fields: ['name', 'companyId']
+        fields: ['name', 'companyId', 'type']
       }
     ]
   }
