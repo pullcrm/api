@@ -110,6 +110,10 @@ export default {
 
     const specialist = await SpecialistModel.findOne({
       where: baseCondition,
+      order: [
+        [ProcedureModel, 'order', 'asc'],
+        [ProcedureModel, 'id', 'asc']
+      ],
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
         model: CompanyModel,
