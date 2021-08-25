@@ -1,7 +1,4 @@
-// import ApiException from '../exceptions/api'
-// import {INTERNAL_SERVER_ERROR} from 'http-status'
-// import {ERROR_HAPPEN} from '../constants/messages'
-
+import {UNIQUE_CATEGORY_NAME} from '../constants/messages'
 import ValidationException from "../exceptions/validation"
 
 export const errorsHandler = (err, res) => {
@@ -26,7 +23,12 @@ export const errorsHandler = (err, res) => {
 
     if(fieldName === 'categories_name_company_id') {
       fieldName = 'name'
-      message = 'Имя категории должно быть уникальным'
+      message = UNIQUE_CATEGORY_NAME
+    }
+
+    if(fieldName === 'specialists_company_id_user_id_role_id') {
+      fieldName = 'phone'
+      message = 'Сотрудник с таким номером уже есть в компании'
     }
 
     return res.status(status).send({
