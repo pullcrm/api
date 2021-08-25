@@ -21,6 +21,7 @@ export const errorsHandler = (err, res) => {
 
   if (err.name === 'SequelizeUniqueConstraintError') {
     let fieldName = err.errors[0].path
+    message = err.errors[0].message
     status = 200
 
     if(fieldName === 'categories_name_company_id') {

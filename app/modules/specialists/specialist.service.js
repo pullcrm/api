@@ -180,7 +180,7 @@ export default {
       throw new ApiException(403, 'You don\'t have such specialist in your company! ')
     }
 
-    return specialist.update({status: "DELETED"})
+    return specialist.destroy({cascade: true})
   },
 
   updateProcedures: async (data, params) => {

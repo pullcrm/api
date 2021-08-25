@@ -111,14 +111,11 @@ export default {
     const confirmation = await redis.hgetall(registrationKey)
 
     if (!confirmation) {
-      throw new ApiException(
-        403,
-        "Code for completing the registration is not correct"
-      )
+      throw new ValidationException("code", "Код для добавления сотрудника неверный")
     }
 
     if (confirmation.code !== data.code || confirmation.phone !== data.phone) {
-      throw new ApiException(403, "Code or phone is not correct")
+      throw new ValidationException("code", "Код для добавления сотрудника неверный")
     }
 
     await redis.del(registrationKey)
