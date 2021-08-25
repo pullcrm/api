@@ -22,7 +22,7 @@ export default {
         avatarId: joi.number().optional()
       }))
 
-      const user = await UserService.create(formattedData)
+      const user = await UserService.findOrCreate(formattedData)
       res.send(user)
     } catch(error) {
       next(error)

@@ -131,7 +131,7 @@ export default {
       }))
 
       const result = await mysql.transaction(async transaction => {
-        const user = await UserService.create(formattedData, params, transaction)
+        const user = await UserService.findOrCreate(formattedData, params, transaction)
         const specialist = await SpecialistService.create(user, params, transaction)
 
         return {...specialist.toJSON(), user: user.toJSON()}

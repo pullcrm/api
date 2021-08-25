@@ -106,7 +106,7 @@ export default {
     })
   },
 
-  create: async data => {
+  findOrCreate: async data => {
     const registrationKey = `${REGISTRATION}-${data.phone}`
     const confirmation = await redis.hgetall(registrationKey)
 
@@ -120,7 +120,8 @@ export default {
 
     await redis.del(registrationKey)
 
-    return UserModel.create(data, {returning: true})
+    const user = await UserModel.findOne({where: {phone: data.phone}})
+    return user ? user : UserModel.create(data, {returning: true})
   },
 
   resetPassword: async ({phone, newPassword, code}) => {
