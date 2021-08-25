@@ -74,7 +74,7 @@ export default {
       validate(formattedData, joi.object().keys({
         specialistId: joi.number(),
         clientId: joi.number(),
-        fullName: joi.string().length(255),
+        fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
