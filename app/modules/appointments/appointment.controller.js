@@ -10,6 +10,7 @@ import TimeWorkService from '../timework/timework.service'
 import SMSPrivateService from '../sms/services/sms.private'
 import AppointmentService from './appointment.service'
 import {ADMIN_PANEL, WIDGET} from "../../constants/appointmentSources"
+import NotificationService from "../notifications/notification.service"
 
 export default {
   index: async (req, res, next) => {
@@ -92,6 +93,7 @@ export default {
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
@@ -141,6 +143,8 @@ export default {
       await TimeOffService.checkForAvailableTime({...formattedData, ...params})
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
+      NotificationService.updateAppointment(formattedData, params.appointmentId)
+      
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 
       res.send(newAppointment)
@@ -186,6 +190,7 @@ export default {
         companyId: joi.number().required()
       }))
 
+      await NotificationService.deleteAppointment(params.appointmentId)
       const result = await AppointmentService.destroy(params)
 
       res.send(result)
