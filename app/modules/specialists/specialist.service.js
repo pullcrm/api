@@ -18,6 +18,14 @@ export default {
     return SpecialistModel.findAll({companyId})
   },
 
+  getUserBySpecialistId: async ({specialistId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId}, include: [{
+      model: UserModel
+    }]})
+  
+    return specialist.user
+  },
+
   checkBy: async params => {
     const specialist = await SpecialistModel.findOne({where: params})
 

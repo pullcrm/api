@@ -26,6 +26,12 @@ export default {
     })
   },
 
+  findOneBySpecialist: async ({specialist}) => {
+    return UserModel.findOne({
+      where: {specialist},
+    })
+  },
+
   profile: async ({userId}) => {
     const user = await UserModel.findOne({
       where: {id: userId},

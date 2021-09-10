@@ -30,7 +30,11 @@ const UserSchema = (connection, type) => {
     password: {
       type: type.STRING,
       allowNull: true,
-    }
+    },
+    telegramId: {
+      type: type.BIGINT,
+      allowNull: true,
+    },
   }, {
     defaultScope: {
       attributes: {exclude: ['password', 'refreshTokens']}
