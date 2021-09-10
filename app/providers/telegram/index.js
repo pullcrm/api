@@ -1,42 +1,46 @@
 import {Telegraf} from 'telegraf'
 import UserService from '../../modules/users/user.service'
-import { removeUAFormat } from '../../utils/phone'
+import {removeUAFormat} from '../../utils/phone'
 
 const TelegramBot = new Telegraf(process.env.TELEGRAM_TOKEN)
 
 TelegramBot.start(ctx => {
-  console.log(ctx.chat.id)
-  TelegramBot.telegram.sendMessage(ctx.chat.id, 'Нажмите на кнопку ниже!', requestPhoneKeyboard)
+  // console.log(ctx.chat.id)
+  TelegramBot.telegram.sendMessage(ctx.chat.id, 'Отправьте свой номер чтобы получать уведомления о записях!', requestPhoneKeyboard)
 })
   
 TelegramBot.on('contact', async ctx => {
   // const chatId = msg.chat.id
   
-  /**reply_markup
-     * chatId: 289974583
-     * 
-      contact: {
-        phone_number: '380660646333',
-        first_name: 'Bohdan',
-        last_name: 'Tsaryk',
-        user_id: 289974583
-      }
-     */
-  const phone = removeUAFormat(ctx.message.contact.phone_number)
-  console.log(phone)
-  const user = await UserService.findOneByPhone({phone})
+  /**
+    chatId: 289974583
 
-  if(!user || user.telegramId) {
-    ctx.reply('Пользователь не найден, убедитесь что такой пользователь зарегистрирован на pullcrm')
-    return
+    contact: {
+      phone_number: '380660646333',
+      first_name: 'Bohdan',
+      last_name: 'Tsaryk',
+      user_id: 289974583
+    }
+  */
+
+  const user = await UserService.findOneByPhone({
+    phone: removeUAFormat(ctx.message.contact.phone_number)
+  })
+
+  if(!user) {
+    // TODO: Can register a user here
+    return ctx.reply('Пользователь не найден, убедитесь что такой пользователь зарегистрирован на pullcrm')
   }
 
-  const updateUser = await user.update({telegramId: ctx.message.contact.user_id})
-  console.log(updateUser)
+  if (user.telegramId) {
+    return ctx.reply('Вы уже получаете уведомления в этот чат.')
+  }
+
+  await user.update({
+    telegramId: ctx.message.contact.user_id
+  })
+
   ctx.reply('Теперь вы будете получать уведомления по указаному номеру.')
-  
-  // setInterval(() => bot.telegram.sendMessage(289974583, 'Повтор сообщений'), 3000)
-  
 })
   
 // bot.stop(ctx => {
