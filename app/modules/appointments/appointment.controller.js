@@ -350,6 +350,7 @@ export default {
 
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
+      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
