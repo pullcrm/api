@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import ApiException from "../../exceptions/api"
 import TelegramBot from "../../providers/telegram"
 import AppointmentService from "../appointments/appointment.service"
 import {isAppointmentEdited} from "../sms/sms.view"
