@@ -1,5 +1,6 @@
-import joi from "joi"
 import 'dotenv/config'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import SpecialistService from '../specialists/specialist.service'
@@ -60,18 +61,18 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        name: joi.string().required(),
+        name: joi.string().required().max(255),
         cityId: joi.number().required(),
         typeId: joi.number().required(),
         logoId: joi.number().optional(),
         userId: joi.number().required(),
-        address: joi.string().allow(''),
+        address: joi.string().allow('').max(255),
         phone: joi.string().allow('').pattern(/^0\d+$/).length(10),
-        description: joi.string().allow(''),
-        viber: joi.string().allow(''),
-        telegram: joi.string().allow(''),
-        instagram: joi.string().allow(''),
-        facebook: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
+        viber: joi.string().allow('').max(255),
+        telegram: joi.string().allow('').max(255),
+        instagram: joi.string().allow('').max(255),
+        facebook: joi.string().allow('').max(255),
       }))
 
       const company = await CompanyService.create(formattedData)
@@ -104,19 +105,19 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        name: joi.string(),
+        name: joi.string().max(255),
         cityId: joi.number(),
         typeId: joi.number(),
         logoId: joi.number(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
-        address: joi.string().allow(''),
+        address: joi.string().allow('').max(255),
         phone: joi.string().allow('').pattern(/^0\d+$/).length(10),
-        description: joi.string().allow(''),
-        viber: joi.string().allow(''),
-        telegram: joi.string().allow(''),
-        instagram: joi.string().allow(''),
-        facebook: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
+        viber: joi.string().allow('').max(255),
+        telegram: joi.string().allow('').max(255),
+        instagram: joi.string().allow('').max(255),
+        facebook: joi.string().allow('').max(255),
       }))
 
       const company = await CompanyService.update(formattedData, params)

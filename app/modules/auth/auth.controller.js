@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import joi from 'joi'
+import joi from '../../utils/joi'
 import AuthService from './services/auth'
 import SpecialistService from '../specialists/specialist.service'
 import RoleService from '../roles/role.service'
@@ -17,7 +17,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         phone: joi.string().pattern(/^0\d+$/).length(10).required(),
-        password: joi.string().max(256).required()
+        password: joi.string().max(255).required()
       }))
 
       const user = await AuthService.findBy({phone: formattedData.phone})
@@ -72,8 +72,14 @@ export default {
     }
   },
 
-  logout: (req, res) => {
-    //TODO need deactivate tokens that not expired
-    res.json({logout: true})
+  logout: async (req, res, next) => {
+    try {
+      const userId = req.userId
+      await TokenService.deactivateRefreshTokens(userId)
+  
+      res.json({logout: true})
+    } catch(error) {
+      next(error)
+    }
   }
 }

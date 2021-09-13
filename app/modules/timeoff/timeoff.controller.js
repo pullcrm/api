@@ -1,5 +1,6 @@
-import joi from "joi"
 import TimeOffService from './timeoff.service'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 
 export default {
@@ -33,10 +34,10 @@ export default {
 
       validate({...formattedData,  ...params}, joi.object().keys({
         specialistId: joi.number().required(),
-        startDateTime: joi.string().required(),
-        endDateTime: joi.string().required(),
+        startDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+        endDateTime:  joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
         userId: joi.number().required(),
-        description: joi.string().allow('')
+        description: joi.string().max(255).allow('')
       }))
 
       const timeoff = await TimeOffService.create({...formattedData,  ...params})
@@ -62,8 +63,8 @@ export default {
 
       validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number().required(),
-        startDateTime: joi.string().required(),
-        endDateTime: joi.string().required(),
+        startDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+        endDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
         timeOffId: joi.number().required(),
         userId: joi.number().required(),
         description: joi.string().allow('')

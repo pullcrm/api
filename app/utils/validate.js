@@ -1,9 +1,11 @@
-import ApiException from "../exceptions/api"
+import ValidationException from "../exceptions/validation"
 
 export default (data, schema) => {
   const validator = schema.validate(data)
 
   if(validator.error) {
-    throw new ApiException(400, validator.error.message)
+    const message = validator.error.message
+    const fieldName = validator.error.details[0].context.key
+    throw new ValidationException(fieldName, message)
   }
 }

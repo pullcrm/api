@@ -18,6 +18,7 @@ import {encrypt} from '../../../utils/crypto'
 import CompanyModel from '../../companies/models/company'
 import exclude from '../../../utils/exclude'
 import {addUAFormat} from '../../../utils/phone'
+import ValidationException from '../../../exceptions/validation'
 
 export default {
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
@@ -212,6 +213,21 @@ export default {
     }
   },
 
+  destroySMS: async ({smsIdentifier}, companyId) => {
+    const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
+
+    if(!smsConfiguration || !smsConfiguration.smsToken) {
+      throw new ApiException(404, 'SMS Configuretion was not found')
+    }
+  
+    const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
+    const SMS = privateSMS(smsCreds)
+
+    return SMS.cancelCampaign({
+      id: smsIdentifier
+    })
+  },
+
   status: async ({smsIdentifier}, companyId) => {
     const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId}})
 
@@ -240,7 +256,7 @@ export default {
     try {
       await SMS.getUserBalance({currency: 'UAH'})
     } catch(error) {
-      throw new ApiException(404, 'SMS account wasn\'t found')
+      throw new ValidationException('*', 'СМС акаунт небыл найден')
     }
 
     const company = await CompanyModel.findOne({where: {id: companyId}})

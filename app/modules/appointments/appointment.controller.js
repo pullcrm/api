@@ -1,7 +1,6 @@
-import joi from "joi"
-
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 import {getAvailableTime} from '../../logics/appointments'
+import joi from "../../utils/joi"
 import validate from '../../utils/validate'
 import {getDayWorkTime} from '../../utils/time'
 import ProcedureModel from '../procedures/models/procedure'
@@ -10,6 +9,7 @@ import TimeWorkService from '../timework/timework.service'
 import SMSPrivateService from '../sms/services/sms.private'
 import AppointmentService from './appointment.service'
 import {ADMIN_PANEL, WIDGET} from "../../constants/appointmentSources"
+import NotificationService from "../notifications/notification.service"
 
 export default {
   index: async (req, res, next) => {
@@ -74,14 +74,14 @@ export default {
       validate(formattedData, joi.object().keys({
         specialistId: joi.number(),
         clientId: joi.number(),
-        fullName: joi.string(),
+        fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date().required(),
+        date: joi.date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         isQueue: joi.boolean().allow(null),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         hasRemindSMS: joi.boolean(),
@@ -92,6 +92,7 @@ export default {
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
@@ -124,14 +125,14 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number(),
         clientId: joi.number(),
-        fullName: joi.string(),
+        fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date(),
+        date: joi.date().format('YYYY-MM-DD'),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         appointmentId: joi.number(),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
@@ -141,6 +142,8 @@ export default {
       await TimeOffService.checkForAvailableTime({...formattedData, ...params})
 
       const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
+      NotificationService.updateAppointment(formattedData, params.appointmentId)
+      
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
 
       res.send(newAppointment)
@@ -186,7 +189,10 @@ export default {
         companyId: joi.number().required()
       }))
 
-      res.send(await AppointmentService.destroy(params))
+      await NotificationService.deleteAppointment(params.appointmentId)
+      const result = await AppointmentService.destroy(params)
+
+      res.send(result)
     } catch (error) {
       next(error)
     }
@@ -230,7 +236,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        date: joi.string(),
+        date: joi.date().format('YYYY-MM-DD').utc(),
         userId: joi.number().required(),
         companyId: joi.number().required(),
         excludeId: joi.number().allow(null),
@@ -270,7 +276,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        date: joi.string(),
+        date: joi.date().format('YYYY-MM-DD'),
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
         duration: joi.number().required()
@@ -326,14 +332,14 @@ export default {
 
       validate(formattedData, joi.object().keys({
         specialistId: joi.number(),
-        fullName: joi.string(),
+        fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.date(),
-        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/),
+        date: joi.date().format('YYYY-MM-DD').required(),
+        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).required(),
         total: joi.number(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         isQueue: joi.boolean(),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
@@ -343,6 +349,7 @@ export default {
 
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
+      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
       await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)

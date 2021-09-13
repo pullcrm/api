@@ -1,6 +1,6 @@
 import CityService from './city.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 
 export default {
   index: async (req, res, next) => {
@@ -29,7 +29,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        name: joi.string().max(256).required()
+        name: joi.string().max(255).required()
       }))
 
       const role = await CityService.create(formattedData)

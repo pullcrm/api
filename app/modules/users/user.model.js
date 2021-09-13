@@ -12,26 +12,14 @@ const UserSchema = (connection, type) => {
       autoIncrement: true
     },
     fullName: {
-      type: type.STRING(250),
+      type: type.STRING(255),
       allowNull: true,
-
-      validate: {
-        len: {
-          args: [0, 50],
-          msg: 'Fullname should be in a range between 0 and 250.'
-        }
-      }
     },
     phone: {
       type: type.STRING(10),
       allowNull: false,
-      unique: true,
-
-      validate: {
-        len: {
-          args: [0, 10],
-          msg: 'Phone number should be in a range between 0 and 10.'
-        }
+      unique: {
+        msg: 'Такой номер уже существует',
       }
     },
     email: {
@@ -42,7 +30,11 @@ const UserSchema = (connection, type) => {
     password: {
       type: type.STRING,
       allowNull: true,
-    }
+    },
+    telegramId: {
+      type: type.BIGINT,
+      allowNull: true,
+    },
   }, {
     defaultScope: {
       attributes: {exclude: ['password', 'refreshTokens']}
@@ -69,6 +61,10 @@ const UserSchema = (connection, type) => {
         if(options.attributes.password) {
           options.attributes.password = encryptPassword(options.attributes.password)
         }
+      },
+
+      validationFailed(instance, options, error) {
+        console.log('HOOK', options, error)
       }
     }
   }

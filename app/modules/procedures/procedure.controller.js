@@ -1,6 +1,6 @@
 import ProceduresService from './procedure.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 
 export default {
   index: async (req, res, next) => {
@@ -45,7 +45,7 @@ export default {
         price: joi.number().required(),
         duration: joi.number().required(),
         companyId: joi.number().required(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         categoryId: joi.number().allow(null),
         specialistIds: joi.array(),
       }))
@@ -79,7 +79,7 @@ export default {
         duration: joi.number(),
         procedureId: joi.number().required(),
         companyId: joi.number().required(),
-        description: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
         categoryId: joi.number().allow(null),
         specialistIds: joi.array(),
       }))

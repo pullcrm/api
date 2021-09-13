@@ -4,6 +4,7 @@ import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
 import CityModel from "../cities/city.model"
 import FileModel from '../files/file.model'
+import CategoryModel from "../categories/category.model"
 import ApiException from '../../exceptions/api'
 import WidgetSettingsModel from '../widget/models/settings.model'
 import SMSSettingsModel from '../sms/models/settings.model'
@@ -15,6 +16,14 @@ import {Op} from 'sequelize'
 export default {
   findAll: async ({companyId}) => {
     return SpecialistModel.findAll({companyId})
+  },
+
+  getUserBySpecialistId: async ({specialistId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId}, include: [{
+      model: UserModel
+    }]})
+  
+    return specialist.user
   },
 
   checkBy: async params => {
@@ -58,7 +67,16 @@ export default {
           {model: FileModel, as: 'logo'}
         ]
       },
-      {model: ProcedureModel, as: 'procedures'},
+      {model: ProcedureModel,
+        as: 'procedures',
+        attributes: {
+          exclude: ['companyId', 'categoryId']
+        },
+        include: {
+          model: CategoryModel,
+          as: 'category'
+        }
+      },
       {model: RoleModel},
       {model: UserModel, include: {
         model: FileModel,
@@ -100,6 +118,10 @@ export default {
 
     const specialist = await SpecialistModel.findOne({
       where: baseCondition,
+      order: [
+        [ProcedureModel, 'order', 'asc'],
+        [ProcedureModel, 'id', 'asc']
+      ],
       attributes: {exclude: ['companyId', 'userId', 'roleId']},
       include: [{
         model: CompanyModel,
@@ -110,7 +132,17 @@ export default {
           {model: FileModel, as: 'logo'}
         ]
       },
-      {model: ProcedureModel, as: 'procedures'},
+      {
+        model: ProcedureModel,
+        as: 'procedures',
+        attributes: {
+          exclude: ['companyId', 'categoryId']
+        },
+        include: {
+          model: CategoryModel,
+          as: 'category'
+        }
+      },
       {model: RoleModel},
       {model: UserModel, include: {
         model: FileModel,
@@ -156,7 +188,7 @@ export default {
       throw new ApiException(403, 'You don\'t have such specialist in your company! ')
     }
 
-    return specialist.update({status: "DELETED"})
+    return specialist.destroy({cascade: true})
   },
 
   updateProcedures: async (data, params) => {

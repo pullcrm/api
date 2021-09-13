@@ -32,6 +32,14 @@ const SpecialistSchema = (connection, type) => {
       allowNull: false,
       defaultValue: 0
     }
+  }, 
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ['companyId', 'userId', 'roleId']
+      }
+    ]
   })
 }
 

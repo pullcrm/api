@@ -1,10 +1,10 @@
 import SpecialistService from './specialist.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 import {mysql} from '../../config/connections'
 import UserService from '../users/user.service'
 import {ALL, DASHBOARD, HIDE} from '../../constants/specialists'
-import { ADMIN, MANAGER, SPECIALIST } from '../../constants/roles'
+import {ADMIN, MANAGER, SPECIALIST} from '../../constants/roles'
 
 export default {
   index: async (req, res, next) => {
@@ -125,13 +125,13 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         code: joi.string().max(4).required(),
-        fullName: joi.string().required(),
+        fullName: joi.string().max(255).required(),
         phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         avatarId: joi.number().optional()
       }))
 
       const result = await mysql.transaction(async transaction => {
-        const user = await UserService.create(formattedData, params, transaction)
+        const user = await UserService.findOrCreate(formattedData, params, transaction)
         const specialist = await SpecialistService.create(user, params, transaction)
 
         return {...specialist.toJSON(), user: user.toJSON()}
@@ -169,12 +169,12 @@ export default {
       validate({...userData, ...specialistData, ...roleData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
-        fullName: joi.string(),
+        fullName: joi.string().max(255),
         avatarId: joi.number(),
-        description: joi.string().allow(''),
-        specialization: joi.string().allow(''),
+        description: joi.string().allow('').max(255),
+        specialization: joi.string().allow('').max(255),
         status: joi.string().valid(ALL, HIDE, DASHBOARD),
-        email: joi.string().allow(''),
+        email: joi.string().allow('').max(255),
         role: joi.string().valid(SPECIALIST, MANAGER, ADMIN),
       }))
 

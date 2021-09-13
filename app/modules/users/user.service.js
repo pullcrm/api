@@ -13,6 +13,7 @@ import RoleModel from "../roles/role.model"
 import SpecialistModel from "../specialists/specialist.model"
 import TypeModel from "../companies/models/types"
 import SMSSettingsModel from "../sms/models/settings.model"
+import ValidationException from "../../exceptions/validation"
 
 const SMS_CLIENT_SEND_REAL_SMS = process.env.SMS_CLIENT_SEND_REAL_SMS
 
@@ -22,6 +23,12 @@ export default {
       where: {phone},
       include: {model: FileModel, as: "avatar"},
       attributes: {exclude: ["avatarId"]},
+    })
+  },
+
+  findOneBySpecialist: async ({specialist}) => {
+    return UserModel.findOne({
+      where: {specialist},
     })
   },
 
@@ -69,19 +76,29 @@ export default {
   },
 
   sendConfirmationCode: async ({phone, type}) => {
+    if(type === RESET_PASSWORD) {
+      const user = await UserModel.findOne({where: {phone}})
+
+      if (!user) {
+        return {
+          result: true,
+        }
+      }
+    }
+
     let code = makeRandom(4, {type: "numeric"})
 
     if (SMS_CLIENT_SEND_REAL_SMS === "false") {
       code = phone.substring(6, 10) /* Get last 4 digits from phone */
     }
 
-    redis.hmset(`${type}-${phone}`, {
+    await redis.hmset(`${type}-${phone}`, {
       code,
       type,
       phone,
     })
 
-    redis.expire(`${type}-${phone}`, 1800)
+    await redis.expire(`${type}-${phone}`, 1800)
 
     if (SMS_CLIENT_SEND_REAL_SMS === "false") {
       return {
@@ -91,28 +108,26 @@ export default {
 
     return SMSGlobalService.send({
       phone,
-      message: `Код PullCRM: ${code}`,
+      message: `Код: ${code}`,
     })
   },
 
-  create: async data => {
+  findOrCreate: async data => {
     const registrationKey = `${REGISTRATION}-${data.phone}`
     const confirmation = await redis.hgetall(registrationKey)
 
     if (!confirmation) {
-      throw new ApiException(
-        403,
-        "Code for completing the registration is not correct"
-      )
+      throw new ValidationException("code", "Код для добавления сотрудника неверный")
     }
 
     if (confirmation.code !== data.code || confirmation.phone !== data.phone) {
-      throw new ApiException(403, "Code or phone is not correct")
+      throw new ValidationException("code", "Код для добавления сотрудника неверный")
     }
 
-    redis.del(registrationKey)
+    await redis.del(registrationKey)
 
-    return UserModel.create(data, {returning: true})
+    const user = await UserModel.findOne({where: {phone: data.phone}})
+    return user ? user : UserModel.create(data, {returning: true})
   },
 
   resetPassword: async ({phone, newPassword, code}) => {
@@ -120,11 +135,11 @@ export default {
     const confirmation = await redis.hgetall(resetPasswordKey)
 
     if (!confirmation) {
-      throw new ApiException(403, "Code for reseting password is not correct")
+      throw new ValidationException("code", "Код для обновления пароля неверный")
     }
 
     if (confirmation.code !== code || confirmation.phone !== phone) {
-      throw new ApiException(403, "Code or phone is not correct")
+      throw new ValidationException("code", "Код для обновления пароля неверный")
     }
 
     const user = await UserModel.findOne({where: {phone}})
@@ -133,7 +148,7 @@ export default {
       throw new ApiException(404, "User was not found")
     }
 
-    redis.del(resetPasswordKey)
+    await redis.del(resetPasswordKey)
     await TokenService.deactivateRefreshTokens(user.id)
 
     return user.update({password: newPassword})

@@ -8,6 +8,7 @@ import * as Sentry from "@sentry/node"
 import * as Tracing from "@sentry/tracing"
 import {errorsHandler} from './middlewares/errors'
 import './models'
+import TelegramBot from './providers/telegram'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
@@ -36,6 +37,8 @@ Sentry.init({
     level: 'info'
   }
 })
+
+TelegramBot.launch()
 
 app.use('/api', express.static('uploads'))
 

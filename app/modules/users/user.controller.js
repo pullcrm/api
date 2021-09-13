@@ -1,5 +1,6 @@
-import joi from "joi"
 import UserService from './user.service'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 import {FAST_REGISTRATION, REGISTRATION, RESET_PASSWORD} from '../../constants/redis'
 
@@ -15,14 +16,14 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        fullName: joi.string().required(),
+        fullName: joi.string().max(255).required(),
         phone: joi.string().pattern(/^0\d+$/).length(10).required(),
-        password: joi.string().required(),
+        password: joi.string().max(255).required(),
         code: joi.string().max(4).required(),
         avatarId: joi.number().optional()
       }))
 
-      const user = await UserService.create(formattedData)
+      const user = await UserService.findOrCreate(formattedData)
       res.send(user)
     } catch(error) {
       next(error)
@@ -45,6 +46,7 @@ export default {
     }
   },
 
+  //Make fultext dynamic searching
   search: async (req, res, next) => {
     try {
       const formattedData = {
@@ -90,7 +92,7 @@ export default {
 
       validate(formattedData, joi.object().keys({
         phone: joi.string().pattern(/^0\d+$/).length(10).required(),
-        newPassword: joi.string().max(256).required(),
+        newPassword: joi.string().max(255).required(),
         code: joi.string().max(4).required(),
       }))
 

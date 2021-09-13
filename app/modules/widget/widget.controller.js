@@ -1,5 +1,6 @@
-import joi from "joi"
 import WidgetService from './widget.service'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 
 export default {
