@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import joi from 'joi'
+import joi from '../../utils/joi'
 import AuthService from './services/auth'
 import SpecialistService from '../specialists/specialist.service'
 import RoleService from '../roles/role.service'

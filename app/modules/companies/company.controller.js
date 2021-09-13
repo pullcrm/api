@@ -1,5 +1,6 @@
-import joi from "joi"
 import 'dotenv/config'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 import CompanyService from './company.service'
 import SpecialistService from '../specialists/specialist.service'

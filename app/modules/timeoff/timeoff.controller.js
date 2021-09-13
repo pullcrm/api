@@ -1,5 +1,6 @@
-import joi from "joi"
 import TimeOffService from './timeoff.service'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 
 export default {
@@ -33,8 +34,8 @@ export default {
 
       validate({...formattedData,  ...params}, joi.object().keys({
         specialistId: joi.number().required(),
-        startDateTime: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD HH:mm:ss').required(),
-        endDateTime:  joi.extend(require('@joi/date')).date().format('YYYY-MM-DD HH:mm:ss').required(),
+        startDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+        endDateTime:  joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
         userId: joi.number().required(),
         description: joi.string().max(255).allow('')
       }))
@@ -62,8 +63,8 @@ export default {
 
       validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number().required(),
-        startDateTime: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD HH:mm:ss').required(),
-        endDateTime: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD HH:mm:ss').required(),
+        startDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+        endDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
         timeOffId: joi.number().required(),
         userId: joi.number().required(),
         description: joi.string().allow('')
