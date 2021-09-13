@@ -1,4 +1,4 @@
-import joi from "joi"
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 import AnalyticsService from './analytics.service'
 

@@ -1,5 +1,6 @@
-import joi from "joi"
 import UserService from './user.service'
+
+import joi from "../../utils/joi"
 import validate from "../../utils/validate"
 import {FAST_REGISTRATION, REGISTRATION, RESET_PASSWORD} from '../../constants/redis'
 

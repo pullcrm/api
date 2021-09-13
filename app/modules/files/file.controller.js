@@ -1,6 +1,6 @@
 import FileService from "./file.service"
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 
 export default {
   getUserFiles: async (req, res, next) => {

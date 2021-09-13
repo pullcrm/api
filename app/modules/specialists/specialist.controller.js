@@ -1,6 +1,6 @@
 import SpecialistService from './specialist.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 import {mysql} from '../../config/connections'
 import UserService from '../users/user.service'
 import {ALL, DASHBOARD, HIDE} from '../../constants/specialists'

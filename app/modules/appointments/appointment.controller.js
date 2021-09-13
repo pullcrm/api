@@ -1,7 +1,6 @@
-import joi from "joi"
-
 import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
 import {getAvailableTime} from '../../logics/appointments'
+import joi from "../../utils/joi"
 import validate from '../../utils/validate'
 import {getDayWorkTime} from '../../utils/time'
 import ProcedureModel from '../procedures/models/procedure'
@@ -79,7 +78,7 @@ export default {
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD').required(),
+        date: joi.date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow('').max(255),
@@ -130,7 +129,7 @@ export default {
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD'),
+        date: joi.date().format('YYYY-MM-DD'),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow('').max(255),
@@ -237,7 +236,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD'),
+        date: joi.date().format('YYYY-MM-DD').utc(),
         userId: joi.number().required(),
         companyId: joi.number().required(),
         excludeId: joi.number().allow(null),
@@ -277,7 +276,7 @@ export default {
       }
 
       validate(formattedData, joi.object().keys({
-        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD'),
+        date: joi.date().format('YYYY-MM-DD'),
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
         duration: joi.number().required()
@@ -337,7 +336,7 @@ export default {
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
         procedures: joi.array(),
-        date: joi.extend(require('@joi/date')).date().format('YYYY-MM-DD').required(),
+        date: joi.date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).required(),
         total: joi.number(),
         description: joi.string().allow('').max(255),

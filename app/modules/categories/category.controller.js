@@ -1,6 +1,6 @@
 import CategoryService from './category.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 import {PROCEDURE} from '../../constants/categories'
 
 export default {

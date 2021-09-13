@@ -1,6 +1,6 @@
 import ProceduresService from './procedure.service'
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 
 export default {
   index: async (req, res, next) => {
