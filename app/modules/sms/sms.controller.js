@@ -1,5 +1,5 @@
 import validate from "../../utils/validate"
-import joi from "joi"
+import joi from "../../utils/joi"
 import SMSPrivateService from './services/sms.private'
 
 export default {

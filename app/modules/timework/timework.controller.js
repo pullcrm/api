@@ -1,4 +1,4 @@
-import joi from "joi"
+import joi from "../../utils/joi"
 import TimeWorkService from './timework.service'
 import validate from "../../utils/validate"
 
