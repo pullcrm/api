@@ -322,7 +322,7 @@ export default {
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).required(),
         total: joi.number(),
         description: joi.string().allow('').max(255),
-        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
         hasRemindSMS: joi.boolean(),
         hasCreationSMS: joi.boolean(),
