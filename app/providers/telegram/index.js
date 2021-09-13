@@ -8,20 +8,6 @@ TelegramBot.start(ctx => {
   TelegramBot.telegram.sendMessage(ctx.chat.id, 'Отправьте свой номер чтобы получать уведомления о записях!', requestPhoneKeyboard)
 })
 
-TelegramBot.command('/', ({reply}) => {
-  console.log('COMMAND /')
-  return reply('Custom buttons keyboard', Markup
-    .keyboard([
-      ['🔍 Search', '😎 Popular'], // Row1 with 2 buttons
-      ['☸ Setting', '📞 Feedback'], // Row2 with 2 buttons
-      ['📢 Ads', '⭐️ Rate us', '👥 Share'] // Row3 with 3 buttons
-    ])
-    .oneTime()
-    .resize()
-    .extra()
-  )
-})
-
 // TelegramBot.on('message', async ctx => {
 //   console.log(ctx.message.text)
 // })
