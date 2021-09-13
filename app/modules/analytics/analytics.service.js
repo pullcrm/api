@@ -64,8 +64,8 @@ export default {
       ` 
       select
         count(totals.amount) as amount,
-        convert(sum(totals.total), SIGNED INTEGER) as actualIncome,
-        convert(sum(totals.price), SIGNED INTEGER) as potentialIncome
+        coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as actualIncome,
+        coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as potentialIncome
       from (
         select
           count(ap.id) as amount,

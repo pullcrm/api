@@ -1,6 +1,6 @@
 import {Sequelize} from 'sequelize'
 import {mysql} from '../../config/connections'
-import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
+import {IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE} from '../../constants/appointments'
 
 const AppointmentSchema = (connection, type) => {
   return connection.define('appointments', {
@@ -23,11 +23,6 @@ const AppointmentSchema = (connection, type) => {
       type: type.TIME,
       allowNull: true,
     },
-    isQueue: {
-      type: type.BOOLEAN,
-      allowNull: false,
-      defaultValue: 0
-    },
     phone: {
       type: type.STRING,
     },
@@ -47,9 +42,9 @@ const AppointmentSchema = (connection, type) => {
       allowNull: true,
     },
     status: {
-      type: type.ENUM(IN_PROGRESS, COMPLETED, CANCELED),
+      type: type.ENUM(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
       allowNull: false,
-      defaultValue: IN_PROGRESS
+      defaultValue: IN_QUEUE
     },
     source: {
       type: type.STRING,

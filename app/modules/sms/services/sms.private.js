@@ -19,11 +19,12 @@ import CompanyModel from '../../companies/models/company'
 import exclude from '../../../utils/exclude'
 import {addUAFormat} from '../../../utils/phone'
 import ValidationException from '../../../exceptions/validation'
+import {IN_QUEUE} from '../../../constants/appointments'
 
 export default {
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
     try {
-      if (data.isQueue) {
+      if (data.status !== IN_QUEUE) {
         return
       }
   
@@ -120,7 +121,7 @@ export default {
       return null
     }
 
-    if (data.isQueue) {
+    if (data.status !== IN_QUEUE) {
       await smsIdentifier && SMS.cancelCampaign({
         id: smsIdentifier
       })
