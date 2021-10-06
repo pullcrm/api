@@ -32,6 +32,10 @@ export default {
       }
   
       const appointment = await appointmentService.find(appointmentId)
+
+      if(!(appointment.phone || appointment.client)) {
+        return
+      }
   
       const startDateTime = setTime(appointment.date, appointment.startTime)
   
@@ -41,12 +45,12 @@ export default {
   
       const smsConfiguration = await SMSSettingsModel.scope('withSMSToken').findOne({where: {companyId: data.companyId}})
   
-      if(!smsConfiguration || !smsConfiguration.smsToken) {
+      if(!smsConfiguration || !smsConfiguration?.smsToken) {
         throw new ApiException(404, 'You don\'t have sms configuration!')
       }
   
       const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
-  
+
       if(hasCreationSMS) {
         const SMS = privateSMS(smsCreds)
         const smsResponse = await SMS.sendSMS({
@@ -90,6 +94,7 @@ export default {
         })
       }
     } catch (err) {
+      console.log(err)
       Sentry.captureException(err)
     }
   },
