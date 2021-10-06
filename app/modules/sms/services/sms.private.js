@@ -32,6 +32,10 @@ export default {
       }
   
       const appointment = await appointmentService.find(appointmentId)
+
+      if(!(appointment.phone || appointment.client)) {
+        return
+      }
   
       const startDateTime = setTime(appointment.date, appointment.startTime)
   
@@ -46,7 +50,7 @@ export default {
       }
   
       const smsCreds = decodeSMSCreds(smsConfiguration.smsToken)
-  
+
       if(hasCreationSMS) {
         const SMS = privateSMS(smsCreds)
         const smsResponse = await SMS.sendSMS({
@@ -90,6 +94,7 @@ export default {
         })
       }
     } catch (err) {
+      console.log(err)
       Sentry.captureException(err)
     }
   },
