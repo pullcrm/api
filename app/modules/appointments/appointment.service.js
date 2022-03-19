@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node'
 import AppointmentModel from './appointment.model'
 import {mysql} from '../../config/connections'
 import ProcedureModel from '../procedures/models/procedure'
@@ -7,6 +8,7 @@ import {Op} from 'sequelize'
 import ClientModel from '../clients/client.model'
 import SpecialistModel from '../specialists/specialist.model'
 import SMSPrivateService from '../sms/services/sms.private'
+
 
 export default {
   findAll: async ({date, companyId}) => {
@@ -103,7 +105,12 @@ export default {
     }
 
     if(smsIdentifier) {
-      await SMSPrivateService.destroySMS({smsIdentifier}, companyId)
+      try {
+        await SMSPrivateService.destroySMS({smsIdentifier}, companyId)
+      } catch(err) {
+        Sentry.captureException(err)
+        console.log(err)
+      }
     }
 
     await appointment.destroy({cascade: true})

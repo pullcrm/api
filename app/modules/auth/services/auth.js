@@ -29,7 +29,7 @@ export default {
       })
 
     if(!user) {
-      throw new ValidationException('*', 'Введен неверный номер телефона или пароль')
+      throw new ValidationException('*', 'Введений невірний номер телефону або ж пароль')
     }
 
     return user
@@ -39,7 +39,7 @@ export default {
     const passwordIsValid = bCrypt.compareSync(firstPassword, secondPassword)
 
     if (!passwordIsValid) {
-      throw new ValidationException('*', 'Введен неверный номер телефона или пароль')
+      throw new ValidationException('*', 'Введений невірний номер телефону або ж пароль')
     }
   },
 }

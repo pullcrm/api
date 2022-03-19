@@ -28,7 +28,7 @@ export const errorsHandler = (err, res) => {
 
     if(fieldName === 'specialists_company_id_user_id_role_id') {
       fieldName = 'phone'
-      message = 'Сотрудник с таким номером уже есть в компании'
+      message = 'Працівник з таким номером вже існує в компанії'
     }
 
     return res.status(status).send({
