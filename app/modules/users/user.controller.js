@@ -108,12 +108,10 @@ export default {
     try {
       const formattedData = {
         password: req.body.password,
-        phone: req.body.phone,
         token: req.body.token,
       }
 
       validate(formattedData, joi.object().keys({
-        phone: joi.string().pattern(/^0\d+$/).length(10).required(),
         password: joi.string().max(255).required(),
         token: joi.string().max(6).required(),
       }))
