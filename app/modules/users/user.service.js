@@ -1,4 +1,4 @@
-import {RESET_PASSWORD, REGISTRATION} from "../../constants/redis"
+import {RESET_PASSWORD, REGISTRATION, FAST_REGISTRATION} from "../../constants/redis"
 import {makeRandom} from "../../utils/make-random"
 import ApiException from "../../exceptions/api"
 import {client as redis} from "../../providers/redis"
@@ -10,10 +10,12 @@ import CompanyModel from "../companies/models/company"
 import CityModel from "../cities/city.model"
 import WidgetSettingsModel from "../widget/models/settings.model"
 import RoleModel from "../roles/role.model"
-import SpecialistModel from "../specialists/specialist.model"
+import SpecialistModel from "../specialists/models/specialist"
 import TypeModel from "../companies/models/types"
 import SMSSettingsModel from "../sms/models/settings.model"
 import ValidationException from "../../exceptions/validation"
+import {generateAccessToken, generateRefreshToken} from "../../utils/token"
+import SpecialistRegistrationsModel from "../specialists/models/registrations"
 
 const SMS_CLIENT_SEND_REAL_SMS = process.env.SMS_CLIENT_SEND_REAL_SMS
 
@@ -162,5 +164,32 @@ export default {
     }
 
     return user.update(data, {returning: true})
+  },
+
+  finishRegistration: async ({password, token}) => {
+    const confirmation = await SpecialistRegistrationsModel.findOne({where: {token}})
+
+    if (!confirmation || !confirmation.companyId) {
+      throw new ValidationException("code", "Код для закінчення реєстрації невірний")
+    }
+
+    const user = await UserModel.findOne({where: {phone: confirmation.phone}})
+
+    if (!user) {
+      throw new ApiException(404, "User was not found")
+    }
+
+    await TokenService.deactivateRefreshTokens(user.id)
+    await user.update({password}, {returning: true})
+
+    const accessToken = generateAccessToken(user.id, confirmation.companyId)
+    const refreshToken = generateRefreshToken(user.id)
+
+    await TokenService.create(refreshToken, user.id)
+    await TokenService.leaveFiveTokens(user.id)
+
+    await confirmation.destroy()
+  
+    return {accessToken, refreshToken}
   },
 }

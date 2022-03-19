@@ -35,6 +35,11 @@ const UserSchema = (connection, type) => {
       type: type.BIGINT,
       allowNull: true,
     },
+    active: {
+      type: type.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
+    }
   }, {
     defaultScope: {
       attributes: {exclude: ['password', 'refreshTokens']}

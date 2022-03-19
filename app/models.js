@@ -2,7 +2,7 @@ import {mysql} from "./config/connections"
 import {ADMIN, INVITED, MANAGER, SPECIALIST} from './constants/roles'
 import UserModel from './modules/users/user.model'
 import CompanyModel from './modules/companies/models/company'
-import SpecialistModel from "./modules/specialists/specialist.model"
+import SpecialistModel from "./modules/specialists/models/specialist"
 import RoleModel from './modules/roles/role.model'
 import AppointmentModel from "./modules/appointments/appointment.model"
 import ProcedureModel from "./modules/procedures/models/procedure"

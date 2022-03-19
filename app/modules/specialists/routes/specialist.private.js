@@ -13,5 +13,6 @@ router.delete('/:id', auth([ADMIN]), SpecialistController.destroy)
 router.post('/', auth([ADMIN]), SpecialistController.create)
 router.get('/:id/procedures', auth([ADMIN, MANAGER, SPECIALIST]), SpecialistController.getProcedures)
 router.put('/:id/procedures', auth([ADMIN, MANAGER]), SpecialistController.updateProcedures)
+router.get('/:id/sendFinishLink', auth([ADMIN]), SpecialistController.sendFinishLink)
 
 export default router

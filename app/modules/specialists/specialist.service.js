@@ -1,4 +1,5 @@
-import SpecialistModel from './specialist.model'
+import SpecialistModel from './models/specialist'
+import SpecialistRegistrationsModel from './models/registrations'
 import CompanyModel from "../companies/models/company"
 import RoleModel from "../roles/role.model"
 import UserModel from '../users/user.model'
@@ -12,6 +13,11 @@ import {ALL} from '../../constants/specialists'
 import ProcedureModel from '../procedures/models/procedure'
 import TypeModel from '../companies/models/types'
 import {Op} from 'sequelize'
+import {mysql} from '../../config/connections'
+import SMSGlobalService from "../sms/services/sms.global"
+import {makeRandom} from '../../utils/make-random'
+import {client as redis} from "../../providers/redis"
+import {FAST_REGISTRATION} from '../../constants/redis'
 
 export default {
   findAll: async ({companyId}) => {
@@ -176,9 +182,21 @@ export default {
     return SpecialistModel.bulkCreate(specialists, {updateOnDuplicate: ['order']})
   },
 
-  create: async (user, params, transaction) => {
-    const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
-    return SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
+  create: async (data, params) => {
+    const result = await mysql.transaction(async transaction => {
+      let user = await UserModel.findOne({where: {phone: data.phone}})
+
+      if(!user) {
+        user = await UserModel.create({phone: data.phone, fullName: data.fullName, active: false}, {returning: true})
+      }
+
+      const specialistsRole = await RoleModel.findOne({where: {name: 'SPECIALIST'}, raw: true, transaction})
+      const specialist = await SpecialistModel.create({userId: user.id, companyId: params.companyId, roleId: specialistsRole.id}, {transaction})
+
+      return {...specialist.toJSON(), user: user.toJSON()}
+    })
+
+    return result
   },
 
   destory: async ({specialistId}, {companyId}) => {
@@ -217,5 +235,48 @@ export default {
     }
 
     return specialist.getProcedures()
+  },
+
+  sendFinishLink: async ({specialistId, companyId}) => {
+    const specialist = await SpecialistModel.findOne({where: {id: specialistId, companyId}})
+
+    if (!specialist) {
+      throw new ApiException(403, 'Specialist wasn\'t found')
+    }
+
+    const user = await UserModel.findOne({where: {id: specialist.userId}})
+
+    if(!user || user.active) {
+      throw new ApiException(400, 'Користувач вже активований')
+    }
+
+    let token = makeRandom(6)
+
+    // if (process.env.SMS_CLIENT_SEND_REAL_SMS === "false") {
+    //   token = user.phone.substring(6, 10) /* Get last 4 digits from phone */
+    // }
+
+    await SpecialistRegistrationsModel.create({
+      token,
+      phone: user.phone,
+      companyId,
+    })
+
+    const link = `${process.env.CLIENT}/confirm/${token}`
+
+    //TODO remove
+    // if(process.env.SMS_CLIENT_SEND_REAL_SMS === "false") {
+    //   return {
+    //     status: 'ok',
+    //     link
+    //   }
+    // }
+
+    const status = await SMSGlobalService.send({
+      phone: user.phone,
+      message: `Продовжити реєстрацію: ${link}`,
+    })
+
+    return status
   },
 }
