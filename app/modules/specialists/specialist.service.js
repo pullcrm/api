@@ -252,9 +252,9 @@ export default {
 
     let token = makeRandom(6)
 
-    // if (process.env.SMS_CLIENT_SEND_REAL_SMS === "false") {
-    //   token = user.phone.substring(6, 10) /* Get last 4 digits from phone */
-    // }
+    if (process.env.SMS_CLIENT_SEND_REAL_SMS === "false") {
+      token = user.phone.substring(6, 10) /* Get last 4 digits from phone */
+    }
 
     await SpecialistRegistrationsModel.create({
       token,
@@ -265,12 +265,12 @@ export default {
     const link = `${process.env.CLIENT}/confirm/${token}`
 
     //TODO remove
-    // if(process.env.SMS_CLIENT_SEND_REAL_SMS === "false") {
-    //   return {
-    //     status: 'ok',
-    //     link
-    //   }
-    // }
+    if(process.env.SMS_CLIENT_SEND_REAL_SMS === "false") {
+      return {
+        status: 'ok',
+        link
+      }
+    }
 
     const status = await SMSGlobalService.send({
       phone: user.phone,
