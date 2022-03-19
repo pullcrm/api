@@ -16,7 +16,7 @@ export default {
         await TelegramBot.telegram.sendMessage(
           user.telegramId,
           `
-          ✅ Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}.`
+          ✅ Новий запис! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}.`
         )
       }
     } catch(err) {
@@ -38,7 +38,7 @@ export default {
   
         await TelegramBot.telegram.sendMessage(
           user.telegramId,
-          `✍ Запись #${appointmentId} обновлена! ${dayjs(appointment.date).format('DD.MM')} в ${appointment.startTime.slice(0, 5)} ${proceduresText}.`
+          `✍ Запис #${appointmentId} оновлено! ${dayjs(appointment.date).format('DD.MM')} в ${appointment.startTime.slice(0, 5)} ${proceduresText}.`
         )
       }
     } catch(err) {
@@ -62,7 +62,7 @@ export default {
         await TelegramBot.telegram.sendMessage(
           user.telegramId,
           `
-          🚫 Запись #${appointmentId} удалена! ${dayjs(appointment.date).format('DD.MM')} в ${appointment.startTime.slice(0, 5)} ${proceduresText}.`
+          🚫 Запис #${appointmentId} видалено! ${dayjs(appointment.date).format('DD.MM')} в ${appointment.startTime.slice(0, 5)} ${proceduresText}.`
         )
       }
     } catch(err) {

@@ -117,11 +117,11 @@ export default {
     const confirmation = await redis.hgetall(registrationKey)
 
     if (!confirmation) {
-      throw new ValidationException("code", "Код для добавления сотрудника неверный")
+      throw new ValidationException("code", "Код для додавання працівника невірний")
     }
 
     if (confirmation.code !== data.code || confirmation.phone !== data.phone) {
-      throw new ValidationException("code", "Код для добавления сотрудника неверный")
+      throw new ValidationException("code", "Код для додавання працівника невірний")
     }
 
     await redis.del(registrationKey)
@@ -135,11 +135,11 @@ export default {
     const confirmation = await redis.hgetall(resetPasswordKey)
 
     if (!confirmation) {
-      throw new ValidationException("code", "Код для обновления пароля неверный")
+      throw new ValidationException("code", "Код для оновлення паролю невірний")
     }
 
     if (confirmation.code !== code || confirmation.phone !== phone) {
-      throw new ValidationException("code", "Код для обновления пароля неверный")
+      throw new ValidationException("code", "Код для оновлення паролю невірний")
     }
 
     const user = await UserModel.findOne({where: {phone}})

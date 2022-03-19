@@ -15,7 +15,7 @@ export function creationNotifyMessage (payload, template) {
       .replace('%procedures%', proceduresText)
   }
   
-  return `Новая запись! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Сотрудник ${specialist.user.fullName}`
+  return `Новий запис! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} ${proceduresText}. Працівник ${specialist.user.fullName}`
 }
   
 export function remindNotifyMessage ({procedures, date, startTime, specialist}, template) {
@@ -29,7 +29,7 @@ export function remindNotifyMessage ({procedures, date, startTime, specialist}, 
       .replace('%procedures%', proceduresText)
   }
   
-  return `Напоминание о записи! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} у вас ${proceduresText}`
+  return `Нагадування про запис! ${dayjs(date).format('DD.MM')} в ${startTime.slice(0, 5)} у вас ${proceduresText}`
 }
 
 export function isTimeExpired (dateTime) {

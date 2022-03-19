@@ -98,10 +98,10 @@ mysql.sync().then(async () => {
   }
 
   if(typesCount === 0) {
-    await TypeModel.bulkCreate([{name: 'Barbershop'}, {name: 'Салон красоты'}])
+    await TypeModel.bulkCreate([{name: 'Барбершоп'}, {name: 'Салон краси'}])
   }
 
   if(citiesCount === 0) {
-    await CityModel.bulkCreate([{name: 'Черновцы'}, {name: 'Киев'}])
+    await CityModel.bulkCreate([{name: 'Чернівці'}, {name: 'Київ'}])
   }
 }).catch(e => console.log(e))
