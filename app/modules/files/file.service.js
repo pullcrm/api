@@ -4,7 +4,7 @@ import {mysql} from '../../config/connections'
 import FileModel from './file.model'
 import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
-import SpecialistModel from '../specialists/specialist.model'
+import SpecialistModel from '../specialists/models/specialist'
 
 const unlinkAsync = promisify(fs.rmdir)
 

@@ -2,7 +2,7 @@ import {mysql} from "./config/connections"
 import {ADMIN, INVITED, MANAGER, SPECIALIST} from './constants/roles'
 import UserModel from './modules/users/user.model'
 import CompanyModel from './modules/companies/models/company'
-import SpecialistModel from "./modules/specialists/specialist.model"
+import SpecialistModel from "./modules/specialists/models/specialist"
 import RoleModel from './modules/roles/role.model'
 import AppointmentModel from "./modules/appointments/appointment.model"
 import ProcedureModel from "./modules/procedures/models/procedure"
@@ -17,6 +17,7 @@ import TypeModel from "./modules/companies/models/types"
 import SMSHistoryModel from "./modules/sms/models/history.model"
 import SMSSettingsModel from "./modules/sms/models/settings.model"
 import WidgetSettingsModel from "./modules/widget/models/settings.model"
+import OrderModel from './modules/balance/models/order'
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -31,6 +32,7 @@ TimeOffModel.belongsTo(SpecialistModel, {as: 'specialist'})
 UserModel.hasMany(SpecialistModel)
 UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
+UserModel.hasMany(OrderModel)
 
 CompanyModel.hasMany(SpecialistModel)
 CompanyModel.hasOne(SMSSettingsModel)

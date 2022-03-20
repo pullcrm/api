@@ -1,7 +1,7 @@
 import bCrypt from 'bcrypt'
 import UserModel from '../../users/user.model'
 import RoleModel from "../../roles/role.model"
-import SpecialistModel from "../../specialists/specialist.model"
+import SpecialistModel from "../../specialists/models/specialist"
 import TokenModel from '../models/token'
 import ValidationException from '../../../exceptions/validation'
 

@@ -103,4 +103,23 @@ export default {
       next(error)
     }
   },
+
+  finishRegistration: async (req, res, next) => {
+    try {
+      const formattedData = {
+        password: req.body.password,
+        token: req.body.token,
+      }
+
+      validate(formattedData, joi.object().keys({
+        password: joi.string().max(255).required(),
+        token: joi.string().max(6).required(),
+      }))
+
+      const tokens = await UserService.finishRegistration(formattedData)
+      res.send(tokens)
+    } catch(error) {
+      next(error)
+    }
+  },
 }
