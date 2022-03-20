@@ -1,2 +1,2 @@
-export const UNIQUE_CATEGORY_NAME = 'Имя категории должно быть уникальным'
+export const UNIQUE_CATEGORY_NAME = 'Ім\'я категорії повинно бути унікальним'
 

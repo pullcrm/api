@@ -261,7 +261,7 @@ export default {
     try {
       await SMS.getUserBalance({currency: 'UAH'})
     } catch(error) {
-      throw new ValidationException('*', 'СМС акаунт небыл найден')
+      throw new ValidationException('*', 'СМС акаунт не було знайдено')
     }
 
     const company = await CompanyModel.findOne({where: {id: companyId}})

@@ -6,7 +6,7 @@ import UserModel from '../users/user.model'
 import ApiException from '../../exceptions/api'
 import {Op} from 'sequelize'
 import ClientModel from '../clients/client.model'
-import SpecialistModel from '../specialists/specialist.model'
+import SpecialistModel from '../specialists/models/specialist'
 import SMSPrivateService from '../sms/services/sms.private'
 
 

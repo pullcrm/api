@@ -19,7 +19,7 @@ const UserSchema = (connection, type) => {
       type: type.STRING(10),
       allowNull: false,
       unique: {
-        msg: 'Такой номер уже существует',
+        msg: 'Такий номер вже існує',
       }
     },
     email: {
@@ -35,6 +35,11 @@ const UserSchema = (connection, type) => {
       type: type.BIGINT,
       allowNull: true,
     },
+    active: {
+      type: type.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
+    }
   }, {
     defaultScope: {
       attributes: {exclude: ['password', 'refreshTokens']}

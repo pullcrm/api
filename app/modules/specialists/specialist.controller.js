@@ -114,8 +114,6 @@ export default {
       const formattedData = {
         fullName: req.body.fullName,
         phone: req.body.phone,
-        avatarId: req.body.avatarId,
-        code: req.body.code,
       }
 
       const params = {
@@ -124,20 +122,13 @@ export default {
 
       validate({...formattedData, ...params}, joi.object().keys({
         companyId: joi.number().required(),
-        code: joi.string().max(4).required(),
         fullName: joi.string().max(255).required(),
         phone: joi.string().pattern(/^0\d+$/).length(10).required(),
-        avatarId: joi.number().optional()
       }))
 
-      const result = await mysql.transaction(async transaction => {
-        const user = await UserService.findOrCreate(formattedData, params, transaction)
-        const specialist = await SpecialistService.create(user, params, transaction)
+      const specialist = await SpecialistService.create(formattedData, params)
 
-        return {...specialist.toJSON(), user: user.toJSON()}
-      })
-
-      res.send(result)
+      res.send(specialist)
     } catch (error) {
       next(error)
     }
@@ -252,6 +243,25 @@ export default {
 
       res.send({message: 'OK'})
     } catch (error) {
+      next(error)
+    }
+  },
+
+  sendFinishLink: async (req, res, next) => {
+    try {
+      const params = {
+        companyId: req.companyId,
+        specialistId: req.params.id
+      }
+
+      validate(params, joi.object().keys({
+        companyId: joi.number().required(),
+        specialistId: joi.number().required(),
+      }))
+
+      const satus = await SpecialistService.sendFinishLink(params)
+      res.send(satus)
+    } catch(error) {
       next(error)
     }
   },

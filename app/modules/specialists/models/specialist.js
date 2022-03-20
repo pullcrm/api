@@ -1,4 +1,4 @@
-import {mysql} from "../../config/connections"
+import {mysql} from "../../../config/connections"
 import {Sequelize} from "sequelize"
 
 const SpecialistSchema = (connection, type) => {

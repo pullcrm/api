@@ -22,6 +22,8 @@ const client = redis.createClient({
 client.hset = promisify(client.hset).bind(client)
 client.hgetall = promisify(client.hgetall).bind(client)
 client.hdel = promisify(client.hdel).bind(client)
+client.hmset = promisify(client.hmset).bind(client)
+client.expire = promisify(client.expire).bind(client)
 
 // Check connections
 client.on('connect', () => {

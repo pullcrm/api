@@ -1,7 +1,7 @@
 import bCrypt from 'bcrypt'
 import UserModel from '../../users/user.model'
 import RoleModel from "../../roles/role.model"
-import SpecialistModel from "../../specialists/specialist.model"
+import SpecialistModel from "../../specialists/models/specialist"
 import TokenModel from '../models/token'
 import ValidationException from '../../../exceptions/validation'
 
@@ -29,7 +29,7 @@ export default {
       })
 
     if(!user) {
-      throw new ValidationException('*', 'Введен неверный номер телефона или пароль')
+      throw new ValidationException('*', 'Введений невірний номер телефону або ж пароль')
     }
 
     return user
@@ -39,7 +39,7 @@ export default {
     const passwordIsValid = bCrypt.compareSync(firstPassword, secondPassword)
 
     if (!passwordIsValid) {
-      throw new ValidationException('*', 'Введен неверный номер телефона или пароль')
+      throw new ValidationException('*', 'Введений невірний номер телефону або ж пароль')
     }
   },
 }

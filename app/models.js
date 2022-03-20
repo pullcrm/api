@@ -2,7 +2,7 @@ import {mysql} from "./config/connections"
 import {ADMIN, INVITED, MANAGER, SPECIALIST} from './constants/roles'
 import UserModel from './modules/users/user.model'
 import CompanyModel from './modules/companies/models/company'
-import SpecialistModel from "./modules/specialists/specialist.model"
+import SpecialistModel from "./modules/specialists/models/specialist"
 import RoleModel from './modules/roles/role.model'
 import AppointmentModel from "./modules/appointments/appointment.model"
 import ProcedureModel from "./modules/procedures/models/procedure"
@@ -98,10 +98,10 @@ mysql.sync().then(async () => {
   }
 
   if(typesCount === 0) {
-    await TypeModel.bulkCreate([{name: 'Barbershop'}, {name: 'Салон красоты'}])
+    await TypeModel.bulkCreate([{name: 'Барбершоп'}, {name: 'Салон краси'}])
   }
 
   if(citiesCount === 0) {
-    await CityModel.bulkCreate([{name: 'Черновцы'}, {name: 'Киев'}])
+    await CityModel.bulkCreate([{name: 'Чернівці'}, {name: 'Київ'}])
   }
 }).catch(e => console.log(e))
