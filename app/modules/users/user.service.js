@@ -180,7 +180,7 @@ export default {
     }
 
     await TokenService.deactivateRefreshTokens(user.id)
-    await user.update({password}, {returning: true})
+    await user.update({password, active: true}, {returning: true})
 
     const accessToken = generateAccessToken(user.id, confirmation.companyId)
     const refreshToken = generateRefreshToken(user.id)
