@@ -1,7 +1,7 @@
-import {mysql} from "../../config/connections"
+import {mysql} from "../../../config/connections"
 import {Sequelize} from "sequelize"
 
-const RoleSchema = (connection, type) => {
+const BalanceSchema = (connection, type) => {
   return connection.define('roles', {
     id: {
       type: type.INTEGER,
@@ -15,6 +15,6 @@ const RoleSchema = (connection, type) => {
   })
 }
 
-const RoleModel = RoleSchema(mysql, Sequelize)
+const BalanceModel = BalanceSchema(mysql, Sequelize)
 
-export default RoleModel
+export default BalanceModel

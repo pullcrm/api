@@ -6,15 +6,38 @@ export default {
   checkout: async (req, res, next) => {
     try {
       const formattedData = {
-        name: req.body.name,
+        amount: req.body.amount,
       }
 
-      validate(formattedData, joi.object().keys({
-        name: joi.string().max(255).required()
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
+        amount: joi.number().positive().required(),
+        userId: joi.number().required(),
+        companyId: joi.number().required()
       }))
 
-      const balance = await BalanceService.checkout(formattedData)
+      const balance = await BalanceService.checkout(formattedData, params)
       res.send(balance)
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  redirectUrl:  async (req, res, next) => {
+    try {
+      console.log(req.body)
+      console.log(req.params)
+      const formattedData = {
+        paymentId: '1234',
+        status: 'SUCCESS'
+      }
+      
+      const status = await BalanceService.getPaymentInfo(formattedData)
+      res.redirect(`${process.env.CLIENT}/payment/${status}`)
     } catch(error) {
       next(error)
     }

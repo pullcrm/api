@@ -17,6 +17,7 @@ import TypeModel from "./modules/companies/models/types"
 import SMSHistoryModel from "./modules/sms/models/history.model"
 import SMSSettingsModel from "./modules/sms/models/settings.model"
 import WidgetSettingsModel from "./modules/widget/models/settings.model"
+import OrderModel from './modules/balance/models/order'
 
 CompanyModel.belongsTo(UserModel, {
   as: 'owner',
@@ -31,6 +32,7 @@ TimeOffModel.belongsTo(SpecialistModel, {as: 'specialist'})
 UserModel.hasMany(SpecialistModel)
 UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
+UserModel.hasMany(OrderModel)
 
 CompanyModel.hasMany(SpecialistModel)
 CompanyModel.hasOne(SMSSettingsModel)
