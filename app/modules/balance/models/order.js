@@ -12,7 +12,7 @@ const OrderSchema = (connection, type) => {
       type: type.NUMERIC,
       allowNull: false
     },
-    orderId: {
+    paymentId: {
       type: type.STRING,
       allowNull: false
     },

@@ -29,11 +29,9 @@ export default {
 
   redirectUrl:  async (req, res, next) => {
     try {
-      console.log(req.body)
-      console.log(req.params)
       const formattedData = {
-        paymentId: '1234',
-        status: 'SUCCESS'
+        data: req.body.data,
+        signature: req.body.signature
       }
       
       const status = await BalanceService.getPaymentInfo(formattedData)
