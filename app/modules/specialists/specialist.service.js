@@ -186,6 +186,14 @@ export default {
     const result = await mysql.transaction(async transaction => {
       let user = await UserModel.findOne({where: {phone: data.phone}})
 
+      if(user) {
+        const existingSpecialist = await SpecialistModel.findOne({where: {userId: user.id, companyId: params.companyId}})
+
+        if(existingSpecialist) {
+          throw new ApiException(400, 'Такий користувач вже є в компанії')
+        }
+      }
+
       if(!user) {
         user = await UserModel.create({phone: data.phone, fullName: data.fullName, active: false}, {returning: true})
       }
