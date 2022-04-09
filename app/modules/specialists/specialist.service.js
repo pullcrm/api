@@ -16,8 +16,6 @@ import {Op} from 'sequelize'
 import {mysql} from '../../config/connections'
 import SMSGlobalService from "../sms/services/sms.global"
 import {makeRandom} from '../../utils/make-random'
-import {client as redis} from "../../providers/redis"
-import {FAST_REGISTRATION} from '../../constants/redis'
 
 export default {
   findAll: async ({companyId}) => {
@@ -280,7 +278,8 @@ export default {
       }
     }
 
-    const status = await SMSGlobalService.send({
+    const status = await SMSGlobalService.sendImmediate({
+      alphaName: process.env.SMS_COMPANY_NAME,
       phone: user.phone,
       message: `Продовжити реєстрацію: ${link}`,
     })

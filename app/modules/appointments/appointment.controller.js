@@ -6,7 +6,7 @@ import {getDayWorkTime} from '../../utils/time'
 import ProcedureModel from '../procedures/models/procedure'
 import TimeOffService from '../timeoff/timeoff.service'
 import TimeWorkService from '../timework/timework.service'
-import SMSPrivateService from '../sms/services/sms.private'
+import SMSGlobalService from '../sms/services/sms.global'
 import AppointmentService from './appointment.service'
 import {ADMIN_PANEL, WIDGET} from "../../constants/appointmentSources"
 import NotificationService from "../notifications/notification.service"
@@ -91,7 +91,7 @@ export default {
 
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
-      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+      await SMSGlobalService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
       NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
@@ -141,7 +141,7 @@ export default {
 
       await TimeOffService.checkForAvailableTime({...formattedData, ...params})
 
-      const smsIdentifier = await SMSPrivateService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
+      const smsIdentifier = await SMSGlobalService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
       NotificationService.updateAppointment(formattedData, params.appointmentId)
       
       const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
@@ -350,7 +350,7 @@ export default {
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData)
       NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
-      await SMSPrivateService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+      await SMSGlobalService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
