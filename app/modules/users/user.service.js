@@ -1,4 +1,4 @@
-import {RESET_PASSWORD, REGISTRATION, FAST_REGISTRATION} from "../../constants/redis"
+import {RESET_PASSWORD, REGISTRATION} from "../../constants/redis"
 import {makeRandom} from "../../utils/make-random"
 import ApiException from "../../exceptions/api"
 import {client as redis} from "../../providers/redis"
@@ -108,7 +108,8 @@ export default {
       }
     }
 
-    return SMSGlobalService.send({
+    return SMSGlobalService.sendImmediate({
+      alphaName: process.env.SMS_COMPANY_NAME,
       phone,
       message: `Код: ${code}`,
     })

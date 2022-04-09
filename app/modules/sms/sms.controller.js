@@ -1,26 +1,9 @@
 import validate from "../../utils/validate"
 import joi from "../../utils/joi"
-import SMSPrivateService from './services/sms.private'
+import SMSGlobalService from './services/sms.global'
+import turboSMS from "../../providers/turbosms"
 
 export default {
-  balance: async (req, res, next) => {
-    try {
-      const params = {
-        companyId: req.companyId,
-      }
-
-      validate(params, joi.object().keys({
-        companyId: joi.number(),
-      }))
-
-      const result = await SMSPrivateService.balance(params)
-
-      res.send(result)
-    } catch (error) {
-      next(error)
-    }
-  },
-
   status: async (req, res, next) => {
     try {
       const formattedData = {
@@ -38,7 +21,7 @@ export default {
         smsIdentifier: joi.string()
       }))
 
-      const result = await SMSPrivateService.status(formattedData, params.companyId)
+      const result = await SMSGlobalService.status(formattedData)
 
       res.send(result)
     } catch (error) {
@@ -48,27 +31,18 @@ export default {
 
   send: async (req, res, next) => {
     try {
-      const params = {
-        id: req.body.id,
-        mes: req.body.message,
-        psw: req.body.password,
-        time: req.body.time,
-        login: req.body.login,
-        phones: req.body.phone,
-      }
+      // const message = await SMSGlobalService.sendPrivate({
+      //   message: req.body.message,
+      //   phone: req.body.phone,
+      // }, {
+      //   userId: req.userId,
+      //   companyId: req.companyId
+      // })
 
-      validate(params, joi.object().keys({
-        id: joi.string().required(),
-        mes: joi.string().required(),
-        psw: joi.string().required(),
-        time: joi.string().required(),
-        login: joi.string().required(),
-        phones: joi.string().required()
-      }))
+      const status = await SMSGlobalService.destroySMS({message: 'test message', phone: '380958323358'})
 
-      const result = await SMSPrivateService.send(params)
-
-      res.send(result)
+      res.send(status)
+      
     } catch (error) {
       next(error)
     }
@@ -105,7 +79,7 @@ export default {
         companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
-      const company = await SMSPrivateService.addSettings(formattedData, params)
+      const company = await SMSGlobalService.addSettings(formattedData, params)
 
       res.send(company)
     } catch (error) {
@@ -140,7 +114,7 @@ export default {
         companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
-      const company = await SMSPrivateService.updateSettings(formattedData, params)
+      const company = await SMSGlobalService.updateSettings(formattedData, params)
 
       res.send(company)
     } catch (error) {
@@ -160,11 +134,32 @@ export default {
         companyId: joi.number().required()
       }))
 
-      await SMSPrivateService.deleteSettings(params)
+      await SMSGlobalService.deleteSettings(params)
 
       res.send({message: 'OK'})
     } catch (error) {
       next(error)
     }
   },
+
+  handleStatus: async (req, res, next) => {
+    try {
+      const formattedData = {
+        id: req.body.detail[0].id,
+        status: req.body.detail[0].state.value
+      }
+
+      validate(formattedData, joi.object().keys({
+        id: joi.number().required(),
+        status: joi.string().required()
+      }))
+
+      const status = await SMSGlobalService.handleStatus(formattedData)
+
+      res.send(status)
+      
+    } catch (error) {
+      next(error)
+    }
+  }
 }

@@ -7,8 +7,7 @@ import ApiException from '../../exceptions/api'
 import {Op} from 'sequelize'
 import ClientModel from '../clients/client.model'
 import SpecialistModel from '../specialists/models/specialist'
-import SMSPrivateService from '../sms/services/sms.private'
-
+import SMSGlobalService from '../sms/services/sms.global'
 
 export default {
   findAll: async ({date, companyId}) => {
@@ -106,7 +105,7 @@ export default {
 
     if(smsIdentifier) {
       try {
-        await SMSPrivateService.destroySMS({smsIdentifier}, companyId)
+        await SMSGlobalService.destroySMS({smsIdentifier})
       } catch(err) {
         Sentry.captureException(err)
         console.log(err)

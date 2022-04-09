@@ -4,19 +4,27 @@ import {Sequelize} from "sequelize"
 const SMSHistorySchema = (connection, type) => {
   return connection.define("sms_history", {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true,
-    },
-    type: {
-      type: type.STRING,
-      allowNull: false,
     },
     recipient: {
       type: type.STRING,
       allowNull: false,
     },
-    smsIdentifier: {
+    sendDate: {
+      type: type.DATE,
+      allowNull: true,
+    },
+    price: {
+      type: type.DOUBLE(10, 2),
+      allowNull: false,
+    },
+    lifecellId: {
+      type: type.STRING,
+      allowNull: true,
+    },
+    jobId: {
       type: type.STRING,
       allowNull: true,
     },
@@ -24,8 +32,8 @@ const SMSHistorySchema = (connection, type) => {
       type: type.STRING,
       allowNull: false,
     },
-    datetime: {
-      type: type.DATE,
+    status: {
+      type: type.STRING,
       allowNull: false,
     }
   })

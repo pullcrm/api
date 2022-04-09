@@ -19,6 +19,7 @@
     "@sentry/tracing": "^6.9.0",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
+    "bull": "^4.8.1",
     "dayjs": "^1.9.6",
     "dotenv": "^8.2.0",
     "epochta-pullcrm": "0.0.6",
@@ -32,11 +33,13 @@
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "nodemailer": "^6.4.6",
+    "puppeteer": "^13.5.1",
     "redis": "^3.0.2",
     "sequelize": "^5.21.6",
     "sharp": "^0.28.3",
     "simple-node-logger": "^18.12.24",
     "telegraf": "^4.4.1",
+    "turbosms-http": "^1.0.2",
     "uuid": "^8.2.0"
   },
   "devDependencies": {

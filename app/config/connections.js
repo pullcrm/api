@@ -1,7 +1,7 @@
-import {Sequelize} from 'sequelize'
-import 'dotenv/config'
+const {Sequelize} = require('sequelize')
+require('dotenv/config')
 
-export const mysql = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+const mysql = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   host: process.env.DB_HOST,
   logging: false,
   dialect: process.env.DB_DIALECT,
@@ -24,3 +24,5 @@ export const mysql = new Sequelize(process.env.DB_NAME, process.env.DB_USER, pro
     idle: 10000
   },
 })
+
+module.exports = {mysql}

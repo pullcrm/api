@@ -4,17 +4,17 @@ import {Sequelize} from "sequelize"
 const OrderSchema = (connection, type) => {
   return connection.define('orders', {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },
     amount: {
-      type: type.NUMERIC,
+      type: type.DOUBLE(10,2),
       allowNull: false
     },
     paymentId: {
       type: type.STRING,
-      allowNull: false
+      allowNull: true
     },
     status: {
       type: type.STRING,
