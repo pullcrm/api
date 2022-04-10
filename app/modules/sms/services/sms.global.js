@@ -275,7 +275,7 @@ export default {
 
   addSettings: async (data, {companyId, userId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
-
+    console.log(company.get('userId'), userId)
     if(company.get('userId') !== userId) {
       throw new ApiException(403, 'You don\'t own this company!')
     }

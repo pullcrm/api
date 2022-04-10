@@ -1,7 +1,6 @@
 import validate from "../../utils/validate"
 import joi from "../../utils/joi"
 import SMSGlobalService from './services/sms.global'
-import turboSMS from "../../providers/turbosms"
 
 export default {
   status: async (req, res, next) => {
@@ -29,30 +28,9 @@ export default {
     }
   },
 
-  send: async (req, res, next) => {
-    try {
-      // const message = await SMSGlobalService.sendPrivate({
-      //   message: req.body.message,
-      //   phone: req.body.phone,
-      // }, {
-      //   userId: req.userId,
-      //   companyId: req.companyId
-      // })
-
-      const status = await SMSGlobalService.destroySMS({message: 'test message', phone: '380958323358'})
-
-      res.send(status)
-      
-    } catch (error) {
-      next(error)
-    }
-  },
-
   addSettings: async (req, res, next) => {
     try {
       const formattedData = {
-        publicKey: req.body.publicKey,
-        privateKey: req.body.privateKey,
         hasCreationSMS: req.body.hasCreationSMS,
         hasRemindSMS: req.body.hasRemindSMS,
         remindSMSMinutes: req.body.remindSMSMinutes,
@@ -67,8 +45,6 @@ export default {
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
-        publicKey: joi.string().required(),
-        privateKey: joi.string().required(),
         companyId: joi.number().required(),
         userId: joi.number().required(),
         hasCreationSMS: joi.boolean(),
