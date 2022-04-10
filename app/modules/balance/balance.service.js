@@ -45,7 +45,7 @@ export default {
       where: baseWhere,
     })
 
-    return {history}
+    return history
   },
 
   checkout: async (data, params) => {
