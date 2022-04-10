@@ -8,16 +8,17 @@ import {Op} from 'sequelize'
 import ClientModel from '../clients/client.model'
 import SpecialistModel from '../specialists/models/specialist'
 import SMSGlobalService from '../sms/services/sms.global'
+import {IN_QUEUE} from '../../constants/appointments'
 
 export default {
-  findAll: async ({date, companyId}) => {
+  findAll: async ({date, companyId, status}) => {
     const baseCondition = {
-      isQueue: false,
-      companyId
+      companyId,
+      date:  {[Op.between]: [date, date]}
     }
 
-    baseCondition.date = {
-      [Op.between]: [date, date]
+    if(status) {
+      baseCondition.status = status
     }
 
     return AppointmentModel.findAll({
@@ -25,7 +26,7 @@ export default {
       attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
       include: [
         {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: SpecialistModel,  as: 'specialist', include: {model: UserModel, raw: true}},
+        {model: SpecialistModel,  as: 'specialist', include: {model: UserModel}},
         {model: ClientModel, as: 'client', include: {model: UserModel}}
       ],
     })
@@ -37,23 +38,6 @@ export default {
       {model: SpecialistModel, as: 'specialist', include: [{model: UserModel}]},
       {model: ClientModel, as: 'client', include: [{model: UserModel}]}
     ]})
-  },
-
-  queue: async ({companyId}) => {
-    const baseCondition = {
-      isQueue: true,
-      companyId
-    }
-
-    return AppointmentModel.findAll({
-      where: baseCondition,
-      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
-      include: [
-        {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: SpecialistModel, as: 'specialist', include: [{model: UserModel}]},
-        {model: ClientModel, as: 'client', include: [{model: UserModel}]}
-      ],
-    })
   },
 
   create: async data => {
@@ -132,19 +116,16 @@ export default {
 
   fetchBySpecialistId: async ({date, companyId, excludeId, specialistId}) => {
     const baseCondition = {
-      isQueue: false,
       companyId,
-      specialistId
+      specialistId,
+      date: {[Op.between]: [date, date]},
+      status: {[Op.not]: IN_QUEUE}
     }
 
     if (excludeId) {
       baseCondition.id = {
         [Op.ne]: excludeId
       }
-    }
-
-    baseCondition.date = {
-      [Op.between]: [date, date]
     }
 
     return AppointmentModel.findAll({

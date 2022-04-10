@@ -1,13 +1,16 @@
-import {Telegraf} from 'telegraf'
+import {Telegraf, Markup} from 'telegraf'
 import UserService from '../../modules/users/user.service'
 import {removeUAFormat} from '../../utils/phone'
 
 const TelegramBot = new Telegraf(process.env.TELEGRAM_TOKEN)
 
 TelegramBot.start(ctx => {
-  // console.log(ctx.chat.id)
   TelegramBot.telegram.sendMessage(ctx.chat.id, 'Відправте свій номер щоб отримати повідомлення про записи!', requestPhoneKeyboard)
 })
+
+// TelegramBot.on('message', async ctx => {
+//   console.log(ctx.message.text)
+// })
   
 TelegramBot.on('contact', async ctx => {
   // const chatId = msg.chat.id
@@ -34,13 +37,13 @@ TelegramBot.on('contact', async ctx => {
 
   if (user.telegramId) {
     return ctx.reply('Ви вже отримуєте повідомлення в цей чат.')
+  } else {
+    await user.update({
+      telegramId: ctx.message.contact.user_id
+    })
+  
+    ctx.reply('Тепер ви будете отримувати повідомлення за вказаним номером.')
   }
-
-  await user.update({
-    telegramId: ctx.message.contact.user_id
-  })
-
-  ctx.reply('Тепер ви будете отримувати повідомлення за вказаним номером.')
 })
   
 // bot.stop(ctx => {

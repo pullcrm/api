@@ -12,23 +12,10 @@ import * as Sentry from '@sentry/node'
 import CompanyModel from '../../companies/models/company'
 import SMSScheduler from '../../../jobs/sms.scheduler'
 import lifecell from '../../../providers/lifecell'
+import BalanceService from '../../balance/balance.service'
+import {IN_QUEUE} from '../../../constants/appointments'
 
 export default {
-  sendTurboSMS: async ({phone, message}) => {
-    const messageOptions = {
-      sender: process.env.SMS_COMPANY_NAME,
-      sms: {
-        text: message,
-      },
-      recipients: [addUAFormat(phone)]
-    }
-
-    const SMSResponse = await turboSMS.message.send(messageOptions)
-    return {
-      id: SMSResponse.response_result[0].message_id
-    }
-  },
-
   handleStatus: async ({id, status}) => {
     const messageHistory = await SMSHistoryModel.findOne({where: {lifecellId: id}})
 
@@ -50,6 +37,12 @@ export default {
   },
 
   sendImmediate: async ({message, phone, alphaName}, {userId, companyId}) => {
+    const {balance} = await BalanceService.getBalance({userId})
+
+    if(balance <= 0) {
+      throw new ApiException(400, 'У вас не достатньо грошей на СМС')
+    }
+
     const response = await lifecell.sendOneSMS({message, phone, alphaName})
     const isAccepted = response.state.value === 'Accepted'
    
@@ -86,57 +79,6 @@ export default {
     return job
   },
 
-  // sendPrivate: async ({phone, message, startDate = null, sender = 'TAXI'}, {userId, companyId}) => {
-  //   const messageOptions = {
-  //     sender,
-  //     sms: {
-  //       text: message,
-  //     },
-  //     recipients: [addUAFormat(phone)]
-  //   }
-
-  //   if(startDate) {
-  //     messageOptions.sms.start_time = startDate
-  //   }
-
-  //   const SMSResponse = await turboSMS.message.send(messageOptions)
-  //   console.log('SERVICE:', SMSResponse, messageOptions)
-  //   if(SMSResponse && SMSResponse.response_code === 800) {
-  //     const smsIdentifier = SMSResponse.response_result[0].message_id
-  
-  //     await SMSHistoryModel.create({
-  //       smsIdentifier,
-  //       recipient: phone,
-  //       status: 'PLANNED',
-  //       startDate,
-  //       message,
-  //       price: process.env.TURBO_SMS_PRICE,
-  //       userId,
-  //       companyId
-  //     })
-
-  //     return {
-  //       id: SMSResponse.response_result[0].message_id,
-  //       status: 'PLANNED'
-  //     }
-  //   }
-
-  //   await SMSHistoryModel.create({
-  //     smsIdentifier: null,
-  //     recipient: phone,
-  //     status: 'PLANNED',
-  //     message,
-  //     price: process.env.TURBO_SMS_PRICE,
-  //     userId,
-  //     companyId
-  //   })
-
-  //   return {
-  //     id: null,
-  //     status: 'FAILED'
-  //   }
-  // },
-
   status: async smsIdentifier => {
     const SMSStatus = await turboSMS.message.status(smsIdentifier)
 
@@ -145,7 +87,7 @@ export default {
 
   sendAfterAppointmentCreate: async ({hasRemindSMS, hasCreationSMS, appointmentId, ...data}) => {
     try {
-      if (data.isQueue) {
+      if (data.status !== IN_QUEUE) {
         return
       }
   
@@ -172,8 +114,9 @@ export default {
       }
 
       const company = await CompanyModel.findOne({where: {id: data.companyId}})
+      const {balance} = await BalanceService.getBalance({userId: company.userId})
   
-      if(hasCreationSMS) {
+      if(hasCreationSMS && balance > 0) {
         await SMSGlobalService.sendImmediate({
           alphaName: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
           phone: appointment.phone || appointment.client.user.phone,
@@ -181,7 +124,7 @@ export default {
         }, {userId: company.userId, companyId: company.id})
       }
   
-      if(hasRemindSMS) {
+      if(hasRemindSMS && balance > 0) {
         const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
   
         const smsResponse = await SMSGlobalService.sendDelayed({
@@ -224,7 +167,7 @@ export default {
       return null
     }
 
-    if (data.isQueue) {
+    if (data.status !== IN_QUEUE) {
       smsIdentifier && await SMSGlobalService.destroySMS({smsIdentifier})
       return null
     }
@@ -247,7 +190,10 @@ export default {
       smsIdentifier = null
     }
 
-    if(data.hasRemindSMS) {
+    const company = await CompanyModel.findOne({where: {id: data.companyId}})
+    const {balance} = await BalanceService.getBalance({userId: company.userId})
+
+    if(data.hasRemindSMS && balance > 0) {
       const sendDateTime = startDateTime.subtract(smsConfiguration.remindSMSMinutes, 'm')
 
       const message = remindNotifyMessage({
@@ -255,8 +201,6 @@ export default {
         procedures: appointment.procedures,
         specialist: appointment.specialist,
       }, smsConfiguration.remindSMSTemplate)
-
-      const company = await CompanyModel.findOne({where: {id: data.companyId}})
 
       const smsResponse = await SMSGlobalService.sendDelayed({
         alphaName: smsConfiguration.companyName || process.env.SMS_COMPANY_NAME,
@@ -280,7 +224,7 @@ export default {
 
   addSettings: async (data, {companyId, userId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
-    console.log(company.get('userId'), userId)
+
     if(company.get('userId') !== userId) {
       throw new ApiException(403, 'You don\'t own this company!')
     }

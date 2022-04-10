@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import {IN_QUEUE} from '../../constants/appointments'
 
 import {setTime} from '../../utils/time'
 
@@ -39,7 +40,7 @@ export function isTimeExpired (dateTime) {
 
 export function isAppointmentEdited (oldAppointment, newAppointment) {
   const newDateTime = setTime(newAppointment.date, newAppointment.startTime).format('DD.MM.YY HH:mm')
-  const oldDateTime = !oldAppointment.isQueue && setTime(oldAppointment.date, oldAppointment.startTime).format('DD.MM.YY HH:mm')
+  const oldDateTime = oldAppointment.status !== IN_QUEUE && setTime(oldAppointment.date, oldAppointment.startTime).format('DD.MM.YY HH:mm')
   console.log(newDateTime, oldDateTime)
 
   return (

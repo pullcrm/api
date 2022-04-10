@@ -1,4 +1,4 @@
-import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
+import {IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE} from '../../constants/appointments'
 import {getAvailableTime} from '../../logics/appointments'
 import joi from "../../utils/joi"
 import validate from '../../utils/validate'
@@ -16,35 +16,21 @@ export default {
     try {
       const formattedData = {
         date: req.query.date,
+        status: req.query.status,
         companyId: req.companyId
       }
 
+      const statusValidation = joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE)
+
       validate(formattedData, joi.object().keys({
         date: joi.string().required(),
+        status: Array.isArray(formattedData.status) ? joi.array().items(statusValidation) : statusValidation,
         companyId: joi.number().required()
       }))
 
       const appointments = await AppointmentService.findAll(formattedData)
 
       res.send(appointments)
-    } catch(error) {
-      next(error)
-    }
-  },
-
-  queue: async (req, res, next) => {
-    try {
-      const formattedData = {
-        companyId: req.companyId,
-      }
-
-      validate(formattedData, joi.object().keys({
-        companyId: joi.number().required()
-      }))
-
-      const queue = await AppointmentService.queue(formattedData)
-
-      res.send(queue)
     } catch(error) {
       next(error)
     }
@@ -63,7 +49,6 @@ export default {
         startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
-        isQueue: req.body.isQueue,
         status: req.body.status,
         hasRemindSMS: req.body.hasRemindSMS,
         hasCreationSMS: req.body.hasCreationSMS,
@@ -82,8 +67,7 @@ export default {
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         total: joi.number(),
         description: joi.string().allow('').max(255),
-        isQueue: joi.boolean().allow(null),
-        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
         hasRemindSMS: joi.boolean(),
         hasCreationSMS: joi.boolean(),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
@@ -113,7 +97,6 @@ export default {
         startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
-        isQueue: req.body.isQueue,
         status: req.body.status,
         hasRemindSMS: req.body.hasRemindSMS,
       }
@@ -134,8 +117,7 @@ export default {
         total: joi.number(),
         description: joi.string().allow('').max(255),
         appointmentId: joi.number(),
-        isQueue: joi.boolean(),
-        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
         hasRemindSMS: joi.boolean().allow(null),
       }))
 
@@ -156,7 +138,7 @@ export default {
     try {
       const formattedData = {
         status: req.body.status,
-        companyId: req.companyId, // Not need to send
+        companyId: req.companyId,
       }
 
       const params = {
@@ -166,7 +148,7 @@ export default {
       validate({...formattedData, ...params}, joi.object().keys({
         appointmentId: joi.number(),
         companyId: joi.number().required(),
-        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
       }))
 
       const newAppointment = await AppointmentService.update(formattedData, params.appointmentId)
@@ -325,7 +307,6 @@ export default {
         description: req.body.description,
         source: WIDGET,
         status: IN_PROGRESS,
-        isQueue: false,
         hasRemindSMS: req.body.hasRemindSMS,
         hasCreationSMS: req.body.hasCreationSMS,
       }
@@ -340,8 +321,7 @@ export default {
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).required(),
         total: joi.number(),
         description: joi.string().allow('').max(255),
-        isQueue: joi.boolean(),
-        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED),
+        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
         hasRemindSMS: joi.boolean(),
         hasCreationSMS: joi.boolean(),
