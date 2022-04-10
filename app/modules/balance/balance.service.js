@@ -26,6 +26,28 @@ export default {
     return {balance}
   },
 
+  getBalanceHistory: async ({userId, description}) => {
+    const user = await UserModel.findOne({where: {id: userId}})
+
+    if (!user) {
+      throw new ApiException(404, "User wasn't found")
+    }
+
+    const baseWhere = {
+      userId: user.id
+    }
+
+    if(description) {
+      baseWhere.description = description
+    }
+
+    const history = await BalanceModel.findAll({
+      where: baseWhere,
+    })
+
+    return {history}
+  },
+
   checkout: async (data, params) => {
     const user = await UserModel.findOne({where: {id: params.userId}})
 

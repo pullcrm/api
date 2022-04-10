@@ -1,6 +1,7 @@
 import BalanceService from './balance.service'
 import validate from "../../utils/validate"
 import joi from "../../utils/joi"
+import { DEPOSIT, SEND_SMS } from '../../constants/balance'
 
 export default {
   getBalance:  async (req, res, next) => {
@@ -16,6 +17,27 @@ export default {
       }))
 
       const balance = await BalanceService.getBalance(params)
+      res.send(balance)
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  getBalanceHistory: async (req, res, next) => {
+    try {
+      const params = {
+        userId: req.userId,
+        companyId: req.companyId,
+        description: req.query.description,
+      }
+
+      validate(params, joi.object().keys({
+        userId: joi.number().required(),
+        companyId: joi.number().required(),
+        description: joi.string().valid(DEPOSIT, SEND_SMS)
+      }))
+
+      const balance = await BalanceService.getBalanceHistory(params)
       res.send(balance)
     } catch(error) {
       next(error)
