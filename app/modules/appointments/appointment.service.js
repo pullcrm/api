@@ -40,9 +40,9 @@ export default {
     ]})
   },
 
-  create: async data => {
+  create: async (data, {companyId}) => {
     const result = await mysql.transaction(async transaction => {
-      const appointment = await AppointmentModel.create(data, {transaction})
+      const appointment = await AppointmentModel.create({...data, companyId}, {transaction})
       await appointment.setProcedures(data.procedures, {transaction})
 
       return appointment
@@ -51,14 +51,14 @@ export default {
     return result
   },
 
-  update: async (data, appointmentId) => {
+  update: async (data, {appointmentId, companyId}) => {
     const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
 
     if(!appointment) {
       throw new ApiException(404, 'Appointment wasn\'t found')
     }
 
-    if(appointment.get('companyId') !== data.companyId) {
+    if(appointment.get('companyId') !== companyId) {
       throw new ApiException(403, 'That is not your appointment')
     }
 
@@ -87,15 +87,7 @@ export default {
       throw new ApiException(403, 'That is not your appointment')
     }
 
-    if(smsIdentifier) {
-      try {
-        await SMSGlobalService.destroySMS({smsIdentifier})
-      } catch(err) {
-        Sentry.captureException(err)
-        console.log(err)
-      }
-    }
-
+    await SMSGlobalService.destroySMS({smsIdentifier})
     await appointment.destroy({cascade: true})
     return {destroy: 'OK'}
   },

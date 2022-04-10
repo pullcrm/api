@@ -43,8 +43,5 @@ export function isAppointmentEdited (oldAppointment, newAppointment) {
   const oldDateTime = oldAppointment.status !== IN_QUEUE && setTime(oldAppointment.date, oldAppointment.startTime).format('DD.MM.YY HH:mm')
   console.log(newDateTime, oldDateTime)
 
-  return (
-    newDateTime !== oldDateTime ||
-    newAppointment.hasRemindSMS !== Boolean(oldAppointment.smsIdentifier)
-  )
+  return (newDateTime !== oldDateTime)
 }

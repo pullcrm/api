@@ -10,6 +10,8 @@ import SMSGlobalService from '../sms/services/sms.global'
 import AppointmentService from './appointment.service'
 import {ADMIN_PANEL, WIDGET} from "../../constants/appointmentSources"
 import NotificationService from "../notifications/notification.service"
+import { isAppointmentEdited } from '../sms/sms.view'
+import appointmentService from './appointment.service'
 
 export default {
   index: async (req, res, next) => {
@@ -40,10 +42,9 @@ export default {
     try {
       const formattedData = {
         specialistId: req.body.specialistId,
-        clientId: req.body.clientId,
+        // clientId: req.body.clientId,
         fullName: req.body.fullName,
         phone: req.body.phone,
-        companyId: req.companyId,
         procedures: req.body.procedures,
         date: req.body.date,
         startTime: req.body.startTime,
@@ -55,10 +56,14 @@ export default {
         source: ADMIN_PANEL
       }
 
+      const params = {
+        companyId: req.companyId,
+      }
+
       //TODO need to validate clientId, procedures for owner
-      validate(formattedData, joi.object().keys({
+      validate({...params, ...formattedData}, joi.object().keys({
         specialistId: joi.number(),
-        clientId: joi.number(),
+        // clientId: joi.number(),
         fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
@@ -74,9 +79,10 @@ export default {
       }))
 
       await TimeOffService.checkForAvailableTime(formattedData)
-      const appointment = await AppointmentService.create(formattedData)
-      await SMSGlobalService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
-      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
+      const appointment = await AppointmentService.create(formattedData, params)
+
+      await SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
+      await NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
@@ -88,10 +94,7 @@ export default {
     try {
       const formattedData = {
         specialistId: req.body.specialistId,
-        clientId: req.body.clientId, // Not need to send
         fullName: req.body.fullName,
-        phone: req.body.phone, // Not need to send
-        companyId: req.companyId, // Not need to send
         procedures: req.body.procedures,
         date: req.body.date,
         startTime: req.body.startTime,
@@ -103,6 +106,7 @@ export default {
 
       const params = {
         appointmentId: req.params.id,
+        companyId: req.companyId
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
@@ -122,12 +126,15 @@ export default {
       }))
 
       await TimeOffService.checkForAvailableTime({...formattedData, ...params})
+      const oldAppointment = await AppointmentService.find(params.appointmentId)
+      const newAppointment = await AppointmentService.update(formattedData, params)
 
-      const smsIdentifier = await SMSGlobalService.sendAfterAppointmentUpdate(formattedData, params.appointmentId)
-      NotificationService.updateAppointment(formattedData, params.appointmentId)
+      if(isAppointmentEdited(oldAppointment, newAppointment)) {
+        await SMSGlobalService.destroySMS({smsIdentifier: oldAppointment.smsIdentifier})
+        await SMSGlobalService.createAppointment(formattedData, params)
+        await NotificationService.updateAppointment(formattedData, params.appointmentId)
+      }
       
-      const newAppointment = await AppointmentService.update({...formattedData, smsIdentifier}, params.appointmentId)
-
       res.send(newAppointment)
     } catch (error) {
       next(error)
