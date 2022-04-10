@@ -35,7 +35,6 @@ UserModel.hasMany(TokenModel, {as: 'tokens'})
 UserModel.belongsTo(FileModel, {as: 'avatar'})
 UserModel.hasMany(OrderModel)
 UserModel.hasMany(BalanceModel)
-UserModel.hasMany(SMSHistoryModel)
 
 CompanyModel.hasMany(SpecialistModel)
 CompanyModel.hasOne(SMSSettingsModel)

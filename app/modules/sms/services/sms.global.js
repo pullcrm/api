@@ -15,15 +15,25 @@ import BalanceService from '../../balance/balance.service'
 import {IN_QUEUE} from '../../../constants/appointments'
 
 export default {
-  handleStatus: async ({id, status}) => {
+  findAll: async ({companyId}) => {
+    return SMSHistoryModel.findAll({
+      where: {companyId},
+      attributes: {exclude: ['companyId', 'jobId', 'lifecellId']},
+    })
+  },
+
+  handleStatus: async ({id, status, date}) => {
     const messageHistory = await SMSHistoryModel.findOne({where: {lifecellId: id}})
 
     if(!messageHistory) {
       return {status: 'Skiped'}
     }
 
+    const campany = await CompanyModel.findOne({where: {id: messageHistory.companyId}})
+
     if(status === 'Delivered') {
-      await BalanceModel.create({userId: messageHistory.userId, amount: -messageHistory.price, description: 'SEND_SMS'})
+      await messageHistory.update({status: status.toUpperCase(), sendDate: date})
+      await BalanceModel.create({userId: campany.userId, amount: -messageHistory.price, description: 'SEND_SMS'})
     }
 
     await messageHistory.update({status: status.toUpperCase()})
@@ -35,13 +45,7 @@ export default {
     return response
   },
 
-  sendImmediate: async ({message, phone, alphaName}, {userId, companyId}) => {
-    const {balance} = await BalanceService.getBalance({userId})
-
-    if(balance <= 0) {
-      throw new ApiException(400, 'У вас не достатньо грошей на СМС')
-    }
-
+  sendImmediate: async ({message, phone, alphaName}, companyId) => {
     const response = await lifecell.sendOneSMS({message, phone, alphaName})
     const isAccepted = response.state.value === 'Accepted'
    
@@ -51,14 +55,13 @@ export default {
       status: response.state.value.toUpperCase(),
       message,
       price: isAccepted ? process.env.SMS_PRICE : 0.00,
-      userId,
       companyId
     })
 
     return response
   },
 
-  sendDelayed:  async ({sendDate, message, phone, alphaName}, {userId, companyId}) => {
+  sendDelayed:  async ({sendDate, message, phone, alphaName}, companyId) => {
     const delay = new Date(sendDate) -  new Date()
     const jobId = +new Date()
 
@@ -71,7 +74,6 @@ export default {
       message: message,
       sendDate,
       price: process.env.SMS_PRICE,
-      userId,
       companyId
     })
 
@@ -109,7 +111,7 @@ export default {
           alphaName: smsSettings.companyName || process.env.SMS_COMPANY_NAME,
           phone,
           message: creationNotifyMessage(appointment, smsSettings.creationSMSTemplate)
-        }, {userId: company.userId, companyId: company.id})
+        }, company.id)
       }
 
       if(hasRemindSMS) {
@@ -120,7 +122,7 @@ export default {
           message: remindNotifyMessage(appointment, smsSettings.remindSMSTemplate),
           sendDate: sendDateTime,
           phone
-        }, {userId: company.userId, companyId: company.id})
+        }, company.id)
         
         if(smsResponse.id) {
           await appointment.update({smsIdentifier: smsResponse.id})

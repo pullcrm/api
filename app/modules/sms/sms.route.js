@@ -5,7 +5,7 @@ import {ADMIN, MANAGER} from '../../constants/roles'
 
 const router = Router()
 
-// router.get('/balance', auth([ADMIN, SPECIALIST, MANAGER]), SMSController.balance)
+router.get('/', auth([ADMIN, MANAGER]), SMSController.index)
 router.post('/status', auth([ADMIN, MANAGER]), SMSController.status)
 router.post('/settings', auth([ADMIN, MANAGER]), SMSController.addSettings)
 router.put('/settings', auth([ADMIN, MANAGER]), SMSController.updateSettings)

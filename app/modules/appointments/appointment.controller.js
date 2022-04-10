@@ -10,8 +10,7 @@ import SMSGlobalService from '../sms/services/sms.global'
 import AppointmentService from './appointment.service'
 import {ADMIN_PANEL, WIDGET} from "../../constants/appointmentSources"
 import NotificationService from "../notifications/notification.service"
-import { isAppointmentEdited } from '../sms/sms.view'
-import appointmentService from './appointment.service'
+import {isAppointmentEdited} from '../sms/sms.view'
 
 export default {
   index: async (req, res, next) => {

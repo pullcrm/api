@@ -3,6 +3,24 @@ import joi from "../../utils/joi"
 import SMSGlobalService from './services/sms.global'
 
 export default {
+  index: async (req, res, next) => {
+    try {
+      const params = {
+        companyId: req.companyId
+      }
+
+      validate(params, joi.object().keys({
+        companyId: joi.number().required()
+      }))
+
+      const smsHistory = await SMSGlobalService.findAll(params)
+
+      res.send(smsHistory)
+    } catch(error) {
+      next(error)
+    }
+  },
+
   status: async (req, res, next) => {
     try {
       const formattedData = {
@@ -126,12 +144,14 @@ export default {
 
       const formattedData = {
         id: req.body.detail[0].id,
-        status: req.body.detail[0].state.value
+        status: req.body.detail[0].state.value,
+        date: req.body.date
       }
 
       validate(formattedData, joi.object().keys({
         id: joi.number().required(),
-        status: joi.string().required()
+        status: joi.string().required(),
+        date: joi.string().required()
       }))
 
       const status = await SMSGlobalService.handleStatus(formattedData)
