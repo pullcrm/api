@@ -5,7 +5,7 @@ const url = "https://api.omnicell.com.ua/ip2sms/"
 const authToken = Buffer.from(`${process.env.LIFECELL_LOGIN}:${process.env.LIFECELL_PASSWORD}`).toString('base64')
 
 export default {
-  async sendOneSMS({message, phone, alphaName}) {
+  async sendOneSMS({message, phone, alphaName = 'TECT'}) {
     const template = {
       id: "single",
       source: alphaName,

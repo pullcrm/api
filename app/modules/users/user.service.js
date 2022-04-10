@@ -108,8 +108,7 @@ export default {
       }
     }
 
-    return SMSGlobalService.sendImmediate({
-      alphaName: process.env.SMS_COMPANY_NAME,
+    return SMSGlobalService.sendImmediateGlobal({
       phone,
       message: `Код: ${code}`,
     })

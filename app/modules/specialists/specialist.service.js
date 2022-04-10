@@ -278,8 +278,7 @@ export default {
       }
     }
 
-    const status = await SMSGlobalService.sendImmediate({
-      alphaName: process.env.SMS_COMPANY_NAME,
+    const status = await SMSGlobalService.sendImmediateGlobal({
       phone: user.phone,
       message: `Продовжити реєстрацію: ${link}`,
     })

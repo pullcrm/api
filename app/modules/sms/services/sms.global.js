@@ -29,15 +29,11 @@ export default {
     }
   },
 
-  handleStatus: async ({id, status, total}) => {
-    if(total === 'test') {
-      return {status: 'Active'}
-    }
-
+  handleStatus: async ({id, status}) => {
     const messageHistory = await SMSHistoryModel.findOne({where: {lifecellId: id}})
 
     if(!messageHistory) {
-      throw new ApiException(404, 'There is no such sms in the queue')
+      return {status: 'Skiped'}
     }
 
     if(status === 'Delivered') {
@@ -46,6 +42,11 @@ export default {
 
     await messageHistory.update({status: status.toUpperCase()})
     return {status: 'Handled'}
+  },
+
+  sendImmediateGlobal: async ({message, phone}) => {
+    const response = await lifecell.sendOneSMS({message, phone})
+    return response
   },
 
   sendImmediate: async ({message, phone, alphaName}, {userId, companyId}) => {
