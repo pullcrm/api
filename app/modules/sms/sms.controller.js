@@ -120,9 +120,10 @@ export default {
 
   handleStatus: async (req, res, next) => {
     try {
+      console.log(req.body)
       const formattedData = {
-        id: req.body.detail[0].id,
-        status: req.body.detail[0].state.value
+        id: req.body?.detail[0]?.id,
+        status: req.body?.detail[0]?.state?.value
       }
 
       validate(formattedData, joi.object().keys({
