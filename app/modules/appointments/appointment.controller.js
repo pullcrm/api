@@ -306,7 +306,6 @@ export default {
         specialistId: req.body.specialistId,
         fullName: req.body.fullName,
         phone: req.body.phone,
-        companyId: req.body.companyId,
         procedures: req.body.procedures,
         date: req.body.date,
         startTime: req.body.startTime,
@@ -318,7 +317,11 @@ export default {
         hasCreationSMS: req.body.hasCreationSMS,
       }
 
-      validate(formattedData, joi.object().keys({
+      const params = {
+        companyId: req.body.companyId,
+      }
+
+      validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number(),
         fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
@@ -335,9 +338,10 @@ export default {
       }))
 
       await TimeOffService.checkForAvailableTime(formattedData)
-      const appointment = await AppointmentService.create(formattedData)
-      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
-      await SMSGlobalService.sendAfterAppointmentCreate({...formattedData, appointmentId: appointment.id})
+      const appointment = await AppointmentService.create(formattedData, params)
+
+      await SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
+      await NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
