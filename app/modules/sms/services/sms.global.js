@@ -29,7 +29,11 @@ export default {
     }
   },
 
-  handleStatus: async ({id, status}) => {
+  handleStatus: async ({id, status, total}) => {
+    if(total === 'test') {
+      return {status: 'Active'}
+    }
+
     const messageHistory = await SMSHistoryModel.findOne({where: {lifecellId: id}})
 
     if(!messageHistory) {

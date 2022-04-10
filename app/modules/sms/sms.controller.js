@@ -121,17 +121,7 @@ export default {
   handleStatus: async (req, res, next) => {
     try {
       console.log(req.body)
-      const formattedData = {
-        id: req.body?.detail[0]?.id,
-        status: req.body?.detail[0]?.state?.value
-      }
-
-      validate(formattedData, joi.object().keys({
-        id: joi.number().required(),
-        status: joi.string().required()
-      }))
-
-      const status = await SMSGlobalService.handleStatus(formattedData)
+      const status = await SMSGlobalService.handleStatus(req.body)
 
       res.send(status)
       
