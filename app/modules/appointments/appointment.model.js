@@ -29,6 +29,11 @@ const AppointmentSchema = (connection, type) => {
     fullName: {
       type: type.STRING,
     },
+    totalDuration: {
+      type: type.BIGINT,
+      allowNull: false,
+      defaultValue: 0
+    },
     total: {
       type: type.INTEGER,
       allowNull: false,

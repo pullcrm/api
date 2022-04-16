@@ -48,6 +48,7 @@ export default {
         date: req.body.date,
         startTime: req.body.startTime,
         total: req.body.total,
+        totalDuration: req.body.totalDuration,
         description: req.body.description,
         status: req.body.status,
         hasRemindSMS: req.body.hasRemindSMS,
@@ -69,6 +70,7 @@ export default {
         procedures: joi.array(),
         date: joi.date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
+        totalDuration: joi.number(),
         total: joi.number(),
         description: joi.string().allow('').max(255),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
@@ -80,8 +82,8 @@ export default {
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData, params)
 
-      await SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
-      await NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
+      SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
+      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
@@ -95,6 +97,7 @@ export default {
         specialistId: req.body.specialistId,
         fullName: req.body.fullName,
         procedures: req.body.procedures,
+        totalDuration: req.body.totalDuration,
         date: req.body.date,
         startTime: req.body.startTime,
         total: req.body.total,
@@ -114,6 +117,7 @@ export default {
         fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
+        totalDuration: joi.number(),
         procedures: joi.array(),
         date: joi.date().format('YYYY-MM-DD'),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
@@ -130,8 +134,8 @@ export default {
 
       if(isAppointmentEdited(oldAppointment, newAppointment)) {
         await SMSGlobalService.destroySMS({smsIdentifier: oldAppointment.smsIdentifier})
-        await SMSGlobalService.createAppointment(formattedData, params)
-        await NotificationService.updateAppointment(formattedData, params.appointmentId)
+        SMSGlobalService.createAppointment(formattedData, params)
+        NotificationService.updateAppointment(formattedData, params.appointmentId)
       }
       
       res.send(newAppointment)
@@ -306,6 +310,7 @@ export default {
         fullName: req.body.fullName,
         phone: req.body.phone,
         procedures: req.body.procedures,
+        totalDuration: req.body.totalDuration,
         date: req.body.date,
         startTime: req.body.startTime,
         total,
@@ -328,6 +333,7 @@ export default {
         procedures: joi.array(),
         date: joi.date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).required(),
+        totalDuration: joi.number(),
         total: joi.number(),
         description: joi.string().allow('').max(255),
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
@@ -339,8 +345,8 @@ export default {
       await TimeOffService.checkForAvailableTime(formattedData)
       const appointment = await AppointmentService.create(formattedData, params)
 
-      await SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
-      await NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
+      SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
+      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
 
       res.send(appointment)
     } catch(error) {
