@@ -1,15 +1,13 @@
-import sequelize from "sequelize"
 import ApiException from "../../exceptions/api"
 import LiqPay from "../../providers/liqpay"
 import OrderModel from "./models/order"
 import BalanceModel from './models/balance'
-import {IN_PROGRESS, SUCCESS} from "../../constants/balance"
+import {CANCEL_URL, DEPOSIT, IN_PROGRESS, SUCCESS_URL} from "../../constants/balance"
 import UserModel from "../users/user.model"
-import { mysql } from "../../config/connections"
+import {mysql} from "../../config/connections"
 
 const public_key = process.env.LIQPAY_PUBLIC_KEY
 const private_key = process.env.LIQPAY_PRIVATE_KEY
-
 const liqpay = new LiqPay(public_key, private_key)
 
 export default {
@@ -105,12 +103,12 @@ export default {
           paymentId: payment_id,
         }, transaction)
 
-        await BalanceModel.create({amount: order.amount, userId: order.userId, description: 'DEPOSIT'})
+        await BalanceModel.create({amount: order.amount, userId: order.userId, description: DEPOSIT})
       })
 
-      return "success"
+      return SUCCESS_URL
     }
 
-    return "cancel"
+    return CANCEL_URL
   },
 }

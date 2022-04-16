@@ -13,6 +13,8 @@ import SMSScheduler from '../../../jobs/sms.scheduler'
 import lifecell from '../../../providers/lifecell'
 import BalanceService from '../../balance/balance.service'
 import {IN_QUEUE} from '../../../constants/appointments'
+import {SEND_SMS} from '../../../constants/balance'
+import {ACCEPTED, DELIVERED, HANDLED, PLANNED, SKIPED} from '../../../constants/sms'
 
 export default {
   findAll: async ({companyId}) => {
@@ -26,18 +28,18 @@ export default {
     const messageHistory = await SMSHistoryModel.findOne({where: {lifecellId: id}})
 
     if(!messageHistory) {
-      return {status: 'Skiped'}
+      return {status: SKIPED}
     }
 
     const campany = await CompanyModel.findOne({where: {id: messageHistory.companyId}})
 
-    if(status === 'Delivered') {
+    if(status === DELIVERED) {
       await messageHistory.update({status: status.toUpperCase(), sendDate: date})
-      await BalanceModel.create({userId: campany.userId, amount: -messageHistory.price, description: 'SEND_SMS'})
+      await BalanceModel.create({userId: campany.userId, amount: -messageHistory.price, description: SEND_SMS})
     }
 
     await messageHistory.update({status: status.toUpperCase()})
-    return {status: 'Handled'}
+    return {status: HANDLED}
   },
 
   sendImmediateGlobal: async ({message, phone}) => {
@@ -47,7 +49,7 @@ export default {
 
   sendImmediate: async ({message, phone, alphaName}, companyId) => {
     const response = await lifecell.sendOneSMS({message, phone, alphaName})
-    const isAccepted = response.state.value === 'Accepted'
+    const isAccepted = response.state.value === ACCEPTED
    
     await SMSHistoryModel.create({
       lifecellId: response.id,
@@ -70,7 +72,7 @@ export default {
     await SMSHistoryModel.create({
       jobId: job.id,
       recipient: phone,
-      status: 'PLANNED',
+      status: PLANNED,
       message: message,
       sendDate,
       price: process.env.SMS_PRICE,
@@ -78,12 +80,6 @@ export default {
     })
 
     return job
-  },
-
-  status: async smsIdentifier => {
-    const SMSStatus = await turboSMS.message.status(smsIdentifier)
-
-    return SMSStatus
   },
 
   createAppointment: async ({hasRemindSMS, hasCreationSMS = false}, params) => {
