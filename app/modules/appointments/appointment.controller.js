@@ -24,7 +24,7 @@ export default {
       const statusValidation = joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE)
 
       validate(formattedData, joi.object().keys({
-        date: joi.string().required(),
+        date: joi.string(),
         status: Array.isArray(formattedData.status) ? joi.array().items(statusValidation) : statusValidation,
         companyId: joi.number().required()
       }))

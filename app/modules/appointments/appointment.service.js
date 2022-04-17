@@ -14,11 +14,14 @@ export default {
   findAll: async ({date, companyId, status}) => {
     const baseCondition = {
       companyId,
-      date:  {[Op.between]: [date, date]}
     }
 
     if(status) {
       baseCondition.status = status
+    }
+
+    if(date) {
+      baseCondition.date = {[Op.between]: [date, date]}
     }
 
     return AppointmentModel.findAll({
