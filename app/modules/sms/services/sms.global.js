@@ -17,9 +17,11 @@ import {SEND_SMS} from '../../../constants/balance'
 import {ACCEPTED, DELIVERED, HANDLED, PLANNED, SKIPED} from '../../../constants/sms'
 
 export default {
-  findAll: async ({companyId}) => {
+  findAll: async ({companyId, limit, offest}) => {
     return SMSHistoryModel.findAll({
       where: {companyId},
+      limit,
+      offest,
       attributes: {exclude: ['companyId', 'jobId', 'lifecellId']},
     })
   },

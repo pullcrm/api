@@ -6,11 +6,15 @@ export default {
   index: async (req, res, next) => {
     try {
       const params = {
-        companyId: req.companyId
+        companyId: req.companyId,
+        offset: +req.query.offset || 0,
+        limit: +req.query.limit || 20,
       }
 
       validate(params, joi.object().keys({
-        companyId: joi.number().required()
+        companyId: joi.number().required(),
+        offset: joi.number(),
+        limit: joi.number(),
       }))
 
       const smsHistory = await SMSGlobalService.findAll(params)

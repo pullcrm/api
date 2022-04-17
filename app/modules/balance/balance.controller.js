@@ -29,9 +29,13 @@ export default {
         userId: req.userId,
         companyId: req.companyId,
         description: req.query.description,
+        offset: +req.query.offset || 0,
+        limit: +req.query.limit || 20,
       }
 
       validate(params, joi.object().keys({
+        offset: joi.number(),
+        limit: joi.number(),
         userId: joi.number().required(),
         companyId: joi.number().required(),
         description: joi.string().valid(DEPOSIT, SEND_SMS)

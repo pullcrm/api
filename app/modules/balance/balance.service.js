@@ -24,7 +24,7 @@ export default {
     return {balance}
   },
 
-  getBalanceHistory: async ({userId, description}) => {
+  getBalanceHistory: async ({userId, description, limit, offset}) => {
     const user = await UserModel.findOne({where: {id: userId}})
 
     if (!user) {
@@ -41,6 +41,7 @@ export default {
 
     const history = await BalanceModel.findAll({
       where: baseWhere,
+      limit, offset
     })
 
     return history
