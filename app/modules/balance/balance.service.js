@@ -39,12 +39,22 @@ export default {
       baseWhere.description = description
     }
 
-    const history = await BalanceModel.findAll({
+    const data = await BalanceModel.findAll({
       where: baseWhere,
       limit, offset
     })
 
-    return history
+    const total = await BalanceModel.count({where: baseWhere})
+
+    return {
+      pagination: {
+        limit,
+        offset,
+        total
+      },
+
+      data
+    }
   },
 
   checkout: async (data, params) => {

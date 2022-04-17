@@ -17,13 +17,25 @@ import {SEND_SMS} from '../../../constants/balance'
 import {ACCEPTED, DELIVERED, HANDLED, PLANNED, SKIPED} from '../../../constants/sms'
 
 export default {
-  findAll: async ({companyId, limit, offest}) => {
-    return SMSHistoryModel.findAll({
+  findAll: async ({companyId, limit, offset}) => {
+    const data = await SMSHistoryModel.findAll({
       where: {companyId},
       limit,
-      offest,
+      offset,
       attributes: {exclude: ['companyId', 'jobId', 'lifecellId']},
     })
+
+    const total = await SMSHistoryModel.count({where: {companyId}})
+
+    return {
+      pagination: {
+        limit,
+        offset,
+        total
+      },
+
+      data
+    }
   },
 
   handleStatus: async ({id, status, date}) => {
