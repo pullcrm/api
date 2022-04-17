@@ -13,6 +13,11 @@ const SMSSettingsSchema = (connection, type) => {
       allowNull: false,
       defaultValue: 60,
     },
+    hasRemindSMS: {
+      type: type.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     hasCreationSMS: {
       type: type.BOOLEAN,
       allowNull: false,
