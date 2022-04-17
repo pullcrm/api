@@ -36,6 +36,27 @@ export default {
     return CompanyModel.findAll({where: {userId: params.userId}})
   },
 
+  findAllGlobal: async ({search}) => {
+    const where = {}
+
+    if(search) {
+      where.search = search
+    }
+
+    const companies = await CompanyModel.findAll({
+      where: {name: {[sequelize.Op.like]: `%${search}%`}},
+      include: [
+        {model: TypeModel},
+        {model: CityModel},
+        {model: WidgetSettingsModel},
+        {model: SMSSettingsModel},
+        {model: FileModel, as: 'logo'}
+      ]
+    })
+
+    return companies
+  },
+
   create: async data => {
     const result = await mysql.transaction(async transaction => {
       const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: TypeModel}], transaction})

@@ -23,6 +23,19 @@ export default {
     }
   },
 
+  globalIndex: async (req, res, next) => {
+    try {
+      const params = {
+        search: req.query.search
+      }
+
+      const companies = await CompanyService.findAllGlobal(params)
+      res.send(companies)
+    } catch (error) {
+      next(error)
+    }
+  },
+
   show: async (req, res, next) => {
     try {
       const formattedData = {

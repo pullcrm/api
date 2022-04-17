@@ -54,7 +54,7 @@ export default {
         remindSMSMinutes: req.body.remindSMSMinutes,
         creationSMSTemplate: req.body.creationSMSTemplate,
         remindSMSTemplate: req.body.remindSMSTemplate,
-        companyName: req.body.companyName
+        // companyName: req.body.companyName
       }
 
       const params = {
@@ -70,7 +70,7 @@ export default {
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
         creationSMSTemplate: joi.string().max(255),
         remindSMSTemplate: joi.string().max(255),
-        companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
+        // companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
       const company = await SMSGlobalService.addSettings(formattedData, params)
@@ -89,7 +89,7 @@ export default {
         remindSMSMinutes: req.body.remindSMSMinutes,
         creationSMSTemplate: req.body.creationSMSTemplate,
         remindSMSTemplate: req.body.remindSMSTemplate,
-        companyName: req.body.companyName
+        // companyName: req.body.companyName
       }
 
       const params = {
@@ -105,7 +105,7 @@ export default {
         remindSMSMinutes: joi.number().when('hasRemindSMS', {is: true, then: joi.required()}),
         creationSMSTemplate: joi.string().max(255),
         remindSMSTemplate: joi.string().max(255),
-        companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
+        // companyName: joi.string().regex(/^([^{|,;%'#%*!^=[\]()~<>}"]+)([a-zA-Z]+)+$/).max(11)
       }))
 
       const company = await SMSGlobalService.updateSettings(formattedData, params)
