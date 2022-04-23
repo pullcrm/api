@@ -157,11 +157,11 @@ export default {
     }
   },
 
-  addSettings: async (data, {companyId, userId}) => {
+  addSettings: async (data, {companyId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
 
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
+    if(!company) {
+      throw new ApiException(404, 'Компанії не існує')
     }
 
     const settings = await SMSSettingsModel.create({
@@ -180,8 +180,8 @@ export default {
   updateSettings: async (data, {companyId, userId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
     
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
+    if(!company) {
+      throw new ApiException(404, 'Компанії не існує')
     }
 
     const settings = await SMSSettingsModel.findOne({where: {companyId: company.id}})
@@ -193,11 +193,11 @@ export default {
     return settings.update(data)
   },
 
-  deleteSettings: async ({companyId, userId}) => {
+  deleteSettings: async ({companyId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
 
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
+    if(!company) {
+      throw new ApiException(404, 'Компанії не існує')
     }
 
     const settings = await SMSSettingsModel.findOne({where: {companyId: company.id}})

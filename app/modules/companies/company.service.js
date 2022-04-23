@@ -77,10 +77,6 @@ export default {
       throw new ApiException(404, 'Company wasn\'t found')
     }
 
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'That is not your company')
-    }
-
     const result = await mysql.transaction(async transaction => {
       await company.update(data, {plain: true, transaction})
 
@@ -90,11 +86,11 @@ export default {
     return result
   },
 
-  getStats: async ({startDate, endDate}, {companyId, userId}) => {
+  getStats: async ({startDate, endDate}, {companyId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
+    
+    if(!company) {
+      throw new ApiException(404, 'Компанії не існує')
     }
 
     const whereConditions = {

@@ -11,37 +11,37 @@ const TimeWorkSchema = (connection, type) => {
     monday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
     tuesday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
     wednesday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
     thursday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
     friday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
     saturday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
     sunday: {
       type: type.STRING,
       allowNull: false,
-      defaultValue: 'true;09:00;21:00'
+      defaultValue: 'true;10:00;20:00'
     },
   })
 }
