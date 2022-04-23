@@ -99,11 +99,13 @@ export default {
         procedures: req.body.procedures,
         totalDuration: req.body.totalDuration,
         date: req.body.date,
+        phone: req.body.phone,
         startTime: req.body.startTime,
         total: req.body.total,
         description: req.body.description,
         status: req.body.status,
         hasRemindSMS: req.body.hasRemindSMS,
+
       }
 
       const params = {
@@ -113,7 +115,7 @@ export default {
 
       validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number(),
-        clientId: joi.number(),
+        // clientId: joi.number(),
         fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
