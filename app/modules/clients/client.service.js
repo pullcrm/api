@@ -1,5 +1,5 @@
 import {Op, QueryTypes} from 'sequelize'
-import { mysql } from '../../config/connections'
+import {mysql} from '../../config/connections'
 import ClientModel from './client.model'
 
 export default {
@@ -13,7 +13,7 @@ export default {
       ]
     }
 
-    const data = await ClientModel.findAll({where, limit, offset})
+    const data = await ClientModel.findAll({where, limit, offset, attributes: ['id', 'fullName', 'phone']})
 
     return {
       pagination: {
@@ -27,19 +27,25 @@ export default {
 
   index: async ({companyId, limit, offset}) => {
     const where = `where cl.companyId = ${companyId}`
-
-    // if (startDate && endDate) {
-    //   whereConditions = whereConditions.concat(
-    //     " and ",
-    //     `ap.date between '${startDate}' and '${endDate}'`
-    //   )
-    // }
-
-    const [data] = await mysql.query(
+    const total = await ClientModel.count({where: {companyId}})
+    const data = await mysql.query(
       ` 
-     select fullName from clients as cl
-     left join appointments as app on cl.id = app.clientId
-     ${where}
+      select 
+        cl.id,
+        cl.fullName,
+        cl.email,
+        cl.phone,
+        cl.birthday,
+        count(app.id) as visits,
+        sum(app.total) as payed,
+        avg(app.total) as avgPayed
+      from clients as cl
+        left join appointments as app on cl.id = app.clientId
+      ${where}
+      group by cl.id
+      order by cl.id desc
+      limit ${limit}
+      offset ${offset}
     `,
       {type: QueryTypes.SELECT}
     )
@@ -48,6 +54,7 @@ export default {
       pagination: {
         limit,
         offset,
+        total
       },
   
       data

@@ -17,8 +17,8 @@ export default {
         limit: joi.number().required(),
       }))
 
-      const roles = await ClientService.index(params)
-      res.send(roles)
+      const clients = await ClientService.index(params)
+      res.send(clients)
     } catch(error) {
       next(error)
     }
@@ -42,8 +42,8 @@ export default {
         fullName: joi.string(),
       }))
 
-      const roles = await ClientService.findAll(params)
-      res.send(roles)
+      const clients = await ClientService.findByPhoneOrName(params)
+      res.send(clients)
     } catch(error) {
       next(error)
     }
