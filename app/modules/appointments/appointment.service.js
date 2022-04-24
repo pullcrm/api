@@ -39,7 +39,7 @@ export default {
           as: "specialist",
           include: {model: UserModel},
         },
-        {model: ClientModel, as: "client", include: {model: UserModel}},
+        {model: ClientModel, as: "client"},
       ],
     })
   },
@@ -54,7 +54,7 @@ export default {
           as: "specialist",
           include: [{model: UserModel}],
         },
-        {model: ClientModel, as: "client", include: [{model: UserModel}]},
+        {model: ClientModel, as: "client"},
       ],
     })
   },
