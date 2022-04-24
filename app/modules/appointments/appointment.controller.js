@@ -41,7 +41,7 @@ export default {
     try {
       const formattedData = {
         specialistId: req.body.specialistId,
-        // clientId: req.body.clientId,
+        clientId: req.body.clientId,
         fullName: req.body.fullName,
         phone: req.body.phone,
         procedures: req.body.procedures,
@@ -63,11 +63,11 @@ export default {
       //TODO need to validate clientId, procedures for owner
       validate({...params, ...formattedData}, joi.object().keys({
         specialistId: joi.number(),
-        // clientId: joi.number(),
+        clientId: joi.number(),
         fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
-        companyId: joi.number(),
-        procedures: joi.array(),
+        companyId: joi.number().required(),
+        procedures: joi.array().required(),
         date: joi.date().format('YYYY-MM-DD').required(),
         startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
         totalDuration: joi.number(),
@@ -115,7 +115,7 @@ export default {
 
       validate({...formattedData, ...params}, joi.object().keys({
         specialistId: joi.number(),
-        // clientId: joi.number(),
+        clientId: joi.number(),
         fullName: joi.string().max(255),
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number(),
