@@ -1,19 +1,24 @@
-import {Op, QueryTypes} from 'sequelize'
-import {mysql} from '../../config/connections'
-import ClientModel from './client.model'
+import {Op, QueryTypes} from "sequelize"
+import {mysql} from "../../config/connections"
+import ClientModel from "./client.model"
 
 export default {
   findByPhoneOrName: async ({companyId, limit, offset, phone, fullName}) => {
     const where = {companyId}
 
-    if(phone || fullName) {
+    if (phone || fullName) {
       where[Op.or] = [
         {phone: {[Op.like]: `%${phone}%`}},
         {fullName: {[Op.like]: `%${fullName}%`}},
       ]
     }
 
-    const data = await ClientModel.findAll({where, limit, offset, attributes: ['id', 'fullName', 'phone']})
+    const data = await ClientModel.findAll({
+      where,
+      limit,
+      offset,
+      attributes: ["id", "fullName", "phone"],
+    })
 
     return {
       pagination: {
@@ -21,7 +26,7 @@ export default {
         offset,
       },
 
-      data
+      data,
     }
   },
 
@@ -37,8 +42,8 @@ export default {
         cl.phone,
         cl.birthday,
         count(app.id) as visits,
-        sum(app.total) as payed,
-        avg(app.total) as avgPayed
+        cast(sum(app.total) as SIGNED) as payed,
+        cast(avg(app.total) as SIGNED) as avgPayed
       from clients as cl
         left join appointments as app on cl.id = app.clientId
       ${where}
@@ -54,15 +59,15 @@ export default {
       pagination: {
         limit,
         offset,
-        total
+        total,
       },
-  
-      data
+
+      data,
     }
   },
 
   create: async (data, {companyId}) => {
     const client = await ClientModel.create({...data, companyId})
     return client
-  }
+  },
 }
