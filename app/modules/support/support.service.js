@@ -13,14 +13,7 @@ export default {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "Привіт :wave:"
-          }
-        },
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": `Надійшов новий лист в підтримку від ${item} *${name}*`
+            "text": `${item} *${name}*`
           }
         },
         {
@@ -31,27 +24,15 @@ export default {
           }
         },
         {
-          "type": "divider"
-        },
-        {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `*${email}* \n *${phone}*`
-          },
-          "accessory": {
-            "type": "button",
-            "style": "primary",
-            "text": {
-              "type": "plain_text",
-              "text": "Відповісти",
-              "emoji": true
-            },
-            "value": "click_me_123",
-            "url": `mailto:${email}`,
-            "action_id": "button-action"
+            "text": `${email} ${phone}`
           }
-        }
+        },
+        {
+          "type": "divider"
+        },
       ]
     }
     )
