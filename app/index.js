@@ -60,7 +60,7 @@ app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:8080', 'http://127.0.0.1:8000', 'http://pullcrm.com']
+  const allowedOrigins = ['http://pullcrm.local:8080', 'http://127.0.0.1:8000']
   const origin = req.headers.origin
 
   if(allowedOrigins.indexOf(origin) > -1) {
