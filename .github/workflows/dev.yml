@@ -41,8 +41,11 @@ jobs:
       - name: Copy .env file to project
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cp /var/www/pullcrm.dev/api/.env /var/www/pullcrm.dev/api/release/.env'
 
-      - name: Install modules
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && nvm use 14 && cd /var/www/pullcrm.dev/api/release && yarn install'
+      - name: Install modules and build project
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && nvm use 14 && cd /var/www/pullcrm.dev/api/release && yarn install && yarn build'
+
+      - name: Install modules and build project
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'pm2 startOrReload /var/www/pullcrm.dev/api/ecosystem.config.js'
 
       # - name: Install modules
       #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} cd /var/www/pullcrm.dev/api/release && source ~/.nvm/nvm.sh && nvm use 14 && yarn install
