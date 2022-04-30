@@ -99,11 +99,11 @@ export default {
   createAppointment: async ({hasRemindSMS, hasCreationSMS = false}, params) => {
     try {
       const appointment = await appointmentService.find(params.appointmentId)
-      const startDateTime = setTime(appointment.date, appointment.startTime)
       const company = await CompanyModel.findOne({where: {id: params.companyId}})
       const {balance} = await BalanceService.getBalance({userId: company.userId})
       const isInQueue = appointment.status === IN_QUEUE
       const phone = appointment.phone
+      const startDateTime = setTime(appointment.date, appointment.startTime)
       const isExpired = isTimeExpired(startDateTime)
 
       if(isInQueue || (!hasRemindSMS && !hasCreationSMS) || !phone || isExpired || balance <= 0) {

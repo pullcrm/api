@@ -11,13 +11,7 @@ const AppointmentSchema = (connection, type) => {
     },
     date: {
       type: type.DATE,
-      defaultValue: Sequelize.NOW,
-      allowNull: false,
-      // isStep15Minutes(value) {
-      //   if (new Date(+value * 1000).getMinutes() % 15 !== 0) {
-      //     throw new Error('Step should be 15m')
-      //   }
-      // }
+      allowNull: true,
     },
     startTime: {
       type: type.TIME,

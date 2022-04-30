@@ -60,7 +60,9 @@ export default {
         companyId: req.companyId,
       }
 
-      //TODO need to validate clientId, procedures for owner
+      const dateValidation = joi.date().format('YYYY-MM-DD')
+      const startTimeValidation = joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null)
+
       validate({...params, ...formattedData}, joi.object().keys({
         specialistId: joi.number(),
         clientId: joi.number(),
@@ -68,8 +70,8 @@ export default {
         phone: joi.string().pattern(/^0\d+$/).length(10),
         companyId: joi.number().required(),
         procedures: joi.array().required(),
-        date: joi.date().format('YYYY-MM-DD').required(),
-        startTime: joi.string().regex(/^([0-9]{2}):([0-9]{2}):([0-9]{2})$/).allow(null),
+        date: formattedData.status === IN_QUEUE ? dateValidation : dateValidation.required(),
+        startTime: formattedData.status === IN_QUEUE ? startTimeValidation : startTimeValidation.required(),
         totalDuration: joi.number(),
         total: joi.number(),
         description: joi.string().allow('').max(255),
@@ -79,11 +81,19 @@ export default {
         source: joi.string().valid(WIDGET, ADMIN_PANEL),
       }))
 
-      await TimeOffService.checkForAvailableTime(formattedData)
-      const appointment = await AppointmentService.create(formattedData, params)
+      let appointment
 
-      SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
-      NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
+      if(formattedData.status !== IN_QUEUE) {
+        await TimeOffService.checkForAvailableTime(formattedData)
+        appointment = await AppointmentService.create(formattedData, params)
+  
+        SMSGlobalService.createAppointment(formattedData, {...params, appointmentId: appointment.id})
+        NotificationService.createAppointment({...formattedData, appointmentId: appointment.id})
+      }
+
+      if(formattedData.status === IN_QUEUE) {
+        appointment = await AppointmentService.create(formattedData, params)
+      }
 
       res.send(appointment)
     } catch(error) {
@@ -130,16 +140,24 @@ export default {
         hasRemindSMS: joi.boolean().allow(null),
       }))
 
-      await TimeOffService.checkForAvailableTime({...formattedData, ...params})
-      const oldAppointment = await AppointmentService.find(params.appointmentId)
-      const newAppointment = await AppointmentService.update(formattedData, params)
+      let newAppointment
 
-      if(isAppointmentEdited(oldAppointment, newAppointment)) {
-        await SMSGlobalService.destroySMS({smsIdentifier: oldAppointment.smsIdentifier})
-        SMSGlobalService.createAppointment(formattedData, params)
-        NotificationService.updateAppointment(formattedData, params.appointmentId)
+      if(formattedData.status !== IN_QUEUE) {
+        await TimeOffService.checkForAvailableTime({...formattedData, ...params})
+        const oldAppointment = await AppointmentService.find(params.appointmentId)
+        newAppointment = await AppointmentService.update(formattedData, params)
+  
+        if(isAppointmentEdited(oldAppointment, newAppointment)) {
+          await SMSGlobalService.destroySMS({smsIdentifier: oldAppointment.smsIdentifier})
+          SMSGlobalService.createAppointment(formattedData, params)
+          NotificationService.updateAppointment(formattedData, params.appointmentId)
+        }
       }
-      
+
+      if(formattedData.status === IN_QUEUE) {
+        newAppointment = await AppointmentService.update(formattedData, params)
+      }
+
       res.send(newAppointment)
     } catch (error) {
       next(error)
@@ -338,8 +356,8 @@ export default {
         totalDuration: joi.number(),
         total: joi.number(),
         description: joi.string().allow('').max(255),
-        status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
-        source: joi.string().valid(WIDGET, ADMIN_PANEL),
+        status: joi.string().valid(IN_PROGRESS),
+        source: joi.string().valid(WIDGET),
         hasRemindSMS: joi.boolean(),
         hasCreationSMS: joi.boolean(),
       }))
