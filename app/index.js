@@ -4,7 +4,6 @@ import express from 'express'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
-import Queue from 'bull'
 import * as Sentry from "@sentry/node"
 import * as Tracing from "@sentry/tracing"
 import {errorsHandler} from './middlewares/errors'
@@ -12,9 +11,7 @@ import './models'
 import TelegramBot from './providers/telegram'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import lifecell from './providers/lifecell'
 import SMSScheduler from './jobs/sms.scheduler'
-// import './jobs/delivering_sms'
 
 dayjs.extend(customParseFormat)
 

@@ -150,11 +150,11 @@ export default {
     try {
       const formattedData = {
         status: req.body.status,
-        companyId: req.companyId,
       }
 
       const params = {
         appointmentId: req.params.id,
+        companyId: req.companyId,
       }
 
       validate({...formattedData, ...params}, joi.object().keys({
@@ -163,7 +163,7 @@ export default {
         status: joi.string().valid(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
       }))
 
-      const newAppointment = await AppointmentService.update(formattedData, params.appointmentId)
+      const newAppointment = await AppointmentService.update(formattedData, params)
 
       res.send(newAppointment)
     } catch (error) {
