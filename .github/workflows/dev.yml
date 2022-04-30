@@ -44,11 +44,8 @@ jobs:
       - name: Install modules and build project
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && nvm use 14 && cd /var/www/pullcrm.dev/api/release && yarn install && yarn build'
 
-      - name: Install modules and build project
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'pm2 startOrReload /var/www/pullcrm.dev/api/ecosystem.config.js'
+      - name: Run BD migration
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && npx sequelize-cli db:migrate'
 
-      # - name: Install modules
-      #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} cd /var/www/pullcrm.dev/api/release && source ~/.nvm/nvm.sh && nvm use 14 && yarn install
-
-      # - name: Run BD migration
-      #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
+      - name: Reload project
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && pm2 startOrReload /var/www/pullcrm.dev/api/ecosystem.config.js'
