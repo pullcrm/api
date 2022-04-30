@@ -73,9 +73,13 @@ jobs:
       - name: Create the release folder on the server
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'mkdir /var/www/pullcrm.dev/api/release-${{ github.sha }}'
         
-      - name: Upload the files to the server
+      - name: Upload dist folder to the server
         run: rsync -r ./dist ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
+        
+      - name: Upload migrations folder to the server
         run: rsync -r ./migrations ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
+
+      - name: Upload .sequelizerc file to the server
         run: rsync -r ./.sequelizerc ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
         
       - name: Link the release folder on the server
