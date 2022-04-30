@@ -36,7 +36,7 @@ jobs:
         run: rsync -r ./ ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/versions/release-${{ github.sha }}'
         
       - name: Link the release folder on the server
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/versions/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/versions/release-${{ github.sha }} /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/uploads/ /var/www/pullcrm.dev/api/release/'
 
       - name: Copy .env file to project
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cp /var/www/pullcrm.dev/api/.env /var/www/pullcrm.dev/api/release/.env'
