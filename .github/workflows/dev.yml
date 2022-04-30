@@ -47,8 +47,8 @@ jobs:
       - name: Run BD migration
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && cd /var/www/pullcrm.dev/api/release && npx sequelize-cli db:migrate'
 
-      - name: Run BD migration
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && cd /var/www/pullcrm.dev/api/versions && rm -rf `ls -t | awk 'NR>5'`'
+      - name: Delete old versions of project
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} source ~/.nvm/nvm.sh && cd /var/www/pullcrm.dev/api/versions && rm -rf `ls -t | awk 'NR>5'`
 
       - name: Reload project
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && pm2 startOrReload /var/www/pullcrm.dev/api/ecosystem.config.js'
