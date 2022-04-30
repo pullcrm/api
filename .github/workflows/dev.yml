@@ -39,10 +39,10 @@ jobs:
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/versions/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
 
       - name: Copy .env file to project
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cp  /var/www/pullcrm.dev/api/.env /var/www/pullcrm.dev/api/release/.env'
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cp /var/www/pullcrm.dev/api/.env /var/www/pullcrm.dev/api/release/.env'
 
       - name: Install modules
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} -t fish 'cd /var/www/pullcrm.dev/api/release && nvm use 14 && yarn install'
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} cd /var/www/pullcrm.dev/api/release && nvm use 14 && yarn install
 
       # - name: Run BD migration
       #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
