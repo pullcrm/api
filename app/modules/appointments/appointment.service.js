@@ -70,24 +70,31 @@ export default {
         throw new ApiException(403, "That is not your procedures")
       }
 
-      let client = await ClientModel.findOne(
-        {where: {phone: data.phone, companyId}},
-        {transaction}
-      )
-
-      if (!client) {
-        client = await ClientModel.create(
-          {
-            phone: data.phone,
-            fullName: data.fullName,
-            companyId,
-          },
+      let client
+      const createData = {...data, companyId}
+      
+      if(data.phone && data.fullName) {
+        client = await ClientModel.findOne(
+          {where: {phone: data.phone, companyId}},
           {transaction}
         )
+  
+        if (!client) {
+          client = await ClientModel.create(
+            {
+              phone: data.phone,
+              fullName: data.fullName,
+              companyId,
+            },
+            {transaction}
+          )
+        }
+
+        createData.clientId = client.id
       }
 
       const appointment = await AppointmentModel.create(
-        {...data, companyId, clientId: client.id},
+        createData,
         {transaction}
       )
       await appointment.setProcedures(data.procedures, {transaction})
