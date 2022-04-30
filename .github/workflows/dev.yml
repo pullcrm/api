@@ -73,8 +73,13 @@ jobs:
       - name: Create the release folder on the server
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'mkdir /var/www/pullcrm.dev/api/release-${{ github.sha }}'
         
-      - name: Upload the dist folder to the server
+      - name: Upload the files to the server
         run: rsync -r ./dist ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
+        run: rsync -r ./migrations ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
+        run: rsync -r ./.sequelizerc ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
         
-      # - name: Link the release folder on the server
+      - name: Link the release folder on the server
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
+        
+      # - name: Run BD migration
       #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
