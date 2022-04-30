@@ -37,6 +37,9 @@ jobs:
         
       - name: Link the release folder on the server
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/versions/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
-        
+
+      - name: Install modules
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cd /var/www/pullcrm.dev/api/release && cp ../.env .env && nvm use 14 && yarn install'
+
       # - name: Run BD migration
       #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
