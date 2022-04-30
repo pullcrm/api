@@ -1,11 +1,3 @@
-
-
-
-# https://sobus-piotr.medium.com/pm2-share-the-same-daemon-process-between-multiple-users-dd7ecae6197a
-
-
-
-
 # This is a basic workflow to help you get started with Actions
 
 name: CI
@@ -30,7 +22,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [14.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -76,13 +68,13 @@ jobs:
           steps.cache-node-modules.outputs.cache-hit != 'true'
       
       - name: Build the project
-        run: yarn docs:build
+        run: yarn build
     
       - name: Create the release folder on the server
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'mkdir /var/www/pullcrm.dev/faq/release-${{ github.sha }}'
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'mkdir /var/www/pullcrm.dev/api/release-${{ github.sha }}'
         
       - name: Upload the dist folder to the server
-        run: rsync -r ./docs/.vitepress/dist ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/faq/release-${{ github.sha }}'
+        run: rsync -r ./dist ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:'/var/www/pullcrm.dev/api/release-${{ github.sha }}'
         
-      - name: Link the release folder on the server
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/faq/release && ln -s /var/www/pullcrm.dev/faq/release-${{ github.sha }} /var/www/pullcrm.dev/faq/release'
+      # - name: Link the release folder on the server
+      #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'rm /var/www/pullcrm.dev/api/release && ln -s /var/www/pullcrm.dev/api/release-${{ github.sha }} /var/www/pullcrm.dev/api/release'
