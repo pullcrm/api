@@ -19,6 +19,48 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
+      PORT: ${{ secrets.PORT_DEV }}
+      #API
+      HOST: https://dev.pullcrm.com
+      CLIENT: https://dev.pullcrm.com
+      #JWT AUTH
+      SECRET_FOR_JWT: ${{ secrets.SECRET_FOR_JWT_DEV }}
+      SECRET_REFRESH_FOR_JWT: ${{ secrets.SECRET_REFRESH_FOR_JWT_DEV }}
+      #DB
+      DB_DIALECT: ${{ secrets.DB_DIALECT_DEV }}
+      DB_HOST: ${{ secrets.DB_HOST_DEV }}
+      DB_PORT: ${{ secrets.DB_PORT_DEV }}
+      DB_NAME: ${{ secrets.DB_NAME_DEV }}
+      DB_USER: ${{ secrets.DB_USER_DEV }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
+      #SMS CLIENT
+      SMS_COMPANY_NAME: ${{ secrets.SMS_COMPANY_NAME_DEV }}
+      SMS_PUBLIC_KEY: ${{ secrets.SMS_PUBLIC_KEY_DEV }}
+      SMS_PRIVATE_KEY: ${{ secrets.SMS_PRIVATE_KEY_DEV }}
+      SMS_CLIENT_SEND_REAL_SMS: ${{ secrets.SMS_CLIENT_SEND_REAL_SMS_DEV }}
+      SMS_PRICE: ${{ secrets.SMS_PRICE_DEV }}
+      #SENTRY
+      SENTRY_DSN: https://a0ff012a9f8148078736a352f406898d@o919307.ingest.sentry.io/5863370
+      SENTRY_ENV: development
+      #TELEGRAM
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
+      #LIQPAY
+      LIQPAY_PUBLIC_KEY: ${{ secrets.LIQPAY_PUBLIC_KEY_DEV }}
+      LIQPAY_PRIVATE_KEY: ${{ secrets.LIQPAY_PRIVATE_KEY_DEV }}
+      LIQPAY_REDIRECT_URL: ${{ secrets.LIQPAY_REDIRECT_URL_DEV }}
+      #TURBOSMS
+      TURBO_SMS_SECRET_KEY: ${{ secrets.TURBO_SMS_SECRET_KEY_DEV }}
+      #LIFECELL
+      LIFECELL_LOGIN: ${{ secrets.LIFECELL_LOGIN_DEV }}
+      LIFECELL_PASSWORD: ${{ secrets.LIFECELL_PASSWORD_DEV }}
+      #REDIS
+      REDIS_PORT: ${{ secrets.REDIS_PORT_DEV }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST_DEV }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD_DEV }}
+      #SLACK
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_DEV }}
     
     strategy:
       matrix:
