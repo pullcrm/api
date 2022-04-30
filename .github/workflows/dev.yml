@@ -19,52 +19,6 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: production
-      PORT: ${{ secrets.PORT_DEV }}
-      #API
-      HOST: https://dev.pullcrm.com
-      CLIENT: https://dev.pullcrm.com
-      #JWT AUTH
-      SECRET_FOR_JWT: ${{ secrets.SECRET_FOR_JWT_DEV }}
-      SECRET_REFRESH_FOR_JWT: ${{ secrets.SECRET_REFRESH_FOR_JWT_DEV }}
-      #DB
-      DB_DIALECT: ${{ secrets.DB_DIALECT_DEV }}
-      DB_HOST: ${{ secrets.DB_HOST_DEV }}
-      DB_PORT: ${{ secrets.DB_PORT_DEV }}
-      DB_NAME: ${{ secrets.DB_NAME_DEV }}
-      DB_USER: ${{ secrets.DB_USER_DEV }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
-      #SMS CLIENT
-      SMS_COMPANY_NAME: ${{ secrets.SMS_COMPANY_NAME_DEV }}
-      SMS_PUBLIC_KEY: ${{ secrets.SMS_PUBLIC_KEY_DEV }}
-      SMS_PRIVATE_KEY: ${{ secrets.SMS_PRIVATE_KEY_DEV }}
-      SMS_CLIENT_SEND_REAL_SMS: ${{ secrets.SMS_CLIENT_SEND_REAL_SMS_DEV }}
-      SMS_PRICE: ${{ secrets.SMS_PRICE_DEV }}
-      #SENTRY
-      SENTRY_DSN: https://a0ff012a9f8148078736a352f406898d@o919307.ingest.sentry.io/5863370
-      SENTRY_ENV: development
-      #TELEGRAM
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN_DEV }}
-      #LIQPAY
-      LIQPAY_PUBLIC_KEY: ${{ secrets.LIQPAY_PUBLIC_KEY_DEV }}
-      LIQPAY_PRIVATE_KEY: ${{ secrets.LIQPAY_PRIVATE_KEY_DEV }}
-      LIQPAY_REDIRECT_URL: ${{ secrets.LIQPAY_REDIRECT_URL_DEV }}
-      #TURBOSMS
-      TURBO_SMS_SECRET_KEY: ${{ secrets.TURBO_SMS_SECRET_KEY_DEV }}
-      #LIFECELL
-      LIFECELL_LOGIN: ${{ secrets.LIFECELL_LOGIN_DEV }}
-      LIFECELL_PASSWORD: ${{ secrets.LIFECELL_PASSWORD_DEV }}
-      #REDIS
-      REDIS_PORT: ${{ secrets.REDIS_PORT_DEV }}
-      REDIS_HOST: ${{ secrets.REDIS_HOST_DEV }}
-      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD_DEV }}
-      #SLACK
-      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_DEV }}
-    
-    strategy:
-      matrix:
-        node-version: [14.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -74,43 +28,6 @@ jobs:
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      
-      - name: Yarn CLI
-        uses: CultureHQ/actions-yarn@v1.0.1
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-        
-      - name: Cache yarn cache
-        uses: actions/cache@v2
-        id: cache-yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-            
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
-      - run: yarn install
-        # if: |
-        #   steps.cache-yarn-cache.outputs.cache-hit != 'true' ||
-        #   steps.cache-node-modules.outputs.cache-hit != 'true'
-      
-      - name: Build the project
-        run: npx babel app -d dist
     
       - name: Create the release folder on the server
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'mkdir /var/www/pullcrm.dev/api/versions/release-${{ github.sha }}'
