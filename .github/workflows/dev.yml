@@ -48,7 +48,7 @@ jobs:
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && cd /var/www/pullcrm.dev/api/release && npx sequelize-cli db:migrate'
 
       - name: Delete old versions of project
-        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "cd /var/www/pullcrm.dev/api/versions && rm -rf `ls -t | awk 'NR>5'`"
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cd /var/www/pullcrm.dev/api/versions && rm -rf `ls -t | tail -n +6`'
 
       - name: Reload project
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && pm2 startOrReload /var/www/pullcrm.dev/api/ecosystem.config.js'
