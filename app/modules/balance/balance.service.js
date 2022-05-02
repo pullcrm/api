@@ -80,7 +80,7 @@ export default {
       product_description: `Зарахування коштів на рахунок ${user.fullName}`,
       order_id: order.id,
       server_url: process.env.LIQPAY_REDIRECT_URL,
-      result_url: `${process.env.CLIENT}/dashboard/?payment=success`,
+      result_url: `${process.env.CLIENT}/?payment=success`,
     })
 
     return html
@@ -99,6 +99,10 @@ export default {
       const order = await OrderModel.findOne({
         where: {id: Number(order_id)},
       })
+
+      if(status === CANCEL_URL) {
+        return CANCEL_URL
+      }
 
       if (
         !order ||
