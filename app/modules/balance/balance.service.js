@@ -2,7 +2,7 @@ import ApiException from "../../exceptions/api"
 import LiqPay from "../../providers/liqpay"
 import OrderModel from "./models/order"
 import BalanceModel from './models/balance'
-import {CANCEL_URL, DEPOSIT, IN_PROGRESS, SUCCESS_URL} from "../../constants/balance"
+import {CANCEL, CANCEL_URL, DEPOSIT, IN_PROGRESS, SUCCESS_URL} from "../../constants/balance"
 import UserModel from "../users/user.model"
 import {mysql} from "../../config/connections"
 
@@ -101,6 +101,11 @@ export default {
       })
 
       if(status === CANCEL_URL) {
+        await order.update({
+          status: CANCEL,
+          paymentId: payment_id,
+        })
+
         return CANCEL_URL
       }
 
