@@ -1,5 +1,8 @@
 import {QueryTypes} from "sequelize"
 import {mysql} from "../../config/connections"
+import ApiException from "../../exceptions/api"
+import CompanyModel from "../companies/models/company"
+import SpecialistModel from "../specialists/models/specialist"
 
 export default {
   getFinancialAnalytics: async (
@@ -64,8 +67,8 @@ export default {
       ` 
       select
         count(totals.amount) as amount,
-        convert(sum(totals.total), SIGNED INTEGER) as actualIncome,
-        convert(sum(totals.price), SIGNED INTEGER) as potentialIncome
+        coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as actualIncome,
+        coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as potentialIncome
       from (
         select
           count(ap.id) as amount,
@@ -163,4 +166,100 @@ export default {
       appointments,
     }
   },
+
+  getDashboardAnalytics: async (
+    {startDate, endDate, specialistId},
+    params
+  ) => {
+    const specialists = await SpecialistModel.findAll({where: {userId: params.userId}})
+    const companyIds = specialists.map(S => S.companyId).join(',')
+
+    if(companyIds.length === 0) {
+      throw new ApiException(403, 'Немає доступу')
+    }
+
+    let whereConditions = `where ap.companyId in (${companyIds}) and ap.status = 'COMPLETED'`
+
+    console.log('WHERE', whereConditions)
+
+    if (startDate && endDate) {
+      whereConditions = whereConditions.concat(
+        " and ",
+        `ap.date between '${startDate}' and '${endDate}'`
+      )
+    }
+
+    if (specialistId) {
+      whereConditions = whereConditions.concat(
+        " and ",
+        `ap.specialistId = '${specialistId}'`
+      )
+    }
+
+    const procedures = await mysql.query(
+      `
+    select 
+        totals.name as name,
+        coalesce(count(totals.amount), 0) as amount,
+        coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as potentialIncome,
+        coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as actualIncome,
+        convert(sum(totals.online != '0'), SIGNED INTEGER) as online,
+        convert(sum(totals.offline != '0'), SIGNED INTEGER) as offline,
+        coalesce(convert(avg(totals.avgPrice), SIGNED INTEGER), 0) as avgPrice
+      from (
+        select
+          count(ap.id) as amount,
+          (select sum(subap.total)
+            from appointments as subap
+            where subap.id = ap.id
+            ) as total,
+          (select sum(subpr.price)
+            from appointment_procedures as subapp
+            left join procedures as subpr on subapp.procedureId = subpr.id
+            where subapp.appointmentId = ap.id
+            ) as avgPrice,
+          group_concat(pr.name separator " + ") as name,
+          sum(pr.price) as price,
+          sum(ap.source != 'WIDGET' or ap.source is null) as offline,
+          sum(ap.source = 'WIDGET') as online
+        from appointments as ap
+        left join appointment_procedures as app on ap.id = app.appointmentId
+        left join procedures as pr on app.procedureId = pr.id
+        ${whereConditions}
+        group by ap.id
+      ) as totals
+        group by totals.name
+
+    `,
+      {type: QueryTypes.SELECT}
+    )
+
+    const [stats] = await mysql.query(
+      ` 
+      select
+        count(totals.amount) as amount,
+        coalesce(convert(sum(totals.total), SIGNED INTEGER), 0) as actualIncome,
+        coalesce(convert(sum(totals.price), SIGNED INTEGER), 0) as potentialIncome
+      from (
+        select
+          count(ap.id) as amount,
+          (select sum(subap.total)
+            from appointments as subap
+            where subap.id = ap.id
+            ) as total,
+          sum(pr.price) as price
+        from appointments as ap
+        left join appointment_procedures as app on ap.id = app.appointmentId
+        left join procedures as pr on app.procedureId = pr.id
+        ${whereConditions}
+      group by ap.id ) as totals
+    `,
+      {type: QueryTypes.SELECT}
+    )
+
+    return {
+      ...stats,
+      procedures,
+    }
+  }
 }

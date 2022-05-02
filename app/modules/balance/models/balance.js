@@ -2,13 +2,17 @@ import {mysql} from "../../../config/connections"
 import {Sequelize} from "sequelize"
 
 const BalanceSchema = (connection, type) => {
-  return connection.define('roles', {
+  return connection.define('balance', {
     id: {
-      type: type.INTEGER,
+      type: type.BIGINT,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
+    amount: {
+      type: type.DOUBLE(10,2),
+      allowNull: false
+    },
+    description: {
       type: type.STRING,
       allowNull: false
     }

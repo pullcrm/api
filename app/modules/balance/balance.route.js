@@ -1,10 +1,13 @@
 import {Router} from 'express'
 import BalanceController from './balance.controller'
 import auth from '../../middlewares/auth'
+import {ADMIN, MANAGER} from '../../constants/roles'
 
 const router = Router()
 
-router.post('/checkout', auth(), BalanceController.checkout)
+router.get('/', auth([ADMIN, MANAGER]), BalanceController.getBalance)
+router.get('/history', auth([ADMIN, MANAGER]), BalanceController.getBalanceHistory)
+router.post('/checkout', auth([ADMIN, MANAGER]), BalanceController.checkout)
 router.post('/redirectUrl', BalanceController.redirectUrl)
 
 export default router

@@ -1,6 +1,6 @@
 import {Sequelize} from 'sequelize'
 import {mysql} from '../../config/connections'
-import {IN_PROGRESS, COMPLETED, CANCELED} from '../../constants/appointments'
+import {IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE} from '../../constants/appointments'
 
 const AppointmentSchema = (connection, type) => {
   return connection.define('appointments', {
@@ -11,28 +11,24 @@ const AppointmentSchema = (connection, type) => {
     },
     date: {
       type: type.DATE,
-      defaultValue: Sequelize.NOW,
-      allowNull: false,
-      // isStep15Minutes(value) {
-      //   if (new Date(+value * 1000).getMinutes() % 15 !== 0) {
-      //     throw new Error('Step should be 15m')
-      //   }
-      // }
+      allowNull: true,
     },
     startTime: {
       type: type.TIME,
       allowNull: true,
     },
-    isQueue: {
-      type: type.BOOLEAN,
-      allowNull: false,
-      defaultValue: 0
-    },
     phone: {
       type: type.STRING,
+      allowNull: true,
     },
     fullName: {
       type: type.STRING,
+      allowNull: true,
+    },
+    totalDuration: {
+      type: type.BIGINT,
+      allowNull: false,
+      defaultValue: 0
     },
     total: {
       type: type.INTEGER,
@@ -47,9 +43,9 @@ const AppointmentSchema = (connection, type) => {
       allowNull: true,
     },
     status: {
-      type: type.ENUM(IN_PROGRESS, COMPLETED, CANCELED),
+      type: type.ENUM(IN_PROGRESS, COMPLETED, CANCELED, IN_QUEUE),
       allowNull: false,
-      defaultValue: IN_PROGRESS
+      defaultValue: IN_QUEUE
     },
     source: {
       type: type.STRING,

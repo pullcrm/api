@@ -16,8 +16,6 @@ import {Op} from 'sequelize'
 import {mysql} from '../../config/connections'
 import SMSGlobalService from "../sms/services/sms.global"
 import {makeRandom} from '../../utils/make-random'
-import {client as redis} from "../../providers/redis"
-import {FAST_REGISTRATION} from '../../constants/redis'
 
 export default {
   findAll: async ({companyId}) => {
@@ -186,6 +184,14 @@ export default {
     const result = await mysql.transaction(async transaction => {
       let user = await UserModel.findOne({where: {phone: data.phone}})
 
+      if(user) {
+        const existingSpecialist = await SpecialistModel.findOne({where: {userId: user.id, companyId: params.companyId}})
+
+        if(existingSpecialist) {
+          throw new ApiException(400, 'Такий користувач вже є в компанії')
+        }
+      }
+
       if(!user) {
         user = await UserModel.create({phone: data.phone, fullName: data.fullName, active: false}, {returning: true})
       }
@@ -272,7 +278,7 @@ export default {
       }
     }
 
-    const status = await SMSGlobalService.send({
+    const status = await SMSGlobalService.sendImmediateGlobal({
       phone: user.phone,
       message: `Продовжити реєстрацію: ${link}`,
     })

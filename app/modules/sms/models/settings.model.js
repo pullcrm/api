@@ -8,19 +8,15 @@ const SMSSettingsSchema = (connection, type) => {
       primaryKey: true,
       autoIncrement: true
     },
-    smsToken: {
-      type: type.STRING(400),
-      allowNull: false
-    },
-    hasRemindSMS: {
-      type: type.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-    },
     remindSMSMinutes: {
       type: type.INTEGER,
       allowNull: false,
       defaultValue: 60,
+    },
+    hasRemindSMS: {
+      type: type.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     hasCreationSMS: {
       type: type.BOOLEAN,

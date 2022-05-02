@@ -50,6 +50,10 @@ export default {
   },
 
   checkForAvailableTime: async appointment => {
+    if(!appointment.date || !appointment.startTime) {
+      return
+    }
+
     const procedures = await ProcedureModel.findAll({
       where: {id: appointment.procedures},
     })

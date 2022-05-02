@@ -36,6 +36,27 @@ export default {
     return CompanyModel.findAll({where: {userId: params.userId}})
   },
 
+  findAllGlobal: async ({search}) => {
+    const where = {}
+
+    if(search) {
+      where.search = search
+    }
+
+    const companies = await CompanyModel.findAll({
+      where: {name: {[sequelize.Op.like]: `%${search}%`}},
+      include: [
+        {model: TypeModel},
+        {model: CityModel},
+        {model: WidgetSettingsModel},
+        {model: SMSSettingsModel},
+        {model: FileModel, as: 'logo'}
+      ]
+    })
+
+    return companies
+  },
+
   create: async data => {
     const result = await mysql.transaction(async transaction => {
       const company = await CompanyModel.create(data, {include: [{model: CityModel}, {model: TypeModel}], transaction})
@@ -56,10 +77,6 @@ export default {
       throw new ApiException(404, 'Company wasn\'t found')
     }
 
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'That is not your company')
-    }
-
     const result = await mysql.transaction(async transaction => {
       await company.update(data, {plain: true, transaction})
 
@@ -69,11 +86,11 @@ export default {
     return result
   },
 
-  getStats: async ({startDate, endDate}, {companyId, userId}) => {
+  getStats: async ({startDate, endDate}, {companyId}) => {
     const company = await CompanyModel.findOne({where: {id: companyId}})
-
-    if(company.get('userId') !== userId) {
-      throw new ApiException(403, 'You don\'t own this company!')
+    
+    if(!company) {
+      throw new ApiException(404, 'Компанії не існує')
     }
 
     const whereConditions = {

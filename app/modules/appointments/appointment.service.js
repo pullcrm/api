@@ -1,65 +1,102 @@
-import * as Sentry from '@sentry/node'
-import AppointmentModel from './appointment.model'
-import {mysql} from '../../config/connections'
-import ProcedureModel from '../procedures/models/procedure'
-import UserModel from '../users/user.model'
-import ApiException from '../../exceptions/api'
-import {Op} from 'sequelize'
-import ClientModel from '../clients/client.model'
-import SpecialistModel from '../specialists/models/specialist'
-import SMSPrivateService from '../sms/services/sms.private'
-
+import * as Sentry from "@sentry/node"
+import AppointmentModel from "./appointment.model"
+import {mysql} from "../../config/connections"
+import ProcedureModel from "../procedures/models/procedure"
+import UserModel from "../users/user.model"
+import ApiException from "../../exceptions/api"
+import {Op} from "sequelize"
+import ClientModel from "../clients/client.model"
+import SpecialistModel from "../specialists/models/specialist"
+import SMSGlobalService from "../sms/services/sms.global"
+import {IN_QUEUE} from "../../constants/appointments"
 
 export default {
-  findAll: async ({date, companyId}) => {
+  findAll: async ({date, companyId, status}) => {
     const baseCondition = {
-      isQueue: false,
-      companyId
+      companyId,
     }
 
-    baseCondition.date = {
-      [Op.between]: [date, date]
+    if (status) {
+      baseCondition.status = status
+    }
+
+    if (date) {
+      baseCondition.date = {[Op.between]: [date, date]}
     }
 
     return AppointmentModel.findAll({
       where: baseCondition,
-      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
+      attributes: {exclude: ["companyId", "specialistId", "clientId"]},
       include: [
-        {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: SpecialistModel,  as: 'specialist', include: {model: UserModel, raw: true}},
-        {model: ClientModel, as: 'client', include: {model: UserModel}}
+        {
+          model: ProcedureModel,
+          as: "procedures",
+          through: {attributes: []},
+          attributes: {exclude: ["companyId"]},
+        },
+        {
+          model: SpecialistModel,
+          as: "specialist",
+          include: {model: UserModel},
+        },
+        {model: ClientModel, as: "client"},
       ],
     })
   },
 
   find: async appointmentId => {
-    return AppointmentModel.findOne({where: {id: appointmentId}, include: [
-      {model: ProcedureModel, as: 'procedures'},
-      {model: SpecialistModel, as: 'specialist', include: [{model: UserModel}]},
-      {model: ClientModel, as: 'client', include: [{model: UserModel}]}
-    ]})
-  },
-
-  queue: async ({companyId}) => {
-    const baseCondition = {
-      isQueue: true,
-      companyId
-    }
-
-    return AppointmentModel.findAll({
-      where: baseCondition,
-      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
+    return AppointmentModel.findOne({
+      where: {id: appointmentId},
       include: [
-        {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}},
-        {model: SpecialistModel, as: 'specialist', include: [{model: UserModel}]},
-        {model: ClientModel, as: 'client', include: [{model: UserModel}]}
+        {model: ProcedureModel, as: "procedures"},
+        {
+          model: SpecialistModel,
+          as: "specialist",
+          include: [{model: UserModel}],
+        },
+        {model: ClientModel, as: "client"},
       ],
     })
   },
 
-  create: async data => {
+  create: async (data, {companyId}) => {
     const result = await mysql.transaction(async transaction => {
-      const appointment = await AppointmentModel.create(data, {transaction})
+      const procedures = await ProcedureModel.findAll(
+        {where: {id: data.procedures}},
+        {transaction}
+      )
+
+      if (!procedures.every(P => P.companyId === companyId)) {
+        throw new ApiException(403, "That is not your procedures")
+      }
+
+      let client
+      const createData = {...data, companyId}
+      
+      if(data.phone && data.fullName) {
+        client = await ClientModel.findOne(
+          {where: {phone: data.phone, companyId}},
+          {transaction}
+        )
+  
+        if (!client) {
+          client = await ClientModel.create(
+            {
+              phone: data.phone,
+              fullName: data.fullName,
+              companyId,
+            },
+            {transaction}
+          )
+        }
+
+        createData.clientId = client.id
+      }
+
+      const appointment = await AppointmentModel.create(
+        createData,
+        {transaction}
+      )
       await appointment.setProcedures(data.procedures, {transaction})
 
       return appointment
@@ -68,21 +105,23 @@ export default {
     return result
   },
 
-  update: async (data, appointmentId) => {
-    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
+  update: async (data, {appointmentId, companyId}) => {
+    const appointment = await AppointmentModel.findOne({
+      where: {id: appointmentId},
+    })
 
-    if(!appointment) {
-      throw new ApiException(404, 'Appointment wasn\'t found')
+    if (!appointment) {
+      throw new ApiException(404, "Appointment wasn't found")
     }
 
-    if(appointment.get('companyId') !== data.companyId) {
-      throw new ApiException(403, 'That is not your appointment')
+    if (appointment.get("companyId") !== companyId) {
+      throw new ApiException(403, "That is not your appointment")
     }
 
     const result = await mysql.transaction(async transaction => {
       await appointment.update(data, {transaction})
 
-      if(data.procedures && Array.isArray(data.procedures)) {
+      if (data.procedures && Array.isArray(data.procedures)) {
         await appointment.setProcedures(data.procedures, {transaction})
       }
 
@@ -93,39 +132,38 @@ export default {
   },
 
   destroy: async ({appointmentId, companyId}) => {
-    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
+    const appointment = await AppointmentModel.findOne({
+      where: {id: appointmentId},
+    })
     const smsIdentifier = appointment.smsIdentifier
 
-    if(!appointment) {
-      throw new ApiException(404, 'Appointment wasn\'t found')
+    if (!appointment) {
+      throw new ApiException(404, "Appointment wasn't found")
     }
 
-    if(appointment.get('companyId') !== companyId) {
-      throw new ApiException(403, 'That is not your appointment')
+    if (appointment.get("companyId") !== companyId) {
+      throw new ApiException(403, "That is not your appointment")
     }
 
-    if(smsIdentifier) {
-      try {
-        await SMSPrivateService.destroySMS({smsIdentifier}, companyId)
-      } catch(err) {
-        Sentry.captureException(err)
-        console.log(err)
-      }
-    }
-
+    await SMSGlobalService.destroySMS({smsIdentifier})
     await appointment.destroy({cascade: true})
-    return {destroy: 'OK'}
+    return {destroy: "OK"}
   },
 
-  changeSMSIdentifier: async ({smsIdentifier}, {appointmentId, companyId}) => {
-    const appointment = await AppointmentModel.findOne({where: {id: appointmentId}})
+  changeSMSIdentifier: async (
+    {smsIdentifier},
+    {appointmentId, companyId}
+  ) => {
+    const appointment = await AppointmentModel.findOne({
+      where: {id: appointmentId},
+    })
 
-    if(!appointment) {
-      throw new ApiException(404, 'Appointment wasn\'t found')
+    if (!appointment) {
+      throw new ApiException(404, "Appointment wasn't found")
     }
 
-    if(appointment.get('companyId') !== companyId) {
-      throw new ApiException(403, 'That is not your appointment')
+    if (appointment.get("companyId") !== companyId) {
+      throw new ApiException(403, "That is not your appointment")
     }
 
     await appointment.update({smsIdentifier})
@@ -133,26 +171,28 @@ export default {
 
   fetchBySpecialistId: async ({date, companyId, excludeId, specialistId}) => {
     const baseCondition = {
-      isQueue: false,
       companyId,
-      specialistId
+      specialistId,
+      date: {[Op.between]: [date, date]},
+      status: {[Op.not]: IN_QUEUE},
     }
 
     if (excludeId) {
       baseCondition.id = {
-        [Op.ne]: excludeId
+        [Op.ne]: excludeId,
       }
-    }
-
-    baseCondition.date = {
-      [Op.between]: [date, date]
     }
 
     return AppointmentModel.findAll({
       where: baseCondition,
-      attributes: {exclude: ['companyId', 'specialistId', 'clientId']},
+      attributes: {exclude: ["companyId", "specialistId", "clientId"]},
       include: [
-        {model: ProcedureModel, as: 'procedures', through: {attributes: []}, attributes: {exclude: ['companyId']}}
+        {
+          model: ProcedureModel,
+          as: "procedures",
+          through: {attributes: []},
+          attributes: {exclude: ["companyId"]},
+        },
       ],
     })
   },

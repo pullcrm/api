@@ -11,12 +11,19 @@ import './models'
 import TelegramBot from './providers/telegram'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import SMSScheduler from './jobs/sms.scheduler'
 
 dayjs.extend(customParseFormat)
 
 const port = process.env.PORT || '3000'
 const prefix = '/api'
 const app = express()
+
+SMSScheduler.init({
+  port: process.env.REDIS_PORT,
+  host: process.env.REDIS_HOST,
+  password: process.env.REDIS_PASSWORD
+})
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -50,7 +57,7 @@ app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:8080', 'http://127.0.0.1:8000', 'http://pullcrm.com']
+  const allowedOrigins = ['http://pullcrm.local:8080', 'http://127.0.0.1:8000']
   const origin = req.headers.origin
 
   if(allowedOrigins.indexOf(origin) > -1) {

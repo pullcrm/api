@@ -22,6 +22,8 @@ import categoryPublicRouter from './modules/categories/routes/category.public'
 import widgetRouter from './modules/widget/routes/widget.private'
 import widgetPublicRouter from './modules/widget/routes/widget.public'
 import balanceRouter from './modules/balance/balance.route'
+import supportRouter from './modules/support/support.route'
+import clientRouter from './modules/clients/client.route'
 
 import testsRouter from './modules/tests/tests.route'
 
@@ -43,6 +45,8 @@ api.use('/analytics', analyticsRouter)
 api.use('/timework', timeWorkRouter)
 api.use('/widget', widgetRouter)
 api.use('/balance', balanceRouter)
+api.use('/support', supportRouter)
+api.use('/clients', clientRouter)
 
 api.use('/public/specialists', specialistPublicRouter)
 api.use('/public/procedures', procedurePublicRouter)

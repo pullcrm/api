@@ -8,7 +8,7 @@ export default {
       const formattedData = {
         startDate: req.query.startDate,
         endDate: req.query.endDate,
-        specialistId: req.query.specialistId
+        specialistId: req.query.specialistId,
       }
 
       const params = {
@@ -53,6 +53,33 @@ export default {
       }))
 
       const stats = await AnalyticsService.getCalendarAnalytics(formattedData, params)
+
+      res.send(stats)
+
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getDashboardAnalytics: async (req, res, next) => {
+    try {
+      const formattedData = {
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+        specialistId: req.query.specialistId
+      }
+
+      const params = {
+        userId: req.userId
+      }
+
+      validate({...params}, joi.object().keys({
+        userId: joi.number().required(),
+        startDate: joi.string(),
+        endDate: joi.string(),
+      }))
+
+      const stats = await AnalyticsService.getDashboardAnalytics(formattedData, params)
 
       res.send(stats)
 
