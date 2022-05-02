@@ -51,8 +51,8 @@ jobs:
       - name: Delete old versions of project
         run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'cd /var/www/pullcrm.com/api/versions && rm -rf `ls -t | tail -n +6`'
 
-      # - name: Reload project
-      #   run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && pm2 startOrReload /var/www/pullcrm.com/api/ecosystem.config.js'
+      - name: Reload project
+        run: ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'source ~/.nvm/nvm.sh && pm2 startOrReload /var/www/pullcrm.com/api/ecosystem.config.js'
 
       - name: Slack Notify
         if: always()
