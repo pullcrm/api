@@ -2,7 +2,7 @@ import ApiException from "../../exceptions/api"
 import LiqPay from "../../providers/liqpay"
 import OrderModel from "./models/order"
 import BalanceModel from './models/balance'
-import {CANCEL_URL, DEPOSIT, IN_PROGRESS, SUCCESS_URL} from "../../constants/balance"
+import {CANCEL, CANCEL_URL, DEPOSIT, IN_PROGRESS, SUCCESS_URL} from "../../constants/balance"
 import UserModel from "../users/user.model"
 import {mysql} from "../../config/connections"
 
@@ -80,7 +80,7 @@ export default {
       product_description: `Зарахування коштів на рахунок ${user.fullName}`,
       order_id: order.id,
       server_url: process.env.LIQPAY_REDIRECT_URL,
-      result_url: `${process.env.CLIENT}/dashboard/?payment=success`,
+      result_url: `${process.env.CLIENT}/?payment=success`,
     })
 
     return html
@@ -99,6 +99,15 @@ export default {
       const order = await OrderModel.findOne({
         where: {id: Number(order_id)},
       })
+
+      if(status === CANCEL_URL) {
+        await order.update({
+          status: CANCEL,
+          paymentId: payment_id,
+        })
+
+        return CANCEL_URL
+      }
 
       if (
         !order ||

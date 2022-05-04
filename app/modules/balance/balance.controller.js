@@ -84,7 +84,7 @@ export default {
       }))
       
       const status = await BalanceService.getPaymentInfo(formattedData)
-      res.redirect(`${process.env.CLIENT}/dashboard/?payment=${status}`)
+      res.redirect(`${process.env.CLIENT}/?payment=${status}`)
     } catch(error) {
       next(error)
     }
