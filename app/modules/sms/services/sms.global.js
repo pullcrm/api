@@ -106,7 +106,7 @@ export default {
       const startDateTime = setTime(appointment.date, appointment.startTime)
       const isExpired = isTimeExpired(startDateTime)
 
-      if(isInQueue || (!hasRemindSMS && !hasCreationSMS) || !phone || isExpired || balance <= 0) {
+      if(isInQueue || (!hasRemindSMS && !hasCreationSMS) || !phone || isExpired || balance < process.env.SMS_PRICE) {
         return
       }
 
