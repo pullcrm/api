@@ -3,8 +3,8 @@ import 'dotenv/config'
 import ApiException from '../exceptions/api'
 import {makeRandom} from './make-random'
 
-const accessTokenExpiring = '30s'
-const refreshTokenExpiring = '60s'
+const accessTokenExpiring = '7d'
+const refreshTokenExpiring = '10d'
 const accessSecret = process.env.SECRET_FOR_JWT
 const refreshSecret = process.env.SECRET_REFRESH_FOR_JWT
 
