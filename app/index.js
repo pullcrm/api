@@ -57,7 +57,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-const whitelist = ['capacitor://pullcrm.capacitor', 'http://pullcrm.capacitor', 'http://pullcrm.local:8080', 'https://dev.pullcrm.com']
+const whitelist = ['capacitor://pullcrm.capacitor', 'http://pullcrm.capacitor', 'http://pullcrm.local:8080', 'https://dev.pullcrm.com', 'https://pullcrm.com']
 
 const corsOptions = {
   origin: (origin, callback) => {
