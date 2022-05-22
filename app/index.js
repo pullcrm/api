@@ -57,10 +57,11 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-const whitelist = ['http://pullcrm.local:8080', 'http://127.0.0.1:8000']
+const whitelist = ['capacitor://pullcrm.capacitor', 'http://pullcrm.capacitor', 'http://pullcrm.local:8080', 'http://127.0.0.1:8000']
+
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
       callback(new Error())
@@ -69,21 +70,6 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-
-// app.use((req, res, next) => {
-//   const allowedOrigins = ['http://pullcrm.local:8080', 'http://127.0.0.1:8000']
-//   const origin = req.headers.origin
-//   console.log('Origin', origin)
-//   if(allowedOrigins.indexOf(origin) > -1) {
-//     res.setHeader('Access-Control-Allow-Origin', origin)
-//   }
-
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-Forwarded-For, Content-Type, Accept, Authorization, Authorization2, Country, user-id')
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
-//   res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
-
-//   next()
-// })
 
 app.use(prefix, api)
 
