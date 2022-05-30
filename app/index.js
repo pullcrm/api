@@ -62,11 +62,11 @@ const whitelist = ['capacitor://pullcrm.capacitor', 'http://pullcrm.capacitor', 
 const corsOptions = {
   origin: (origin, callback) => {
     console.log(origin)
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error())
-    }
+    // if (!origin || whitelist.indexOf(origin) !== -1) {
+    callback(null, true)
+    // } else {
+    //   callback(new Error())
+    // }
   }
 }
 
