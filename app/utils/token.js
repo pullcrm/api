@@ -3,21 +3,21 @@ import 'dotenv/config'
 import ApiException from '../exceptions/api'
 import {makeRandom} from './make-random'
 
-const accessTokenExpiring = '7d'
-const refreshTokenExpiring = '10d'
+const accessTokenExpiring = '1m'
+const refreshTokenExpiring = '2m'
 const accessSecret = process.env.SECRET_FOR_JWT
 const refreshSecret = process.env.SECRET_REFRESH_FOR_JWT
 
-const generateAccessToken = (userId, companyId = 0, role = '-') => {
+const generateAccessToken = ({userId, companyId = 0, role = '-'}) => {
   return jwt.sign({userId, companyId, role}, accessSecret, {expiresIn: accessTokenExpiring})
 }
 
-const generateRefreshToken = userId => {
+const generateRefreshToken = ({userId, salt}) => {
   const jti = makeRandom(8)
-  return jwt.sign({userId, jti}, refreshSecret, {expiresIn: refreshTokenExpiring})
+  return jwt.sign({userId, jti}, refreshSecret + salt, {expiresIn: refreshTokenExpiring})
 }
 
-const verifyAccessToken = accessToken => {
+const verifyAccessToken = ({accessToken}) => {
   try {
     return jwt.verify(accessToken, accessSecret)
   } catch (error) {
@@ -29,9 +29,9 @@ const verifyAccessToken = accessToken => {
   }
 }
   
-const verifyRefreshToken = refreshToken => {
+const verifyRefreshToken = ({refreshToken, salt}) => {
   try {
-    return jwt.verify(refreshToken, refreshSecret)
+    return jwt.verify(refreshToken, refreshSecret + salt)
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw new ApiException(401, 'Expired refresh token')

@@ -182,8 +182,8 @@ export default {
     await TokenService.deactivateRefreshTokens(user.id)
     await user.update({password, active: true}, {returning: true})
 
-    const accessToken = generateAccessToken(user.id, confirmation.companyId)
-    const refreshToken = generateRefreshToken(user.id)
+    const accessToken = generateAccessToken({userId: user.id, companyId: confirmation.companyId})
+    const refreshToken = generateRefreshToken({userId: user.id, salt: user.password})
 
     await TokenService.create(refreshToken, user.id)
     await TokenService.leaveFiveTokens(user.id)

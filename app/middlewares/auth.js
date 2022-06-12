@@ -15,13 +15,13 @@ const auth = (accessRoles) => (req, res, next) => {
       throw new ApiException(403, 'Authorization header isn\'t provided')
     }
 
-    const token = getTokenFromHeaders(authorization)
+    const accessToken = getTokenFromHeaders(authorization)
 
-    if (!token) {
+    if (!accessToken) {
       throw new ApiException(403, 'Bad access token.')
     }
 
-    const {userId, companyId, role} = verifyAccessToken(token)
+    const {userId, companyId, role} = verifyAccessToken({accessToken})
 
     if(accessRoles && !accessRoles.some(R => R === role)) {
       throw new ApiException(403, 'You don\'t have permissions for that operation')
