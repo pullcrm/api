@@ -1,6 +1,7 @@
 import http from 'http'
 import bodyParser from 'body-parser'
 import express from 'express'
+import cors from 'cors'
 import api from './routes'
 import 'dotenv/config'
 import logger from 'morgan'
@@ -56,20 +57,20 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-app.use((req, res, next) => {
-  const allowedOrigins = ['http://pullcrm.local:8080', 'http://127.0.0.1:8000']
-  const origin = req.headers.origin
+const whitelist = ['capacitor://pullcrm.capacitor', 'http://pullcrm.capacitor', 'http://pullcrm.local:8080', 'https://dev.pullcrm.com', 'https://pullcrm.com']
 
-  if(allowedOrigins.indexOf(origin) > -1) {
-    res.setHeader('Access-Control-Allow-Origin', origin)
+const corsOptions = {
+  origin: (origin, callback) => {
+    console.log(origin)
+    // if (!origin || whitelist.indexOf(origin) !== -1) {
+    callback(null, true)
+    // } else {
+    //   callback(new Error())
+    // }
   }
+}
 
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, X-Forwarded-For, Content-Type, Accept, Authorization, Authorization2, Country, user-id')
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
-  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
-
-  next()
-})
+app.use(cors(corsOptions))
 
 app.use(prefix, api)
 
@@ -85,7 +86,7 @@ const server = http
   .listen(port)
 
 process.on('uncaughtException', function( err ) {
-  console.error(err.stack)
+  console.error(err)
 })
 
 server.on('error', e => console.log(e))

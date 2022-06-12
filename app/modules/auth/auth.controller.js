@@ -26,8 +26,8 @@ export default {
 
       AuthService.checkPasswords(formattedData.password, user.password)
 
-      const accessToken = generateAccessToken(userId, activeCompany.id)
-      const refreshToken = generateRefreshToken(userId)
+      const accessToken = generateAccessToken({userId, companyId: activeCompany.id})
+      const refreshToken = generateRefreshToken({userId, salt: user.password})
 
       await TokenService.create(refreshToken, userId)
       await TokenService.leaveFiveTokens(userId)
@@ -53,15 +53,17 @@ export default {
         userId: joi.number().required(),
       }))
 
-      verifyRefreshToken(refreshToken)
+      const user = await AuthService.findBy({id: req.body.userId})
+
+      verifyRefreshToken({refreshToken, salt: user.password})
 
       const role = await RoleService.findBy({name: roleName})
 
       await TokenService.checkRefreshToken(refreshToken, userId)
       await SpecialistService.checkBy({companyId, roleId: role.id, userId})
 
-      const accessToken = generateAccessToken(userId, companyId, roleName)
-      const newRefreshToken = generateRefreshToken(userId)
+      const accessToken = generateAccessToken({userId, companyId, role: roleName})
+      const newRefreshToken = generateRefreshToken({userId, salt: user.password})
 
       await TokenService.create(newRefreshToken, userId)
       await TokenService.leaveFiveTokens(userId)
