@@ -5,6 +5,7 @@ import {mysql} from '../../config/connections'
 import UserService from '../users/user.service'
 import {ALL, DASHBOARD, HIDE} from '../../constants/specialists'
 import {ADMIN, MANAGER, SPECIALIST} from '../../constants/roles'
+import TimeoffService from '../timeoff/timeoff.service'
 
 export default {
   index: async (req, res, next) => {
@@ -261,6 +262,39 @@ export default {
 
       const satus = await SpecialistService.sendFinishLink(params)
       res.send(satus)
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  addTimeOff: async  (req, res, next) => {
+    try {
+      const formattedData = {
+        timeOffs: req.body.timeOffs,
+      }
+
+      const params = {
+        userId: req.userId,
+        specialistId: req.params.id,
+        companyId: req.companyId,
+      }
+
+      validate({...formattedData,  ...params}, joi.object().keys({
+        timeOffs: joi.array().items(
+          joi.object().keys({
+            startDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+            endDateTime:  joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+          })
+        ),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        specialistId: joi.number().required(),
+        description: joi.string().max(255).allow('')
+      }))
+
+      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      const timeoff = await TimeoffService.bulkCreate({...formattedData,  ...params})
+      res.send(timeoff)
     } catch(error) {
       next(error)
     }
