@@ -1,4 +1,5 @@
-import TimeWorkModel from './timework.model'
+import TimeWorkModel from './models/companyTimework'
+import SpecialistTimeWorkModel from './models/specialistTimework'
 
 export default {
   update: async (data, {companyId}) => {
@@ -14,4 +15,12 @@ export default {
 
     return timeWork
   },
+
+  bulkSpecialistTimeWorkCreate: async ({timeWork, specialistId}) => {
+    return SpecialistTimeWorkModel.bulkCreate(timeWork.map(T => ({...T, specialistId})))
+  },
+
+  getSpecialistTimeWork: async ({specialistId}) => {
+    return SpecialistTimeWorkModel.findAll({where: {specialistId}})
+  }
 }

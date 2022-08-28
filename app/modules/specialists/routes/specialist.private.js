@@ -15,5 +15,7 @@ router.get('/:id/procedures', auth([ADMIN, MANAGER, SPECIALIST]), SpecialistCont
 router.put('/:id/procedures', auth([ADMIN, MANAGER]), SpecialistController.updateProcedures)
 router.get('/:id/sendFinishLink', auth([ADMIN]), SpecialistController.sendFinishLink)
 router.post('/:id/addTimeOff', auth([SPECIALIST]), SpecialistController.addTimeOff)
+router.post('/:id/addTimeWork', auth([SPECIALIST]), SpecialistController.addTimeWork)
+router.get('/:id/timeWork', auth([ADMIN, MANAGER, SPECIALIST]), SpecialistController.getTimeWork)
 
 export default router

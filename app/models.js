@@ -12,7 +12,8 @@ import FileModel from './modules/files/file.model'
 import TokenModel from "./modules/auth/models/token"
 import TimeOffModel from './modules/timeoff/timeoff.model'
 import ClientModel from "./modules/clients/client.model"
-import TimeWorkModel from "./modules/timework/timework.model"
+import TimeWorkModel from "./modules/timework/models/companyTimework"
+import SpecialistTimeWorkModel from "./modules/timework/models/specialistTimework"
 import TypeModel from "./modules/companies/models/types"
 import SMSHistoryModel from "./modules/sms/models/history.model"
 import SMSSettingsModel from "./modules/sms/models/settings.model"
@@ -29,6 +30,7 @@ SpecialistModel.belongsTo(UserModel)
 SpecialistModel.belongsTo(CompanyModel)
 
 TimeOffModel.belongsTo(SpecialistModel, {as: 'specialist'})
+SpecialistTimeWorkModel.belongsTo(SpecialistModel, {as: 'specialist'})
 
 UserModel.hasMany(SpecialistModel)
 UserModel.hasMany(TokenModel, {as: 'tokens'})

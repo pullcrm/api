@@ -9,7 +9,7 @@ import ApiException from "../../exceptions/api"
 import FileModel from '../files/file.model'
 import AppointmentModel from '../appointments/appointment.model'
 import {COMPLETED} from '../../constants/appointments'
-import TimeWorkModel from '../timework/timework.model'
+import TimeWorkModel from '../timework/models/companyTimework'
 import WidgetSettingsModel from '../widget/models/settings.model'
 import SMSSettingsModel from '../sms/models/settings.model'
 

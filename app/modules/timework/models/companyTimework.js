@@ -1,5 +1,5 @@
 import {Sequelize} from "sequelize"
-import {mysql} from "../../config/connections"
+import {mysql} from "../../../config/connections"
 
 const TimeWorkSchema = (connection, type) => {
   return connection.define("time_work", {
