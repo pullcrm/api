@@ -272,16 +272,18 @@ export default {
     try {
       const params = {
         companyId: req.companyId,
-        specialistId: req.params.id
+        specialistId: req.params.id,
+        startDate: req.query.startDate,
       }
 
       validate(params, joi.object().keys({
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
+        startDate: joi.string()
       }))
       await SpecialistService.checkBy({companyId: params.companyId, id: params.specialistId})
-      const timeWork = await timeworkService.getSpecialistTimeWork(params)
-      res.send(timeWork)
+      const specialistTimeWork = await timeworkService.getSpecialistTimeWork(params)
+      res.send(specialistTimeWork)
     } catch(error) {
       next(error)
     }
@@ -313,8 +315,66 @@ export default {
       }))
 
       await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
-      const timeoff = await timeworkService.bulkSpecialistTimeWorkCreate({...formattedData,  ...params})
-      res.send(timeoff)
+      // await timeworkService.checkIfExist({...formattedData,  ...params})
+      const specialistTimeWork = await timeworkService.bulkSpecialistTimeWorkCreate({...formattedData,  ...params})
+      res.send(specialistTimeWork)
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  updateTimeWork: async (req, res, next) => {
+    try {
+      const formattedData = {
+        startDateTime: req.body.startDateTime,
+        endDateTime: req.body.endDateTime
+      }
+
+      const params = {
+        userId: req.userId,
+        specialistId: req.params.id,
+        companyId: req.companyId,
+        timeWorkId: req.params.timeWorkId
+      }
+
+      validate({...formattedData,  ...params}, joi.object().keys({
+        startDateTime: joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+        endDateTime:  joi.date().format('YYYY-MM-DD HH:mm:ss').required(),
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        specialistId: joi.number().required(),
+        timeWorkId: joi.number().required(),
+      }))
+
+      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      const specialistTimeWork = await timeworkService.specialistTimeWorkUpdate(formattedData,  params)
+      res.send(specialistTimeWork)
+
+    } catch(error) {
+      next(error)
+    }
+  },
+
+  destroyTimeWork: async (req, res, next) => {
+    try {
+      const params = {
+        userId: req.userId,
+        specialistId: req.params.id,
+        companyId: req.companyId,
+        timeWorkId: req.params.timeWorkId
+      }
+
+      validate(params, joi.object().keys({
+        companyId: joi.number().required(),
+        userId: joi.number().required(),
+        specialistId: joi.number().required(),
+        timeWorkId: joi.number().required(),
+      }))
+
+      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      const specialistTimeWork = await timeworkService.specialistTimeWorkDestroy(params)
+      res.send(specialistTimeWork)
+
     } catch(error) {
       next(error)
     }
@@ -346,8 +406,8 @@ export default {
       }))
 
       await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
-      const timeoff = await TimeoffService.bulkCreate({...formattedData,  ...params})
-      res.send(timeoff)
+      const specialistTimeoff = await TimeoffService.bulkCreate({...formattedData,  ...params})
+      res.send(specialistTimeoff)
     } catch(error) {
       next(error)
     }
