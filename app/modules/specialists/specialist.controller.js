@@ -281,7 +281,7 @@ export default {
         specialistId: joi.number().required(),
         startDate: joi.string()
       }))
-      await SpecialistService.checkBy({companyId: params.companyId, id: params.specialistId})
+      // await SpecialistService.checkBy({companyId: params.companyId, id: params.specialistId})
       const specialistTimeWork = await timeworkService.getSpecialistTimeWork(params)
       res.send(specialistTimeWork)
     } catch(error) {
@@ -314,7 +314,7 @@ export default {
         description: joi.string().max(255).allow('')
       }))
 
-      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      // await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
       // await timeworkService.checkIfExist({...formattedData,  ...params})
       const specialistTimeWork = await timeworkService.bulkSpecialistTimeWorkCreate({...formattedData,  ...params})
       res.send(specialistTimeWork)
@@ -346,7 +346,7 @@ export default {
         timeWorkId: joi.number().required(),
       }))
 
-      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      // await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
       const specialistTimeWork = await timeworkService.specialistTimeWorkUpdate(formattedData,  params)
       res.send(specialistTimeWork)
 
@@ -371,7 +371,7 @@ export default {
         timeWorkId: joi.number().required(),
       }))
 
-      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      // await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
       const specialistTimeWork = await timeworkService.specialistTimeWorkDestroy(params)
       res.send(specialistTimeWork)
 
@@ -405,7 +405,7 @@ export default {
         description: joi.string().max(255).allow('')
       }))
 
-      await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
+      // await SpecialistService.checkBy({userId: params.userId, companyId: params.companyId, id: params.specialistId})
       const specialistTimeoff = await TimeoffService.bulkCreate({...formattedData,  ...params})
       res.send(specialistTimeoff)
     } catch(error) {
