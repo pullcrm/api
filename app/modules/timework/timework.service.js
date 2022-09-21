@@ -66,9 +66,12 @@ export default {
     return specilistWorkTime.destroy({cascade: true})
   },
 
-  getSpecialistTimeWork: async ({specialistId, startDate}) => {
+  getSpecialistTimeWork: async ({specialistId, startDate, endDate}) => {
     const where = {specialistId}
-    const endDate = addDayToDate(startDate)
+
+    if (!endDate) {
+      endDate = addDayToDate(startDate)
+    }
 
     if(startDate) {
       where[Op.or] = [

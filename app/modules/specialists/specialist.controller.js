@@ -274,12 +274,14 @@ export default {
         companyId: req.companyId,
         specialistId: req.params.id,
         startDate: req.query.startDate,
+        endDate: req.query.endDate,
       }
 
       validate(params, joi.object().keys({
         companyId: joi.number().required(),
         specialistId: joi.number().required(),
-        startDate: joi.string()
+        startDate: joi.string(),
+        endDate: joi.string()
       }))
       // await SpecialistService.checkBy({companyId: params.companyId, id: params.specialistId})
       const specialistTimeWork = await timeworkService.getSpecialistTimeWork(params)
