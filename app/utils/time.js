@@ -28,13 +28,9 @@ export function getWorkingHours (open, close) {
   return hours
 }
 
-export function getDayWorkTime (date, timeWork) {
-  const day = dayjs(date).format('dddd').toLowerCase()
-  const [opened, from, to] = timeWork[day].split(';')
-
+export function getDayWorkTime (timeWork) {
   return {
-    opened: opened === 'true',
-    from,
-    to
+    from: dayjs(timeWork.startDateTime).format('HH:mm'),
+    to: dayjs(timeWork.endDateTime).format('HH:mm'),
   }
 }
