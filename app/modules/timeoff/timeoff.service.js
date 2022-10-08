@@ -12,6 +12,10 @@ export default {
     return await TimeOffModel.create(data, {returning: true})
   },
 
+  bulkCreate: async ({timeOffs, specialistId}) => {
+    return TimeOffModel.bulkCreate(timeOffs.map(T => ({...T, specialistId})))
+  },
+
   update: async (data, {timeOffId}) => {
     const timeOff = await TimeOffModel.findOne({where: {id: timeOffId}})
 

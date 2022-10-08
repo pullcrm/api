@@ -46,7 +46,7 @@ export default {
     }
   },
 
-  //Make fultext dynamic searching
+  //TODO: Make fultext dynamic searching
   search: async (req, res, next) => {
     try {
       const formattedData = {

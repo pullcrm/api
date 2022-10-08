@@ -256,13 +256,17 @@ export default {
         duration: joi.number().required()
       }))
 
-      const [timeWork, timeOffs, appointments] = await Promise.all([
-        TimeWorkService.findOne(formattedData),
+      const [timeOffs, appointments, timeWork] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchBySpecialistId(formattedData)
+        AppointmentService.fetchBySpecialistId(formattedData),
+        TimeWorkService.getSpecialistTimeWork({...formattedData, startDate: formattedData.date})
       ])
 
-      const {from, to} = getDayWorkTime(formattedData.date, timeWork)
+      if (!timeWork.length) {
+        res.send([])
+      }
+
+      const {from, to} = getDayWorkTime(timeWork[0])
 
       const availableTime = getAvailableTime({
         from,
@@ -294,17 +298,17 @@ export default {
         duration: joi.number().required()
       }))
 
-      const [timeWork, timeOffs, appointments] = await Promise.all([
-        TimeWorkService.findOne(formattedData),
+      const [timeOffs, appointments, timeWork] = await Promise.all([
         TimeOffService.findAll(formattedData),
-        AppointmentService.fetchBySpecialistId(formattedData)
+        AppointmentService.fetchBySpecialistId(formattedData),
+        TimeWorkService.getSpecialistTimeWork({...formattedData, startDate: formattedData.date})
       ])
 
-      const {opened, from, to} = getDayWorkTime(formattedData.date, timeWork)
-
-      if (opened === false) {
-        return res.send([])
+      if (!timeWork.length) {
+        res.send([])
       }
+
+      const {from, to} = getDayWorkTime(timeWork[0])
 
       const availableTime = getAvailableTime({
         from,
